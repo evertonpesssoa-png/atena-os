@@ -1,99 +1,156 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-<meta charset="utf-8">
-<title>Teste GitHub WebGL</title>
+<meta charset="UTF-8">
+<title>Holograma Sci-Fi 2D</title>
+
 <style>
 body {
   margin: 0;
-  background: radial-gradient(circle, #02040a, #000);
   overflow: hidden;
+  background: radial-gradient(circle at center, #02040a, #000);
+  font-family: Arial;
+}
+
+/* 🎯 HUD */
+.hud {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: #00f6ff;
+  letter-spacing: 3px;
+  font-size: 14px;
+  opacity: 0.8;
+  text-shadow: 0 0 10px #00f6ff;
+}
+
+/* 💠 container holograma */
+.holo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 220px;
+  height: 420px;
+  transform: translate(-50%, -50%);
+}
+
+/* 👤 silhueta feminina abstrata */
+.body {
+  position: absolute;
+  width: 120px;
+  height: 260px;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(to bottom, #00f6ff, transparent);
+  border-radius: 60px 60px 40px 40px;
+  filter: blur(1px);
+  opacity: 0.6;
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* cabeça */
+.head {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  left: 50%;
+  top: 22%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #00f6ff, transparent);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* aura */
+.glow {
+  position: absolute;
+  width: 260px;
+  height: 460px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(0,246,255,0.2), transparent 70%);
+  filter: blur(10px);
+  animation: pulse 3s infinite;
+}
+
+/* scanlines */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,255,255,0.05),
+    rgba(0,255,255,0.05) 1px,
+    transparent 3px,
+    transparent 6px
+  );
+  pointer-events: none;
+}
+
+/* ✨ partículas */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: #00f6ff;
+  border-radius: 50%;
+  opacity: 0.6;
+  animation: drift linear infinite;
+}
+
+/* animações */
+@keyframes breathe {
+  0%,100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.05); }
+}
+
+@keyframes float {
+  0%,100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+@keyframes drift {
+  from { transform: translateY(0); opacity: 0.8; }
+  to { transform: translateY(-800px); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<div class="hud">HOLOGRAMA • ENTIDADE SINTÉTICA</div>
+
+<div class="holo">
+  <div class="glow"></div>
+  <div class="head"></div>
+  <div class="body"></div>
+</div>
 
 <script>
-const scene = new THREE.Scene();
+// ✨ partículas dinâmicas
+for (let i = 0; i < 40; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  document.body.appendChild(p);
 
-const camera = new THREE.PerspectiveCamera(
-  75,
-  innerWidth / innerHeight,
-  0.1,
-  1000
-);
+  p.style.left = Math.random() * window.innerWidth + "px";
+  p.style.top = Math.random() * window.innerHeight + "px";
+  p.style.animationDuration = (3 + Math.random() * 5) + "s";
+  p.style.opacity = Math.random();
 
-camera.position.z = 4;
-
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(innerWidth, innerHeight);
-document.body.appendChild(renderer.domElement);
-
-// 💠 luz simples
-const light = new THREE.PointLight(0x00f6ff, 2);
-light.position.set(2, 2, 2);
-scene.add(light);
-
-// 🔷 forma holográfica feminina simplificada (garantido visível)
-const body = new THREE.Mesh(
-  new THREE.CapsuleGeometry(0.7, 2.0, 8, 16),
-  new THREE.MeshBasicMaterial({
-    color: 0x00f6ff,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.5
-  })
-);
-
-scene.add(body);
-
-// ✨ partículas
-const geo = new THREE.BufferGeometry();
-const pos = [];
-
-for (let i = 0; i < 500; i++) {
-  pos.push(
-    (Math.random() - 0.5) * 6,
-    (Math.random() - 0.5) * 6,
-    (Math.random() - 0.5) * 6
-  );
+  setInterval(() => {
+    p.style.left = Math.random() * window.innerWidth + "px";
+  }, 4000 + Math.random() * 3000);
 }
-
-geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
-
-const particles = new THREE.Points(
-  geo,
-  new THREE.PointsMaterial({
-    color: 0x00f6ff,
-    size: 0.04
-  })
-);
-
-scene.add(particles);
-
-// 🌊 loop
-function animate() {
-  requestAnimationFrame(animate);
-
-  body.rotation.y += 0.01;
-  particles.rotation.y += 0.002;
-
-  body.position.y = Math.sin(Date.now() * 0.001) * 0.2;
-
-  renderer.render(scene, camera);
-}
-
-animate();
-
-// 📱 resize
-window.addEventListener("resize", () => {
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
-});
 </script>
 
 </body>

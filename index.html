@@ -1,33 +1,18 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Holograma Feminino Funcional</title>
-
+<meta charset="utf-8">
+<title>Teste GitHub WebGL</title>
 <style>
 body {
   margin: 0;
+  background: radial-gradient(circle, #02040a, #000);
   overflow: hidden;
-  background: radial-gradient(circle at center, #02040a, #000);
-}
-
-canvas { display: block; }
-
-.text {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  color: #00f6ff;
-  font-family: Arial;
-  letter-spacing: 3px;
-  opacity: 0.7;
-  text-shadow: 0 0 10px #00f6ff;
 }
 </style>
 </head>
 
 <body>
-<div class="text">HOLOGRAMA FEMININO (FIX)</div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
@@ -35,63 +20,41 @@ canvas { display: block; }
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
-  60,
+  75,
   innerWidth / innerHeight,
   0.1,
   1000
 );
 
-camera.position.set(0, 1.2, 5);
+camera.position.z = 4;
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// 💡 luz holográfica
+// 💠 luz simples
 const light = new THREE.PointLight(0x00f6ff, 2);
-light.position.set(3, 3, 3);
+light.position.set(2, 2, 2);
 scene.add(light);
 
-// 💠 corpo feminino estilizado (proporção humana melhor)
-const torso = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.6, 0.9, 2.2, 16),
+// 🔷 forma holográfica feminina simplificada (garantido visível)
+const body = new THREE.Mesh(
+  new THREE.CapsuleGeometry(0.7, 2.0, 8, 16),
   new THREE.MeshBasicMaterial({
     color: 0x00f6ff,
     wireframe: true,
     transparent: true,
-    opacity: 0.35
+    opacity: 0.5
   })
 );
 
-const head = new THREE.Mesh(
-  new THREE.SphereGeometry(0.5, 16, 16),
-  new THREE.MeshBasicMaterial({
-    color: 0x00f6ff,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.4
-  })
-);
+scene.add(body);
 
-const hips = new THREE.Mesh(
-  new THREE.CylinderGeometry(0.7, 0.5, 1.5, 16),
-  torso.material
-);
-
-head.position.y = 2.2;
-torso.position.y = 0;
-hips.position.y = -1.6;
-
-scene.add(head);
-scene.add(torso);
-scene.add(hips);
-
-// ✨ partículas holográficas
-const particlesGeo = new THREE.BufferGeometry();
-const count = 400;
+// ✨ partículas
+const geo = new THREE.BufferGeometry();
 const pos = [];
 
-for (let i = 0; i < count; i++) {
+for (let i = 0; i < 500; i++) {
   pos.push(
     (Math.random() - 0.5) * 6,
     (Math.random() - 0.5) * 6,
@@ -99,37 +62,26 @@ for (let i = 0; i < count; i++) {
   );
 }
 
-particlesGeo.setAttribute(
-  "position",
-  new THREE.Float32BufferAttribute(pos, 3)
-);
+geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
 
 const particles = new THREE.Points(
-  particlesGeo,
+  geo,
   new THREE.PointsMaterial({
     color: 0x00f6ff,
-    size: 0.03,
-    transparent: true,
-    opacity: 0.6
+    size: 0.04
   })
 );
 
 scene.add(particles);
 
-// 🌊 animação viva
+// 🌊 loop
 function animate() {
   requestAnimationFrame(animate);
 
-  const t = Date.now() * 0.001;
+  body.rotation.y += 0.01;
+  particles.rotation.y += 0.002;
 
-  head.position.y = 2.2 + Math.sin(t) * 0.05;
-  torso.scale.y = 1 + Math.sin(t) * 0.03;
-
-  head.rotation.y += 0.002;
-  torso.rotation.y += 0.002;
-  hips.rotation.y += 0.002;
-
-  particles.rotation.y += 0.001;
+  body.position.y = Math.sin(Date.now() * 0.001) * 0.2;
 
   renderer.render(scene, camera);
 }
@@ -137,7 +89,7 @@ function animate() {
 animate();
 
 // 📱 resize
-addEventListener("resize", () => {
+window.addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);

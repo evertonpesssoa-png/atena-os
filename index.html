@@ -2,17 +2,18 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Holograma Feminino 3D</title>
+<title>Holograma Feminino Real</title>
+
 <style>
 body {
   margin: 0;
   overflow: hidden;
-  background: radial-gradient(circle at center, #02040a, #000);
+  background: radial-gradient(circle, #02040a, #000);
 }
 
 canvas { display: block; }
 
-.hud {
+.label {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -24,107 +25,74 @@ canvas { display: block; }
 }
 </style>
 </head>
-<body>
 
-<div class="hud">HOLOGRAMA • ENTIDADE FEMININA</div>
+<body>
+<div class="label">ENTIDADE HOLOGRÁFICA FEMININA</div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
 
 <script>
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(
-  60,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-camera.position.z = 6;
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0, 1.5, 4);
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// 🌐 Luz holográfica
+// 💡 luz holográfica
 const light = new THREE.PointLight(0x00f6ff, 2);
-light.position.set(5, 5, 5);
+light.position.set(3, 5, 3);
 scene.add(light);
 
-// 💠 Corpo base (silhueta feminina simples)
-const bodyGeometry = new THREE.CapsuleGeometry(0.8, 2.2, 8, 16);
-const bodyMaterial = new THREE.MeshBasicMaterial({
-  color: 0x00f6ff,
-  wireframe: true,
-  transparent: true,
-  opacity: 0.35
-});
+// 🌊 loader do modelo feminino
+const loader = new THREE.GLTFLoader();
 
-const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-scene.add(body);
+// 👉 modelo público base (você pode trocar depois)
+loader.load(
+  "https://models.readyplayer.me/64f1f4c6a3b7c3b6f7d9b8f1.glb",
 
-// 🧠 Cabeça holográfica
-const headGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-const headMaterial = bodyMaterial.clone();
-const head = new THREE.Mesh(headGeometry, headMaterial);
-head.position.y = 1.8;
-scene.add(head);
+  function (gltf) {
+    const model = gltf.scene;
 
-// ✨ Aura de partículas
-const particlesCount = 600;
-const positions = [];
+    model.scale.set(1.5, 1.5, 1.5);
+    model.position.y = -1;
 
-for (let i = 0; i < particlesCount; i++) {
-  positions.push(
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10,
-    (Math.random() - 0.5) * 10
-  );
-}
+    // 💠 efeito holograma
+    model.traverse((child) => {
+      if (child.isMesh) {
+        child.material.transparent = true;
+        child.material.opacity = 0.5;
+        child.material.color.set(0x00f6ff);
+        child.material.wireframe = true;
+      }
+    });
 
-const particleGeo = new THREE.BufferGeometry();
-particleGeo.setAttribute(
-  "position",
-  new THREE.Float32BufferAttribute(positions, 3)
+    scene.add(model);
+
+    // 🌊 animação viva
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const t = Date.now() * 0.001;
+
+      model.rotation.y += 0.003;
+      model.position.y = -1 + Math.sin(t) * 0.1;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  }
 );
 
-const particleMat = new THREE.PointsMaterial({
-  color: 0x00f6ff,
-  size: 0.03,
-  transparent: true,
-  opacity: 0.7
-});
-
-const particles = new THREE.Points(particleGeo, particleMat);
-scene.add(particles);
-
-// 🌊 Animação
-function animate() {
-  requestAnimationFrame(animate);
-
-  const t = Date.now() * 0.001;
-
-  // respiração
-  body.scale.y = 1 + Math.sin(t) * 0.05;
-  head.position.y = 1.8 + Math.sin(t) * 0.05;
-
-  // rotação suave
-  body.rotation.y += 0.003;
-  head.rotation.y += 0.003;
-  particles.rotation.y += 0.001;
-
-  // flutuação geral
-  scene.position.y = Math.sin(t * 0.7) * 0.2;
-
-  renderer.render(scene, camera);
-}
-
-animate();
-
-// 📱 responsivo
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
+// 📱 resize
+addEventListener("resize", () => {
+  camera.aspect = innerWidth/innerHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(innerWidth, innerHeight);
 });
 </script>
 

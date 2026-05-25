@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Holograma • Avatar Arcano</title>
+    <title>Holograma • Projeção Arcana</title>
     <style>
         body {
             margin: 0;
@@ -36,18 +36,13 @@
             border-radius: 20px;
             font-size: 11px;
             z-index: 100;
-            font-family: monospace;
             pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div id="info">
-        ✨ HOLOGRAMA • L Y R A ✨
-    </div>
-    <div class="controls">
-        🖱️ Arraste para rotacionar | Scroll para zoom
-    </div>
+    <div id="info">✨ HOLOGRAMA • PROJEÇÃO ARCANO ✨</div>
+    <div class="controls">🖱️ Arraste para rotacionar | Scroll para zoom</div>
 
     <script type="importmap">
         {
@@ -61,266 +56,222 @@
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        
         // =========================
-        // CONFIGURAÇÃO INICIAL
+        // CENA
         // =========================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010118);
-        scene.fog = new THREE.FogExp2(0x010118, 0.008);
-
-        // Câmera
+        scene.fog = new THREE.FogExp2(0x010118, 0.02);
+        
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(2, 1.5, 3.5);
+        camera.position.set(0, 1.2, 3.5);
         camera.lookAt(0, 1.2, 0);
-
-        // Renderer
+        
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ReinhardToneMapping;
         document.body.appendChild(renderer.domElement);
-
-        // CSS2DRenderer para texto
-        const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        labelRenderer.domElement.style.position = 'absolute';
-        labelRenderer.domElement.style.top = '0px';
-        labelRenderer.domElement.style.left = '0px';
-        labelRenderer.domElement.style.pointerEvents = 'none';
-        document.body.appendChild(labelRenderer.domElement);
-
-        // Controles
+        
+        // =========================
+        // EFEITO BLOOM (GLOW)
+        // =========================
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
+        bloomPass.threshold = 0.1;
+        bloomPass.strength = 0.8;
+        bloomPass.radius = 0.5;
+        
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // =========================
+        // CONTROLES
+        // =========================
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 1.5;
+        controls.autoRotateSpeed = 1.2;
         controls.enableZoom = true;
         controls.enablePan = true;
         controls.target.set(0, 1.2, 0);
-
-        // =========================
-        // LUZES HOLOGRÁFICAS
-        // =========================
-        const ambientLight = new THREE.AmbientLight(0x111122);
-        scene.add(ambientLight);
         
-        const mainLight = new THREE.DirectionalLight(0x88aaff, 1.2);
-        mainLight.position.set(2, 3, 2);
-        scene.add(mainLight);
-        
-        const backLight = new THREE.PointLight(0x44aaff, 0.8);
-        backLight.position.set(-1, 1.5, -2);
-        scene.add(backLight);
-        
-        const fillLight = new THREE.PointLight(0xff88cc, 0.5);
-        fillLight.position.set(1.5, 1, 1.5);
-        scene.add(fillLight);
-        
-        const rimLight = new THREE.PointLight(0x88ffcc, 0.6);
-        rimLight.position.set(-1, 1.8, 1.8);
-        scene.add(rimLight);
-
-        // Luz pulsante (efeito holograma)
-        const pulseLight = new THREE.PointLight(0x66ccff, 0.8);
-        pulseLight.position.set(0, 1.2, 1);
-        scene.add(pulseLight);
-
         // =========================
-        // PARTÍCULAS DE FUNDO
+        // PARTÍCULAS DE FUNDO (ESTRELAS)
         // =========================
-        const particleCount = 1500;
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesPositions = new Float32Array(particleCount * 3);
-        for (let i = 0; i < particleCount; i++) {
-            particlesPositions[i*3] = (Math.random() - 0.5) * 30;
-            particlesPositions[i*3+1] = (Math.random() - 0.5) * 15;
-            particlesPositions[i*3+2] = (Math.random() - 0.5) * 20 - 10;
+        const starCount = 2000;
+        const starGeometry = new THREE.BufferGeometry();
+        const starPositions = new Float32Array(starCount * 3);
+        for (let i = 0; i < starCount; i++) {
+            starPositions[i*3] = (Math.random() - 0.5) * 40;
+            starPositions[i*3+1] = (Math.random() - 0.5) * 20;
+            starPositions[i*3+2] = (Math.random() - 0.5) * 30 - 15;
         }
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlesPositions, 3));
-        const particlesMaterial = new THREE.PointsMaterial({ color: 0x44aaff, size: 0.03, transparent: true, opacity: 0.4 });
-        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particles);
-
-        // =========================
-        // CHÃO HOLOGRÁFICO
-        // =========================
-        const gridHelper = new THREE.GridHelper(6, 20, 0x44aaff, 0x2288cc);
-        gridHelper.position.y = -0.8;
-        gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.35;
-        scene.add(gridHelper);
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0x44aaff, size: 0.04, transparent: true, opacity: 0.5 });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
         
-        const ringFloor = new THREE.Mesh(
-            new THREE.RingGeometry(0.8, 1.5, 32),
-            new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x2288cc, emissiveIntensity: 0.3, transparent: true, opacity: 0.4, side: THREE.DoubleSide })
-        );
-        ringFloor.rotation.x = -Math.PI / 2;
-        ringFloor.position.y = -0.75;
-        scene.add(ringFloor);
-
         // =========================
-        // CRIAÇÃO DO AVATAR HOLOGRAMA
+        // HOLOGRAMA - SILHUETA FEMININA COM PARTÍCULAS
         // =========================
         const hologramGroup = new THREE.Group();
         
-        // CORPO (vestido cyberpunk)
-        const bodyGeo = new THREE.CylinderGeometry(0.28, 0.32, 0.85, 12);
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x3366cc, emissiveIntensity: 0.25, metalness: 0.7, roughness: 0.3 });
-        const body = new THREE.Mesh(bodyGeo, bodyMat);
-        body.position.y = 0.4;
-        hologramGroup.add(body);
+        // Efeito de "névoa" ao redor (esfera transparente)
+        const auraGlow = new THREE.Mesh(
+            new THREE.SphereGeometry(1.1, 32, 32),
+            new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x44aaff, emissiveIntensity: 0.3, transparent: true, opacity: 0.08, wireframe: true })
+        );
+        auraGlow.position.y = 0.9;
+        hologramGroup.add(auraGlow);
         
-        // CABEÇA
-        const headGeo = new THREE.SphereGeometry(0.28, 24, 24);
-        const headMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, emissive: 0xffaa88, emissiveIntensity: 0.15 });
-        const head = new THREE.Mesh(headGeo, headMat);
-        head.position.y = 0.85;
+        // CORPO (silhueta translúcida)
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x3388ff, emissiveIntensity: 0.4, transparent: true, opacity: 0.35 });
+        
+        // Tronco
+        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.38, 0.9, 12), bodyMat);
+        torso.position.y = 0.45;
+        hologramGroup.add(torso);
+        
+        // Cintura/vestido
+        const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 0.5, 8), bodyMat);
+        skirt.position.y = 0.1;
+        hologramGroup.add(skirt);
+        
+        // Cabeça
+        const headMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, emissive: 0xffaa88, emissiveIntensity: 0.2, transparent: true, opacity: 0.7 });
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.28, 32, 32), headMat);
+        head.position.y = 0.95;
         hologramGroup.add(head);
         
-        // CABELO (estilo anime - com volumetria)
-        const hairGeo = new THREE.SphereGeometry(0.3, 16, 16);
-        const hairMat = new THREE.MeshStandardMaterial({ color: 0xff66aa, emissive: 0xff44aa, emissiveIntensity: 0.2 });
-        const hair = new THREE.Mesh(hairGeo, hairMat);
-        hair.position.y = 1.0;
-        hair.scale.set(1.05, 0.5, 1.1);
-        hologramGroup.add(hair);
+        // CABELO (estilo fluído, várias camadas)
+        const hairMat = new THREE.MeshStandardMaterial({ color: 0xff66cc, emissive: 0xff44aa, emissiveIntensity: 0.3, transparent: true, opacity: 0.6 });
         
-        // Topo do cabelo (ponta)
-        const hairTopGeo = new THREE.ConeGeometry(0.18, 0.25, 8);
-        const hairTop = new THREE.Mesh(hairTopGeo, hairMat);
-        hairTop.position.y = 1.12;
-        hologramGroup.add(hairTop);
+        // Cabelo traseiro
+        const backHair = new THREE.Mesh(new THREE.SphereGeometry(0.31, 16, 16), hairMat);
+        backHair.position.y = 0.96;
+        backHair.scale.set(1.0, 0.7, 0.6);
+        hologramGroup.add(backHair);
         
-        // FRANJA
-        const fringeGeo = new THREE.BoxGeometry(0.45, 0.08, 0.15);
-        const fringeMat = new THREE.MeshStandardMaterial({ color: 0xff66aa, emissive: 0xff44aa, emissiveIntensity: 0.15 });
-        const fringe = new THREE.Mesh(fringeGeo, fringeMat);
-        fringe.position.set(0, 1.0, 0.28);
+        // Franja
+        const fringe = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.12, 0.18), hairMat);
+        fringe.position.set(0, 1.04, 0.29);
         hologramGroup.add(fringe);
         
-        // OLHOS (estilo anime)
-        const eyeWhiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        const eyePupilMat = new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x44aaff, emissiveIntensity: 0.4 });
+        // Laterais do cabelo
+        const leftHair = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.45, 6), hairMat);
+        leftHair.position.set(-0.32, 0.9, 0.05);
+        leftHair.rotation.z = 0.3;
+        hologramGroup.add(leftHair);
         
-        const leftEyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), eyeWhiteMat);
-        leftEyeWhite.position.set(-0.11, 0.92, 0.29);
-        hologramGroup.add(leftEyeWhite);
+        const rightHair = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.45, 6), hairMat);
+        rightHair.position.set(0.32, 0.9, 0.05);
+        rightHair.rotation.z = -0.3;
+        hologramGroup.add(rightHair);
         
-        const rightEyeWhite = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16), eyeWhiteMat);
-        rightEyeWhite.position.set(0.11, 0.92, 0.29);
-        hologramGroup.add(rightEyeWhite);
+        // Topo do cabelo (volume)
+        const topHair = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.28, 8), hairMat);
+        topHair.position.y = 1.12;
+        hologramGroup.add(topHair);
         
-        const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16), eyePupilMat);
-        leftPupil.position.set(-0.11, 0.91, 0.35);
+        // OLHOS (brilhantes)
+        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x44ddff, emissive: 0x44aaff, emissiveIntensity: 0.8 });
+        const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), eyeMat);
+        leftEye.position.set(-0.11, 1.02, 0.31);
+        hologramGroup.add(leftEye);
+        
+        const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), eyeMat);
+        rightEye.position.set(0.11, 1.02, 0.31);
+        hologramGroup.add(rightEye);
+        
+        // Pupilas (mais brilhantes)
+        const pupilMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x88ddff, emissiveIntensity: 0.5 });
+        const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 16), pupilMat);
+        leftPupil.position.set(-0.11, 1.01, 0.37);
         hologramGroup.add(leftPupil);
         
-        const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.05, 16, 16), eyePupilMat);
-        rightPupil.position.set(0.11, 0.91, 0.35);
+        const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 16), pupilMat);
+        rightPupil.position.set(0.11, 1.01, 0.37);
         hologramGroup.add(rightPupil);
         
-        // SOBRANCELHAS
-        const browMat = new THREE.MeshStandardMaterial({ color: 0xff66aa });
-        const leftBrow = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.05), browMat);
-        leftBrow.position.set(-0.13, 1.02, 0.31);
-        hologramGroup.add(leftBrow);
-        
-        const rightBrow = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.04, 0.05), browMat);
-        rightBrow.position.set(0.13, 1.02, 0.31);
-        hologramGroup.add(rightBrow);
-        
-        // BOCA (curva usando um torus pequeno)
-        const mouthGeo = new THREE.TorusGeometry(0.07, 0.02, 8, 20, Math.PI);
-        const mouthMat = new THREE.MeshStandardMaterial({ color: 0xff8888 });
+        // BOCA (curva de luz)
+        const mouthGeo = new THREE.TorusGeometry(0.07, 0.012, 8, 20, Math.PI);
+        const mouthMat = new THREE.MeshStandardMaterial({ color: 0xff88aa, emissive: 0xff6688, emissiveIntensity: 0.4 });
         const mouth = new THREE.Mesh(mouthGeo, mouthMat);
-        mouth.rotation.x = 0.2;
-        mouth.position.set(0, 0.78, 0.32);
+        mouth.rotation.x = 0.15;
+        mouth.position.set(0, 0.86, 0.34);
         hologramGroup.add(mouth);
         
         // BRAÇOS
-        const armMat = new THREE.MeshStandardMaterial({ color: 0xffccaa });
+        const armMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, transparent: true, opacity: 0.6 });
         
-        const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.55, 6), armMat);
-        leftArm.position.set(-0.45, 0.65, 0);
-        leftArm.rotation.z = 0.3;
+        const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.6, 6), armMat);
+        leftArm.position.set(-0.48, 0.7, 0);
+        leftArm.rotation.z = 0.35;
         leftArm.rotation.x = -0.2;
         hologramGroup.add(leftArm);
         
-        const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.55, 6), armMat);
-        rightArm.position.set(0.45, 0.65, 0);
-        rightArm.rotation.z = -0.3;
+        const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.6, 6), armMat);
+        rightArm.position.set(0.48, 0.7, 0);
+        rightArm.rotation.z = -0.35;
         rightArm.rotation.x = 0.2;
         hologramGroup.add(rightArm);
         
-        // MÃOS
-        const handMat = new THREE.MeshStandardMaterial({ color: 0xffccaa });
+        // MÃOS (partículas de luz)
+        const handMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, emissive: 0xffaa88, emissiveIntensity: 0.3 });
         const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), handMat);
-        leftHand.position.set(-0.7, 0.38, 0.05);
+        leftHand.position.set(-0.73, 0.42, 0.08);
         hologramGroup.add(leftHand);
         
         const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), handMat);
-        rightHand.position.set(0.7, 0.38, -0.05);
+        rightHand.position.set(0.73, 0.42, -0.08);
         hologramGroup.add(rightHand);
         
-        // SAIAS/VESTIDO (sobreposição)
-        const skirtGeo = new THREE.CylinderGeometry(0.45, 0.55, 0.35, 8);
-        const skirtMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x3366cc, emissiveIntensity: 0.2, transparent: true, opacity: 0.85 });
-        const skirt = new THREE.Mesh(skirtGeo, skirtMat);
-        skirt.position.y = 0.15;
-        hologramGroup.add(skirt);
-        
-        // ACESSÓRIOS: COROA/DIADEMA HOLOGRÁFICO
-        const crownGeo = new THREE.TorusGeometry(0.22, 0.04, 12, 30);
-        const crownMat = new THREE.MeshStandardMaterial({ color: 0xff88cc, emissive: 0xff44aa, emissiveIntensity: 0.5 });
-        const crown = new THREE.Mesh(crownGeo, crownMat);
-        crown.position.y = 1.08;
-        crown.rotation.x = Math.PI / 2;
-        hologramGroup.add(crown);
-        
-        const crownGem = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.12, 6), crownMat);
-        crownGem.position.y = 1.15;
-        hologramGroup.add(crownGem);
-        
-        // AURA HOLOGRÁFICA (anel de luz)
-        const auraGeo = new THREE.TorusGeometry(0.65, 0.025, 32, 60);
-        const auraMat = new THREE.MeshStandardMaterial({ color: 0x66ccff, emissive: 0x44aaff, emissiveIntensity: 0.6 });
-        const aura = new THREE.Mesh(auraGeo, auraMat);
-        aura.position.y = 0.55;
-        hologramGroup.add(aura);
-        
-        const aura2 = new THREE.Mesh(auraGeo, auraMat);
-        aura2.scale.set(1.15, 1.15, 1.15);
-        aura2.position.y = 0.55;
-        hologramGroup.add(aura2);
-        
         scene.add(hologramGroup);
-
-        // =========================
-        // NOME HOLOGRÁFICO (CSS2D)
-        // =========================
-        const nameDiv = document.createElement('div');
-        nameDiv.textContent = '⚡ L Y R A • HOLOGRAMA ⚡';
-        nameDiv.style.color = '#88ddff';
-        nameDiv.style.fontSize = '14px';
-        nameDiv.style.fontFamily = 'monospace';
-        nameDiv.style.fontWeight = 'bold';
-        nameDiv.style.textShadow = '0 0 10px #44aaff';
-        nameDiv.style.background = 'rgba(0,0,0,0.5)';
-        nameDiv.style.padding = '6px 14px';
-        nameDiv.style.borderRadius = '30px';
-        nameDiv.style.border = '1px solid #44aaff';
-        nameDiv.style.backdropFilter = 'blur(8px)';
-        nameDiv.style.whiteSpace = 'nowrap';
-        
-        const nameLabel = new CSS2DObject(nameDiv);
-        nameLabel.position.set(0, 1.35, 0);
-        scene.add(nameLabel);
         
         // =========================
-        // PÓS-PROCESSAMENTO (Efeito Scanline)
+        // PARTÍCULAS FLUTUANTES (EM VOLTA DO HOLOGRAMA)
         // =========================
-        // Criando um overlay de scanlines
+        const particleCount = 800;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePos = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 0.9 + Math.random() * 0.8;
+            const y = Math.random() * 1.8;
+            particlePos[i*3] = Math.cos(angle) * radius;
+            particlePos[i*3+1] = y;
+            particlePos[i*3+2] = Math.sin(angle) * radius;
+        }
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0x66ccff, size: 0.02, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        const floatingParticles = new THREE.Points(particleGeo, particleMat);
+        scene.add(floatingParticles);
+        
+        // =========================
+        // ANEL HOLOGRÁFICO (BASE)
+        // =========================
+        const ringGeo = new THREE.TorusGeometry(0.85, 0.025, 64, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x44aaff, emissiveIntensity: 0.7, transparent: true, opacity: 0.8 });
+        const baseRing = new THREE.Mesh(ringGeo, ringMat);
+        baseRing.rotation.x = Math.PI / 2;
+        baseRing.position.y = -0.15;
+        scene.add(baseRing);
+        
+        const ring2 = new THREE.Mesh(ringGeo, ringMat);
+        ring2.scale.set(1.15, 1.15, 1.15);
+        ring2.rotation.x = Math.PI / 2 + 0.2;
+        ring2.position.y = -0.1;
+        scene.add(ring2);
+        
+        // =========================
+        // SCANLINES (OVERLAY)
+        // =========================
         const scanlineOverlay = document.createElement('div');
         scanlineOverlay.style.cssText = `
             position: fixed;
@@ -329,18 +280,12 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 255, 200, 0.03) 0px,
-                rgba(0, 255, 200, 0.03) 2px,
-                transparent 2px,
-                transparent 4px
-            );
+            background: repeating-linear-gradient(0deg, rgba(0, 255, 200, 0.04) 0px, rgba(0, 255, 200, 0.04) 2px, transparent 2px, transparent 4px);
             z-index: 1000;
         `;
         document.body.appendChild(scanlineOverlay);
         
-        // Efeito de vignette
+        // Vignette
         const vignette = document.createElement('div');
         vignette.style.cssText = `
             position: fixed;
@@ -349,11 +294,11 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.6) 100%);
+            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.7) 100%);
             z-index: 999;
         `;
         document.body.appendChild(vignette);
-
+        
         // =========================
         // ANIMAÇÃO
         // =========================
@@ -361,17 +306,13 @@
         
         function animate() {
             requestAnimationFrame(animate);
-            time += 0.012;
+            time += 0.015;
             
             // Flutuação do holograma
-            hologramGroup.position.y = Math.sin(time * 1.5) * 0.03;
+            hologramGroup.position.y = Math.sin(time * 1.2) * 0.02;
             
-            // Rotação dos anéis de aura
-            aura.rotation.z = time * 1.2;
-            aura2.rotation.z = -time * 0.8;
-            
-            // Piscar dos olhos (a cada 4 segundos)
-            const blink = Math.sin(time * 1.5) > 0.98;
+            // Piscar dos olhos
+            const blink = Math.sin(time * 1.8) > 0.98;
             if (blink) {
                 leftPupil.scale.set(1, 0.1, 1);
                 rightPupil.scale.set(1, 0.1, 1);
@@ -380,34 +321,38 @@
                 rightPupil.scale.set(1, 1, 1);
             }
             
-            // Luz pulsante
-            pulseLight.intensity = 0.6 + Math.sin(time * 4) * 0.3;
+            // Rotação dos anéis
+            baseRing.rotation.z = time * 0.5;
+            ring2.rotation.z = -time * 0.4;
             
-            // Partículas girando lentamente
-            particles.rotation.y = time * 0.03;
-            particles.rotation.x = Math.sin(time * 0.1) * 0.05;
+            // Partículas flutuantes girando
+            floatingParticles.rotation.y = time * 0.3;
+            floatingParticles.rotation.x = Math.sin(time * 0.5) * 0.1;
             
-            // Controle de auto-rotação do OrbitControls
+            // Estrelas girando lentamente
+            stars.rotation.y = time * 0.02;
+            
+            // Aura pulsante
+            const pulse = 0.25 + Math.sin(time * 3) * 0.1;
+            auraGlow.material.emissiveIntensity = pulse;
+            
             controls.update();
-            
-            renderer.render(scene, camera);
-            labelRenderer.render(scene, camera);
+            effectComposer.render();
         }
         
         animate();
-
+        
         // =========================
         // RESIZE
         // =========================
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        }
+            effectComposer.setSize(window.innerWidth, window.innerHeight);
+        });
         
-        console.log('✨ Holograma L Y R A carregado! ✨');
+        console.log('✨ HOLOGRAMA carregado! ✨');
     </script>
 </body>
 </html>

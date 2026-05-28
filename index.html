@@ -1,358 +1,168 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Holograma • Projeção Arcana</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: #000;
-            font-family: 'Courier New', monospace;
-        }
-        
-        #info {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            color: #00ffcc;
-            background: rgba(0,0,0,0.6);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            z-index: 100;
-            backdrop-filter: blur(5px);
-            pointer-events: none;
-        }
-        
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            color: #00ffcc;
-            background: rgba(0,0,0,0.6);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 11px;
-            z-index: 100;
-            pointer-events: none;
-        }
-    </style>
-</head>
-<body>
-    <div id="info">✨ HOLOGRAMA • PROJEÇÃO ARCANO ✨</div>
-    <div class="controls">🖱️ Arraste para rotacionar | Scroll para zoom</div>
+export default function FuturisticDashboard() { return ( <div className="relative min-h-screen overflow-hidden bg-black text-white"> {/* Fundo */} <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#14335f,transparent_40%),radial-gradient(circle_at_bottom,#0d9488,transparent_35%),linear-gradient(to_bottom,#030712,#000)]" />
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
+{/* Glow */}
+  <div className="absolute top-[-120px] left-1/2 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-cyan-400/20 blur-3xl" />
+  <div className="absolute bottom-[-100px] right-[-60px] h-[320px] w-[320px] rounded-full bg-teal-400/10 blur-3xl" />
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-        
-        // =========================
-        // CENA
-        // =========================
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x010118);
-        scene.fog = new THREE.FogExp2(0x010118, 0.02);
-        
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.2, 3.5);
-        camera.lookAt(0, 1.2, 0);
-        
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.toneMapping = THREE.ReinhardToneMapping;
-        document.body.appendChild(renderer.domElement);
-        
-        // =========================
-        // EFEITO BLOOM (GLOW)
-        // =========================
-        const renderScene = new RenderPass(scene, camera);
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
-        bloomPass.threshold = 0.1;
-        bloomPass.strength = 0.8;
-        bloomPass.radius = 0.5;
-        
-        const effectComposer = new EffectComposer(renderer);
-        effectComposer.addPass(renderScene);
-        effectComposer.addPass(bloomPass);
-        
-        // =========================
-        // CONTROLES
-        // =========================
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 1.2;
-        controls.enableZoom = true;
-        controls.enablePan = true;
-        controls.target.set(0, 1.2, 0);
-        
-        // =========================
-        // PARTÍCULAS DE FUNDO (ESTRELAS)
-        // =========================
-        const starCount = 2000;
-        const starGeometry = new THREE.BufferGeometry();
-        const starPositions = new Float32Array(starCount * 3);
-        for (let i = 0; i < starCount; i++) {
-            starPositions[i*3] = (Math.random() - 0.5) * 40;
-            starPositions[i*3+1] = (Math.random() - 0.5) * 20;
-            starPositions[i*3+2] = (Math.random() - 0.5) * 30 - 15;
-        }
-        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-        const starMaterial = new THREE.PointsMaterial({ color: 0x44aaff, size: 0.04, transparent: true, opacity: 0.5 });
-        const stars = new THREE.Points(starGeometry, starMaterial);
-        scene.add(stars);
-        
-        // =========================
-        // HOLOGRAMA - SILHUETA FEMININA COM PARTÍCULAS
-        // =========================
-        const hologramGroup = new THREE.Group();
-        
-        // Efeito de "névoa" ao redor (esfera transparente)
-        const auraGlow = new THREE.Mesh(
-            new THREE.SphereGeometry(1.1, 32, 32),
-            new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x44aaff, emissiveIntensity: 0.3, transparent: true, opacity: 0.08, wireframe: true })
-        );
-        auraGlow.position.y = 0.9;
-        hologramGroup.add(auraGlow);
-        
-        // CORPO (silhueta translúcida)
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x3388ff, emissiveIntensity: 0.4, transparent: true, opacity: 0.35 });
-        
-        // Tronco
-        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.38, 0.9, 12), bodyMat);
-        torso.position.y = 0.45;
-        hologramGroup.add(torso);
-        
-        // Cintura/vestido
-        const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.65, 0.5, 8), bodyMat);
-        skirt.position.y = 0.1;
-        hologramGroup.add(skirt);
-        
-        // Cabeça
-        const headMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, emissive: 0xffaa88, emissiveIntensity: 0.2, transparent: true, opacity: 0.7 });
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.28, 32, 32), headMat);
-        head.position.y = 0.95;
-        hologramGroup.add(head);
-        
-        // CABELO (estilo fluído, várias camadas)
-        const hairMat = new THREE.MeshStandardMaterial({ color: 0xff66cc, emissive: 0xff44aa, emissiveIntensity: 0.3, transparent: true, opacity: 0.6 });
-        
-        // Cabelo traseiro
-        const backHair = new THREE.Mesh(new THREE.SphereGeometry(0.31, 16, 16), hairMat);
-        backHair.position.y = 0.96;
-        backHair.scale.set(1.0, 0.7, 0.6);
-        hologramGroup.add(backHair);
-        
-        // Franja
-        const fringe = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.12, 0.18), hairMat);
-        fringe.position.set(0, 1.04, 0.29);
-        hologramGroup.add(fringe);
-        
-        // Laterais do cabelo
-        const leftHair = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.45, 6), hairMat);
-        leftHair.position.set(-0.32, 0.9, 0.05);
-        leftHair.rotation.z = 0.3;
-        hologramGroup.add(leftHair);
-        
-        const rightHair = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.1, 0.45, 6), hairMat);
-        rightHair.position.set(0.32, 0.9, 0.05);
-        rightHair.rotation.z = -0.3;
-        hologramGroup.add(rightHair);
-        
-        // Topo do cabelo (volume)
-        const topHair = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.28, 8), hairMat);
-        topHair.position.y = 1.12;
-        hologramGroup.add(topHair);
-        
-        // OLHOS (brilhantes)
-        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x44ddff, emissive: 0x44aaff, emissiveIntensity: 0.8 });
-        const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), eyeMat);
-        leftEye.position.set(-0.11, 1.02, 0.31);
-        hologramGroup.add(leftEye);
-        
-        const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), eyeMat);
-        rightEye.position.set(0.11, 1.02, 0.31);
-        hologramGroup.add(rightEye);
-        
-        // Pupilas (mais brilhantes)
-        const pupilMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x88ddff, emissiveIntensity: 0.5 });
-        const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 16), pupilMat);
-        leftPupil.position.set(-0.11, 1.01, 0.37);
-        hologramGroup.add(leftPupil);
-        
-        const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.035, 16, 16), pupilMat);
-        rightPupil.position.set(0.11, 1.01, 0.37);
-        hologramGroup.add(rightPupil);
-        
-        // BOCA (curva de luz)
-        const mouthGeo = new THREE.TorusGeometry(0.07, 0.012, 8, 20, Math.PI);
-        const mouthMat = new THREE.MeshStandardMaterial({ color: 0xff88aa, emissive: 0xff6688, emissiveIntensity: 0.4 });
-        const mouth = new THREE.Mesh(mouthGeo, mouthMat);
-        mouth.rotation.x = 0.15;
-        mouth.position.set(0, 0.86, 0.34);
-        hologramGroup.add(mouth);
-        
-        // BRAÇOS
-        const armMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, transparent: true, opacity: 0.6 });
-        
-        const leftArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.6, 6), armMat);
-        leftArm.position.set(-0.48, 0.7, 0);
-        leftArm.rotation.z = 0.35;
-        leftArm.rotation.x = -0.2;
-        hologramGroup.add(leftArm);
-        
-        const rightArm = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.08, 0.6, 6), armMat);
-        rightArm.position.set(0.48, 0.7, 0);
-        rightArm.rotation.z = -0.35;
-        rightArm.rotation.x = 0.2;
-        hologramGroup.add(rightArm);
-        
-        // MÃOS (partículas de luz)
-        const handMat = new THREE.MeshStandardMaterial({ color: 0xffccaa, emissive: 0xffaa88, emissiveIntensity: 0.3 });
-        const leftHand = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), handMat);
-        leftHand.position.set(-0.73, 0.42, 0.08);
-        hologramGroup.add(leftHand);
-        
-        const rightHand = new THREE.Mesh(new THREE.SphereGeometry(0.07, 6, 6), handMat);
-        rightHand.position.set(0.73, 0.42, -0.08);
-        hologramGroup.add(rightHand);
-        
-        scene.add(hologramGroup);
-        
-        // =========================
-        // PARTÍCULAS FLUTUANTES (EM VOLTA DO HOLOGRAMA)
-        // =========================
-        const particleCount = 800;
-        const particleGeo = new THREE.BufferGeometry();
-        const particlePos = new Float32Array(particleCount * 3);
-        for (let i = 0; i < particleCount; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const radius = 0.9 + Math.random() * 0.8;
-            const y = Math.random() * 1.8;
-            particlePos[i*3] = Math.cos(angle) * radius;
-            particlePos[i*3+1] = y;
-            particlePos[i*3+2] = Math.sin(angle) * radius;
-        }
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
-        const particleMat = new THREE.PointsMaterial({ color: 0x66ccff, size: 0.02, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
-        const floatingParticles = new THREE.Points(particleGeo, particleMat);
-        scene.add(floatingParticles);
-        
-        // =========================
-        // ANEL HOLOGRÁFICO (BASE)
-        // =========================
-        const ringGeo = new THREE.TorusGeometry(0.85, 0.025, 64, 200);
-        const ringMat = new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x44aaff, emissiveIntensity: 0.7, transparent: true, opacity: 0.8 });
-        const baseRing = new THREE.Mesh(ringGeo, ringMat);
-        baseRing.rotation.x = Math.PI / 2;
-        baseRing.position.y = -0.15;
-        scene.add(baseRing);
-        
-        const ring2 = new THREE.Mesh(ringGeo, ringMat);
-        ring2.scale.set(1.15, 1.15, 1.15);
-        ring2.rotation.x = Math.PI / 2 + 0.2;
-        ring2.position.y = -0.1;
-        scene.add(ring2);
-        
-        // =========================
-        // SCANLINES (OVERLAY)
-        // =========================
-        const scanlineOverlay = document.createElement('div');
-        scanlineOverlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: repeating-linear-gradient(0deg, rgba(0, 255, 200, 0.04) 0px, rgba(0, 255, 200, 0.04) 2px, transparent 2px, transparent 4px);
-            z-index: 1000;
-        `;
-        document.body.appendChild(scanlineOverlay);
-        
-        // Vignette
-        const vignette = document.createElement('div');
-        vignette.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.7) 100%);
-            z-index: 999;
-        `;
-        document.body.appendChild(vignette);
-        
-        // =========================
-        // ANIMAÇÃO
-        // =========================
-        let time = 0;
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.015;
-            
-            // Flutuação do holograma
-            hologramGroup.position.y = Math.sin(time * 1.2) * 0.02;
-            
-            // Piscar dos olhos
-            const blink = Math.sin(time * 1.8) > 0.98;
-            if (blink) {
-                leftPupil.scale.set(1, 0.1, 1);
-                rightPupil.scale.set(1, 0.1, 1);
-            } else {
-                leftPupil.scale.set(1, 1, 1);
-                rightPupil.scale.set(1, 1, 1);
-            }
-            
-            // Rotação dos anéis
-            baseRing.rotation.z = time * 0.5;
-            ring2.rotation.z = -time * 0.4;
-            
-            // Partículas flutuantes girando
-            floatingParticles.rotation.y = time * 0.3;
-            floatingParticles.rotation.x = Math.sin(time * 0.5) * 0.1;
-            
-            // Estrelas girando lentamente
-            stars.rotation.y = time * 0.02;
-            
-            // Aura pulsante
-            const pulse = 0.25 + Math.sin(time * 3) * 0.1;
-            auraGlow.material.emissiveIntensity = pulse;
-            
-            controls.update();
-            effectComposer.render();
-        }
-        
-        animate();
-        
-        // =========================
-        // RESIZE
-        // =========================
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            effectComposer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        console.log('✨ HOLOGRAMA carregado! ✨');
-    </script>
-</body>
-</html>
+  {/* Grid futurista */}
+  <div className="absolute inset-0 opacity-10">
+    <div
+      className="h-full w-full"
+      style={{
+        backgroundImage:
+          'linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+      }}
+    />
+  </div>
+
+  {/* Partículas */}
+  <div className="absolute inset-0 overflow-hidden">
+    {Array.from({ length: 30 }).map((_, i) => (
+      <div
+        key={i}
+        className="absolute h-1 w-1 rounded-full bg-cyan-300/60 animate-pulse"
+        style={{
+          top: `${Math.random() * 100}%`,
+          left: `${Math.random() * 100}%`,
+          animationDuration: `${2 + Math.random() * 4}s`,
+        }}
+      />
+    ))}
+  </div>
+
+  {/* Conteúdo */}
+  <div className="relative z-10 flex min-h-screen flex-col px-6 py-8">
+    {/* Header */}
+    <div className="mb-10 flex items-center justify-between">
+      <div>
+        <h1 className="text-4xl font-black tracking-[0.25em] text-cyan-300 drop-shadow-[0_0_12px_rgba(34,211,238,0.8)]">
+          NEXUS
+        </h1>
+        <p className="mt-2 text-sm uppercase tracking-[0.3em] text-cyan-100/60">
+          Futuristic Control Interface
+        </p>
+      </div>
+
+      <button className="rounded-2xl border border-cyan-400/30 bg-cyan-400/10 px-5 py-3 text-sm font-semibold tracking-wide text-cyan-200 backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:border-cyan-300 hover:bg-cyan-300/20 hover:shadow-[0_0_30px_rgba(34,211,238,0.35)]">
+        EXPANDIR SISTEMA
+      </button>
+    </div>
+
+    {/* Core */}
+    <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-3">
+      {/* Painel grande */}
+      <div className="relative overflow-hidden rounded-[30px] border border-cyan-400/20 bg-white/5 p-8 backdrop-blur-2xl lg:col-span-2">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 to-transparent" />
+
+        <div className="relative z-10">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-cyan-200/60">
+                Neural Core
+              </p>
+              <h2 className="mt-2 text-3xl font-bold text-white">
+                Sistema Online
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300">
+              <div className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+              Ativo
+            </div>
+          </div>
+
+          {/* Núcleo */}
+          <div className="relative flex h-[320px] items-center justify-center overflow-hidden rounded-[28px] border border-cyan-300/10 bg-black/30">
+            <div className="absolute h-[260px] w-[260px] rounded-full border border-cyan-400/20" />
+            <div className="absolute h-[190px] w-[190px] rounded-full border border-cyan-300/30 animate-spin" style={{ animationDuration: '15s' }} />
+            <div className="absolute h-[120px] w-[120px] rounded-full bg-cyan-300/20 blur-2xl" />
+
+            <div className="relative flex h-[90px] w-[90px] items-center justify-center rounded-full border border-cyan-200/40 bg-cyan-300/20 backdrop-blur-xl shadow-[0_0_50px_rgba(34,211,238,0.45)]">
+              <div className="h-5 w-5 rounded-full bg-cyan-200 animate-pulse" />
+            </div>
+
+            {/* Linhas */}
+            <div className="absolute left-0 top-1/2 h-px w-full bg-gradient-to-r from-transparent via-cyan-300/40 to-transparent" />
+            <div className="absolute top-0 left-1/2 h-full w-px bg-gradient-to-b from-transparent via-cyan-300/40 to-transparent" />
+          </div>
+        </div>
+      </div>
+
+      {/* Cards laterais */}
+      <div className="flex flex-col gap-6">
+        {[
+          {
+            title: 'Energia',
+            value: '98%',
+            desc: 'Fluxo estável',
+          },
+          {
+            title: 'Rede Neural',
+            value: '12.4 TB',
+            desc: 'Sincronização ativa',
+          },
+          {
+            title: 'Conexões',
+            value: '148',
+            desc: 'Nós operacionais',
+          },
+        ].map((item) => (
+          <div
+            key={item.title}
+            className="group relative overflow-hidden rounded-[28px] border border-cyan-400/20 bg-white/5 p-6 backdrop-blur-2xl transition-all duration-500 hover:-translate-y-1 hover:border-cyan-300/50 hover:bg-cyan-300/10 hover:shadow-[0_0_40px_rgba(34,211,238,0.18)]"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-300/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+            <div className="relative z-10">
+              <p className="text-xs uppercase tracking-[0.25em] text-cyan-100/50">
+                {item.title}
+              </p>
+
+              <div className="mt-4 flex items-end justify-between">
+                <h3 className="text-4xl font-black text-white">
+                  {item.value}
+                </h3>
+
+                <div className="h-3 w-3 rounded-full bg-cyan-300 shadow-[0_0_15px_rgba(34,211,238,1)]" />
+              </div>
+
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-cyan-300 to-teal-300" />
+              </div>
+
+              <p className="mt-4 text-sm text-cyan-100/60">
+                {item.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Footer */}
+    <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-[24px] border border-cyan-400/20 bg-white/5 px-6 py-4 backdrop-blur-xl">
+      <div>
+        <p className="text-xs uppercase tracking-[0.3em] text-cyan-100/40">
+          System Status
+        </p>
+        <p className="mt-1 text-sm text-cyan-100/70">
+          Todos os sistemas funcionando normalmente.
+        </p>
+      </div>
+
+      <div className="flex gap-3">
+        {['CORE', 'MAP', 'AI', 'DATA'].map((item) => (
+          <button
+            key={item}
+            className="rounded-xl border border-cyan-400/20 bg-cyan-300/5 px-4 py-2 text-sm text-cyan-200 transition-all duration-300 hover:bg-cyan-300/15 hover:shadow-[0_0_20px_rgba(34,211,238,0.25)]"
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+) }

@@ -1,22 +1,92 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Holograma</title>
+    <title>Teste Three.js</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            overflow: hidden;
-            background: black;
+        body { margin: 0; overflow: hidden; background: black; }
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            font-family: monospace;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
-    <script type="module" src="main.js"></script>
+    <div id="info">
+        🔵 Carregando Three.js...
+    </div>
+    
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        
+        const info = document.getElementById('info');
+        info.innerHTML = '✅ Three.js carregado!<br>🎨 Criando cena...';
+        
+        // Cena
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000033);
+        
+        // Câmera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 3;
+        
+        // Renderer
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        
+        // CUBO VERMELHO GIGANTE (impossível não ver)
+        const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+        const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        
+        info.innerHTML += '<br>🔴 Cubo vermelho adicionado!';
+        
+        // ESFERA AZUL
+        const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
+        const sphereMat = new THREE.MeshBasicMaterial({ color: 0x00aaff });
+        const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+        sphere.position.x = -1.2;
+        scene.add(sphere);
+        
+        info.innerHTML += '<br>🔵 Esfera azul adicionada!';
+        info.innerHTML += '<br>✨ Se você não ver nada, o problema é no navegador';
+        
+        // Animação
+        function animate() {
+            requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.02;
+            sphere.rotation.x += 0.01;
+            sphere.rotation.y -= 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        // Ajustar tamanho
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        info.innerHTML += '<br>🎬 Animação rodando!';
+    </script>
 </body>
 </html>

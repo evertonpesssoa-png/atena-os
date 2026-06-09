@@ -9,7 +9,7 @@ import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160/examples
 
 const scene = new THREE.Scene();
 
-scene.fog = new THREE.FogExp2(0x000000, 0.03);
+scene.background = new THREE.Color(0x000000);
 
 
 // ======================
@@ -32,11 +32,13 @@ camera.position.set(0, 1.5, 5);
 
 const renderer = new THREE.WebGLRenderer({
     canvas: document.getElementById("scene"),
-    antialias: true,
-    alpha: true
+    antialias: true
 });
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(
+    window.innerWidth,
+    window.innerHeight
+);
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -45,31 +47,23 @@ renderer.setPixelRatio(window.devicePixelRatio);
 // CONTROLS
 // ======================
 
-const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(
+    camera,
+    renderer.domElement
+);
 
 controls.enableDamping = true;
 
 
 // ======================
-// LUZ
-// ======================
-
-const light = new THREE.PointLight(0x00ffff, 4);
-
-light.position.set(0, 3, 3);
-
-scene.add(light);
-
-
-// ======================
-// CHÃO GRID
+// GRID
 // ======================
 
 const grid = new THREE.GridHelper(
     30,
     30,
     0x00ffff,
-    0x004444
+    0x003333
 );
 
 grid.position.y = -1.5;
@@ -78,70 +72,159 @@ scene.add(grid);
 
 
 // ======================
-// TEXTURA DO HOLOGRAMA
+// LUZ
 // ======================
 
-const textureLoader = new THREE.TextureLoader();
+const light = new THREE.PointLight(
+    0x00ffff,
+    5
+);
 
-const texture = textureLoader.load("atena.png");
+light.position.set(0, 5, 5);
+
+scene.add(light);
 
 
 // ======================
-// MATERIAL
+// TESTE DE CUBO
 // ======================
 
-const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
+const cubeGeometry = new THREE.BoxGeometry();
+
+const cubeMaterial = new THREE.MeshBasicMaterial({
+    color: 0x00ffff,
+    wireframe: true
 });
 
+const cube = new THREE.Mesh(
+    cubeGeometry,
+    cubeMaterial
+);
+
+cube.position.y = 2;
+
+scene.add(cube);
+
 
 // ======================
-// PLANO DO HOLOGRAMA
+// TEXTURA
 // ======================
 
-const geometry = new THREE.PlaneGeometry(2.5, 4.5);
+const loader = new THREE.TextureLoader();
 
-const hologram = new THREE.Mesh(geometry, material);
+loader.load(
 
-hologram.position.y = 0.5;
+    "./atena.png",
 
-scene.add(hologram);
+    (texture) => {
+
+        console.log("Imagem carregada!");
+
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+        const material = new THREE.MeshBasicMaterial({
+
+            map: texture,
+
+            transparent: true,
+
+            side: THREE.DoubleSide,
+
+            blending: THREE.AdditiveBlending,
+
+            depthWrite: false
+        });
+
+        const geometry =
+            new THREE.PlaneGeometry(3, 5);
+
+        const hologram =
+            new THREE.Mesh(
+                geometry,
+                material
+            );
+
+        hologram.position.y = 0.5;
+
+        scene.add(hologram);
+
+
+        // ======================
+        // ANIMAÇÃO DO HOLOGRAMA
+        // ======================
+
+        function animateHologram(time){
+
+            hologram.lookAt(camera.position);
+
+            hologram.position.y =
+                0.5 + Math.sin(time * 0.0015) * 0.15;
+        }
+
+        // guardar globalmente
+        window.animateHologram =
+            animateHologram;
+    },
+
+    undefined,
+
+    (err) => {
+
+        console.error(
+            "ERRO AO CARREGAR:",
+            err
+        );
+    }
+);
 
 
 // ======================
 // PARTÍCULAS
 // ======================
 
-const particlesGeometry = new THREE.BufferGeometry();
+const particlesGeometry =
+    new THREE.BufferGeometry();
 
 const particlesCount = 2000;
 
-const positions = new Float32Array(particlesCount * 3);
+const positions =
+    new Float32Array(
+        particlesCount * 3
+    );
 
 for(let i = 0; i < particlesCount * 3; i++){
 
-    positions[i] = (Math.random() - 0.5) * 20;
+    positions[i] =
+        (Math.random() - 0.5) * 20;
 }
 
 particlesGeometry.setAttribute(
-    'position',
-    new THREE.BufferAttribute(positions, 3)
+
+    "position",
+
+    new THREE.BufferAttribute(
+        positions,
+        3
+    )
 );
 
-const particlesMaterial = new THREE.PointsMaterial({
-    color: 0x00ffff,
-    size: 0.03,
-    transparent: true,
-    opacity: 0.8
-});
+const particlesMaterial =
+    new THREE.PointsMaterial({
 
-const particles = new THREE.Points(
-    particlesGeometry,
-    particlesMaterial
-);
+        color: 0x00ffff,
+
+        size: 0.03,
+
+        transparent: true,
+
+        opacity: 0.8
+    });
+
+const particles =
+    new THREE.Points(
+        particlesGeometry,
+        particlesMaterial
+    );
 
 scene.add(particles);
 
@@ -150,24 +233,19 @@ scene.add(particles);
 // ANIMAÇÃO
 // ======================
 
-const clock = new THREE.Clock();
-
-function animate(){
+function animate(time){
 
     requestAnimationFrame(animate);
 
-    const elapsed = clock.getElapsedTime();
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
 
-    // flutuação holograma
-    hologram.position.y =
-        0.5 + Math.sin(elapsed * 1.5) * 0.1;
-
-    // leve rotação
-    hologram.rotation.y =
-        Math.sin(elapsed * 0.5) * 0.08;
-
-    // partículas
     particles.rotation.y += 0.0008;
+
+    if(window.animateHologram){
+
+        window.animateHologram(time);
+    }
 
     controls.update();
 
@@ -181,15 +259,19 @@ animate();
 // RESPONSIVO
 // ======================
 
-window.addEventListener("resize", () => {
+window.addEventListener(
+    "resize",
+    () => {
 
-    camera.aspect =
-        window.innerWidth / window.innerHeight;
+        camera.aspect =
+            window.innerWidth /
+            window.innerHeight;
 
-    camera.updateProjectionMatrix();
+        camera.updateProjectionMatrix();
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
-    );
-});
+        renderer.setSize(
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+);

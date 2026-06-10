@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SCI-FI GAMER HUD - Painel de Nave</title>
+    <title>IRON MAN HUD - Armadura Holográfica</title>
     <style>
         * {
             margin: 0;
@@ -20,7 +20,7 @@
         }
 
         /* ============================================================ */
-        /* HUD GAMER SCI-FI - FUNDO 100% PRETO */
+        /* HUD ESTILO IRON MAN - AZUL NEON / HOLOGRÁFICO */
         /* ============================================================ */
         
         .hud-container {
@@ -33,7 +33,7 @@
             pointer-events: none;
         }
 
-        /* Scanlines (linhas de varredura) */
+        /* Scanlines finas */
         .scanlines {
             position: fixed;
             top: 0;
@@ -42,175 +42,155 @@
             height: 100%;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(0, 255, 255, 0.02) 0px,
-                rgba(0, 255, 255, 0.02) 2px,
-                transparent 2px,
-                transparent 4px
+                rgba(0, 150, 255, 0.03) 0px,
+                rgba(0, 150, 255, 0.03) 1px,
+                transparent 1px,
+                transparent 3px
             );
             pointer-events: none;
             z-index: 60;
         }
 
-        /* Vignette (escurece bordas) */
+        /* Vignette suave */
         .vignette {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.8) 100%);
+            background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.6) 100%);
             pointer-events: none;
             z-index: 55;
         }
 
         /* ============================================================ */
-        /* BARRA SUPERIOR GAMER */
+        /* BARRA SUPERIOR - ESTILO JARVIS */
         /* ============================================================ */
         .hud-top-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 50px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,20,30,0.8) 100%);
-            border-bottom: 1px solid #00ffff;
+            height: 55px;
+            background: linear-gradient(180deg, rgba(0,20,40,0.95) 0%, rgba(0,10,20,0.8) 100%);
+            border-bottom: 1px solid #00aaff;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 25px;
-            backdrop-filter: blur(4px);
+            padding: 0 30px;
+            backdrop-filter: blur(5px);
             z-index: 70;
-            box-shadow: 0 0 10px rgba(0,255,255,0.2);
+            box-shadow: 0 0 15px rgba(0,170,255,0.15);
         }
 
         .hud-logo {
-            color: #00ffff;
-            font-size: 14px;
-            letter-spacing: 4px;
-            text-shadow: 0 0 5px #00ffff;
+            color: #00aaff;
+            font-size: 13px;
+            letter-spacing: 5px;
+            text-shadow: 0 0 8px #00aaff;
             font-weight: bold;
         }
 
         .hud-logo span {
-            color: #ff44ff;
-            text-shadow: 0 0 5px #ff44ff;
+            color: #88ccff;
         }
 
-        .hud-stats {
+        .jarvis-status {
+            color: #88ccff;
+            font-size: 11px;
+            letter-spacing: 2px;
             display: flex;
-            gap: 30px;
-        }
-
-        .hud-stat {
-            display: flex;
-            flex-direction: column;
             align-items: center;
+            gap: 12px;
         }
 
-        .hud-stat-label {
-            color: #88aaff;
-            font-size: 8px;
-            letter-spacing: 1px;
-        }
-
-        .hud-stat-value {
-            color: #00ffff;
-            font-size: 14px;
-            font-weight: bold;
-            font-family: monospace;
+        .jarvis-status .led {
+            width: 8px;
+            height: 8px;
+            background: #00aaff;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00aaff;
+            animation: pulseLed 1.2s infinite;
         }
 
         .hud-time {
-            color: #ff44ff;
-            font-size: 14px;
+            color: #00aaff;
+            font-size: 13px;
             font-family: monospace;
             letter-spacing: 2px;
-            text-shadow: 0 0 5px #ff44ff;
+            text-shadow: 0 0 5px #00aaff;
         }
 
         /* ============================================================ */
-        /* BARRAS DE STATUS (HP, STAMINA, SHIELD) */
+        /* ANEL DE ANÁLISE (ESTILO REPULSOR) */
         /* ============================================================ */
-        .status-bars {
+        .analysis-ring {
             position: fixed;
-            bottom: 30px;
-            left: 30px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 280px;
-            z-index: 70;
+            height: 280px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 170, 255, 0.3);
+            z-index: 65;
         }
-
-        .status-bar {
-            margin-bottom: 12px;
+        .analysis-ring::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 1px solid #00aaff;
+            opacity: 0.5;
+            animation: ringPulse 2s ease-out infinite;
         }
-
-        .status-label {
-            display: flex;
-            justify-content: space-between;
-            color: #88aaff;
-            font-size: 9px;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
+        .analysis-ring::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border-radius: 50%;
+            border: 1px dashed rgba(0, 170, 255, 0.4);
         }
-
-        .bar-container {
-            width: 100%;
-            height: 8px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            transition: width 0.3s ease;
-        }
-
-        .bar-fill.hp { background: linear-gradient(90deg, #ff3366, #ff6644); box-shadow: 0 0 5px #ff3366; width: 87%; }
-        .bar-fill.shield { background: linear-gradient(90deg, #33aaff, #44ffff); box-shadow: 0 0 5px #33aaff; width: 92%; }
-        .bar-fill.stamina { background: linear-gradient(90deg, #44ff88, #aaff44); box-shadow: 0 0 5px #44ff88; width: 76%; }
 
         /* ============================================================ */
-        /* MIRA CENTRAL (GAMER) */
+        /* MIRA CENTRAL (ESTILO HUD DO IRON MAN) */
         /* ============================================================ */
         .hud-crosshair {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             z-index: 70;
         }
-        .crosshair-ring {
+        .crosshair-outer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border: 1.5px solid #00aaff;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #00aaff, inset 0 0 5px #00aaff;
+            opacity: 0.8;
+        }
+        .crosshair-inner {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 40px;
             height: 40px;
-            border: 1px solid #00ffff;
+            border: 1px solid #88ccff;
             border-radius: 50%;
-            box-shadow: 0 0 10px #00ffff, inset 0 0 5px #00ffff;
-            animation: pulseRing 1.5s ease-in-out infinite;
-        }
-        .crosshair-line {
-            position: absolute;
-            background: #ff44ff;
-            box-shadow: 0 0 4px #ff44ff;
-        }
-        .crosshair-h {
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            transform: translateY(-50%);
-        }
-        .crosshair-v {
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            transform: translateX(-50%);
         }
         .crosshair-dot {
             position: absolute;
@@ -219,181 +199,191 @@
             transform: translate(-50%, -50%);
             width: 4px;
             height: 4px;
-            background: #00ffff;
+            background: #00aaff;
             border-radius: 50%;
-            box-shadow: 0 0 8px #00ffff;
+            box-shadow: 0 0 10px #00aaff;
         }
-        .crosshair-corners {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-        .corner {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-color: #00ffff;
-            border-style: solid;
-        }
-        .corner-tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
-        .corner-tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
-        .corner-bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
-        .corner-br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
-
-        /* ============================================================ */
-        /* RADAR CIRCULAR */
-        /* ============================================================ */
-        .hud-radar {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 255, 255, 0.5);
-            background: rgba(0, 0, 0, 0.7);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
-            z-index: 70;
-        }
-        .radar-sweep {
+        .crosshair-lines {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0deg, rgba(0,255,255,0.15) 360deg);
-            animation: sweep 3s linear infinite;
         }
-        .radar-center {
+        .crosshair-lines .line {
             position: absolute;
+            background: #00aaff;
+            box-shadow: 0 0 5px #00aaff;
+        }
+        .line-h {
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            transform: translateY(-50%);
+        }
+        .line-v {
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            transform: translateX(-50%);
+        }
+        .line-diag {
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            width: 8px;
-            height: 8px;
-            background: #00ffff;
-            border-radius: 50%;
-            box-shadow: 0 0 5px #00ffff;
+            width: 50px;
+            height: 1px;
+            transform-origin: center;
         }
-        .radar-grid {
-            position: absolute;
+        .diag-1 { transform: translate(-50%, -50%) rotate(45deg); }
+        .diag-2 { transform: translate(-50%, -50%) rotate(-45deg); }
+
+        /* ============================================================ */
+        /* CIRCULO DE RASTREAMENTO (INIMIGOS/ALVOS) */
+        /* ============================================================ */
+        .tracking-circles {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border-radius: 50%;
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            z-index: 65;
         }
-        .radar-blip {
+        .track {
             position: absolute;
-            width: 5px;
-            height: 5px;
-            background: #ff44ff;
+            width: 60px;
+            height: 60px;
+            border: 1px solid rgba(255, 68, 68, 0.6);
             border-radius: 50%;
-            box-shadow: 0 0 8px #ff44ff;
-            animation: blipPulse 1s infinite;
+            animation: trackPulse 1.5s infinite;
+        }
+        .track::before {
+            content: 'TARGET';
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 7px;
+            color: #ff4444;
+            letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         /* ============================================================ */
-        /* DADOS LATERAIS (AMMO, SPEED, ETC) */
+        /* DADOS DA ARMADURA (LADO ESQUERDO) */
         /* ============================================================ */
-        .hud-data-left {
+        .armor-stats {
             position: fixed;
             left: 30px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            padding: 15px 20px;
-            border-left: 3px solid #00ffff;
+            background: rgba(0, 10, 20, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 20px 25px;
+            border-left: 3px solid #00aaff;
+            border-radius: 0 8px 8px 0;
             z-index: 70;
             font-family: monospace;
         }
-        .hud-data-left div {
-            color: #88aaff;
-            font-size: 10px;
-            margin: 6px 0;
-            letter-spacing: 1px;
+        .armor-stats .stat {
+            margin: 12px 0;
         }
-        .hud-data-left .value {
-            color: #00ffff;
-            font-size: 18px;
+        .armor-stats .stat-label {
+            color: #88aaff;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-bottom: 3px;
+        }
+        .armor-stats .stat-value {
+            color: #00aaff;
+            font-size: 20px;
             font-weight: bold;
+            text-shadow: 0 0 5px #00aaff;
+        }
+        .armor-stats .stat-unit {
+            color: #88aaff;
+            font-size: 9px;
         }
 
-        .hud-data-right {
+        /* ============================================================ */
+        /* SISTEMAS (LADO DIREITO) */
+        /* ============================================================ */
+        .systems-status {
             position: fixed;
             right: 30px;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            padding: 15px 20px;
-            border-right: 3px solid #ff44ff;
+            background: rgba(0, 10, 20, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 20px 25px;
+            border-right: 3px solid #00aaff;
+            border-radius: 8px 0 0 8px;
             text-align: right;
             z-index: 70;
         }
-        .hud-data-right div {
-            color: #88aaff;
-            font-size: 10px;
-            margin: 6px 0;
+        .systems-status .sys-item {
+            margin: 12px 0;
         }
-        .hud-data-right .value {
-            color: #ff44ff;
-            font-size: 18px;
+        .systems-status .sys-label {
+            color: #88aaff;
+            font-size: 9px;
+            letter-spacing: 2px;
+        }
+        .systems-status .sys-value {
+            color: #00aaff;
+            font-size: 14px;
             font-weight: bold;
+        }
+        .systems-status .sys-online {
+            color: #44ff88;
+            text-shadow: 0 0 3px #44ff88;
         }
 
         /* ============================================================ */
-        /* BARRA INFERIOR (STATUS DO SISTEMA) */
+        /* BARRA INFERIOR (STATUS DO REATOR) */
         /* ============================================================ */
-        .hud-bottom-bar {
+        .reactor-status {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 35px;
-            background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,20,30,0.8) 100%);
-            border-top: 1px solid #ff44ff;
+            height: 40px;
+            background: linear-gradient(0deg, rgba(0,20,40,0.95) 0%, rgba(0,10,20,0.8) 100%);
+            border-top: 1px solid #00aaff;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 50px;
+            gap: 60px;
             z-index: 70;
         }
-        .hud-bottom-item {
+        .reactor-item {
             color: #88aaff;
             font-size: 10px;
             letter-spacing: 2px;
         }
-        .hud-bottom-item .online {
-            color: #44ff88;
-            text-shadow: 0 0 3px #44ff88;
+        .reactor-item .value {
+            color: #00aaff;
+            font-weight: bold;
         }
-        .hud-bottom-item .warning {
+        .reactor-item .warning {
             color: #ffaa44;
-            animation: blink 0.5s infinite;
         }
 
         /* ============================================================ */
         /* ANIMAÇÕES */
         /* ============================================================ */
-        @keyframes blink {
+        @keyframes pulseLed {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.3; }
         }
-        @keyframes sweep {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes ringPulse {
+            0% { opacity: 0.5; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.15); }
         }
-        @keyframes blipPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.5); }
-        }
-        @keyframes pulseRing {
-            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        @keyframes trackPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); box-shadow: 0 0 10px rgba(255,68,68,0.5); }
         }
 
         /* Loading */
@@ -402,35 +392,36 @@
             bottom: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #00ffff;
+            color: #00aaff;
             font-family: monospace;
             z-index: 200;
             background: rgba(0, 0, 0, 0.95);
             padding: 15px 30px;
-            border-radius: 10px;
-            border: 1px solid #00ffff;
+            border-radius: 30px;
+            border: 1px solid #00aaff;
             text-align: center;
             backdrop-filter: blur(10px);
             animation: pulse 1.5s ease-in-out infinite;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ffff; }
-            50% { opacity: 0.6; box-shadow: 0 0 30px #00ffff; }
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00aaff; }
+            50% { opacity: 0.6; box-shadow: 0 0 25px #00aaff; }
         }
 
         /* Botão tela cheia */
         .fullscreen-btn {
             position: fixed;
-            bottom: 100px;
+            bottom: 60px;
             right: 30px;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 10, 20, 0.85);
             backdrop-filter: blur(8px);
-            border: 1px solid #00ffff;
-            color: #00ffff;
+            border: 1px solid #00aaff;
+            color: #00aaff;
             font-family: monospace;
             font-size: 10px;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 20px;
             cursor: pointer;
             z-index: 80;
@@ -438,104 +429,99 @@
             pointer-events: auto;
         }
         .fullscreen-btn:hover {
-            background: rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 10px #00ffff;
+            background: rgba(0, 170, 255, 0.2);
+            box-shadow: 0 0 12px #00aaff;
         }
     </style>
 </head>
 <body>
-    <!-- HUD GAMER SCI-FI -->
+    <!-- HUD ESTILO IRON MAN -->
     <div class="hud-container">
         <div class="scanlines"></div>
         <div class="vignette"></div>
         
-        <!-- Barra superior -->
+        <!-- Barra superior JARVIS -->
         <div class="hud-top-bar">
-            <div class="hud-logo">✦ <span>NOVA</span> ARK ✦</div>
-            <div class="hud-stats">
-                <div class="hud-stat">
-                    <div class="hud-stat-label">FPS</div>
-                    <div class="hud-stat-value" id="fpsVal">144</div>
-                </div>
-                <div class="hud-stat">
-                    <div class="hud-stat-label">PING</div>
-                    <div class="hud-stat-value" id="pingVal">12</div>
-                </div>
+            <div class="hud-logo">✦ <span>MARK</span> LXXXV ✦</div>
+            <div class="jarvis-status">
+                <div class="led"></div>
+                JARVIS • ONLINE
+                <div class="led"></div>
+                ARMADURA • ATIVA
             </div>
             <div class="hud-time" id="hudClock">00:00:00</div>
         </div>
         
-        <!-- Barras de status (HP, Shield, Stamina) -->
-        <div class="status-bars">
-            <div class="status-bar">
-                <div class="status-label"><span>🛡️ SHIELD SISTEMA</span><span id="shieldPercent">92</span>%</div>
-                <div class="bar-container"><div class="bar-fill shield" id="shieldBar" style="width: 92%"></div></div>
-            </div>
-            <div class="status-bar">
-                <div class="status-label"><span>❤️ INTEGRIDADE</span><span id="hpPercent">87</span>%</div>
-                <div class="bar-container"><div class="bar-fill hp" id="hpBar" style="width: 87%"></div></div>
-            </div>
-            <div class="status-bar">
-                <div class="status-label"><span>⚡ ENERGIA</span><span id="staminaPercent">76</span>%</div>
-                <div class="bar-container"><div class="bar-fill stamina" id="staminaBar" style="width: 76%"></div></div>
-            </div>
-        </div>
+        <!-- Anel de análise -->
+        <div class="analysis-ring"></div>
         
-        <!-- Mira central GAMER -->
+        <!-- Mira central Iron Man -->
         <div class="hud-crosshair">
-            <div class="crosshair-ring"></div>
-            <div class="crosshair-line crosshair-h"></div>
-            <div class="crosshair-line crosshair-v"></div>
+            <div class="crosshair-outer"></div>
+            <div class="crosshair-inner"></div>
             <div class="crosshair-dot"></div>
-            <div class="crosshair-corners">
-                <div class="corner corner-tl"></div>
-                <div class="corner corner-tr"></div>
-                <div class="corner corner-bl"></div>
-                <div class="corner corner-br"></div>
+            <div class="crosshair-lines">
+                <div class="line line-h"></div>
+                <div class="line line-v"></div>
+                <div class="line line-diag diag-1" style="width: 45px;"></div>
+                <div class="line line-diag diag-2" style="width: 45px;"></div>
             </div>
         </div>
         
-        <!-- Radar -->
-        <div class="hud-radar">
-            <div class="radar-sweep"></div>
-            <div class="radar-grid"></div>
-            <div class="radar-center"></div>
-            <div class="radar-blip" style="top: 25%; left: 60%;"></div>
-            <div class="radar-blip" style="top: 70%; left: 30%; animation-delay: 0.5s;"></div>
-            <div class="radar-blip" style="top: 45%; left: 75%; animation-delay: 1s;"></div>
-            <div class="radar-blip" style="top: 15%; left: 20%; animation-delay: 1.5s;"></div>
+        <!-- Rastreamento de alvos -->
+        <div class="tracking-circles">
+            <div class="track" style="top: 25%; left: 65%;"></div>
+            <div class="track" style="top: 55%; left: 20%; animation-delay: 0.5s;"></div>
+            <div class="track" style="top: 70%; left: 75%; animation-delay: 1s;"></div>
         </div>
         
-        <!-- Dados laterais -->
-        <div class="hud-data-left">
-            <div>VELOCIDADE</div>
-            <div class="value" id="speedVal">2,384</div>
-            <div>KM/H</div>
-            <div style="margin-top: 12px;">ALTITUDE</div>
-            <div class="value" id="altVal">42,817</div>
-            <div>METROS</div>
+        <!-- Estatísticas da armadura (esquerda) -->
+        <div class="armor-stats">
+            <div class="stat">
+                <div class="stat-label">POWER LEVEL</div>
+                <div class="stat-value" id="powerLevel">98<span style="font-size: 14px;">%</span></div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">ARMOR INTEGRITY</div>
+                <div class="stat-value" id="armorIntegrity">87<span style="font-size: 14px;">%</span></div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">REPULSOR CHARGE</div>
+                <div class="stat-value" id="repulsorCharge">100<span style="font-size: 14px;">%</span></div>
+            </div>
         </div>
         
-        <div class="hud-data-right">
-            <div>MUNIÇÃO</div>
-            <div class="value" id="ammoVal">∞</div>
-            <div>ENERGIA</div>
-            <div class="value" id="energyVal">847</div>
-            <div>GW</div>
+        <!-- Status dos sistemas (direita) -->
+        <div class="systems-status">
+            <div class="sys-item">
+                <div class="sys-label">FLIGHT SYSTEM</div>
+                <div class="sys-value sys-online" id="flightSys">ONLINE</div>
+            </div>
+            <div class="sys-item">
+                <div class="sys-label">WEAPONS</div>
+                <div class="sys-value sys-online" id="weaponsSys">ARMED</div>
+            </div>
+            <div class="sys-item">
+                <div class="sys-label">HOLOGRAM</div>
+                <div class="sys-value sys-online" id="holoSys">ACTIVE</div>
+            </div>
+            <div class="sys-item">
+                <div class="sys-label">COMMS LINK</div>
+                <div class="sys-value" id="commsSys">STABLE</div>
+            </div>
         </div>
         
-        <!-- Barra inferior -->
-        <div class="hud-bottom-bar">
-            <div class="hud-bottom-item">✦ SISTEMA: <span class="online">OPERACIONAL</span></div>
-            <div class="hud-bottom-item">✦ HOLOGRAM: <span class="online">ATIVO</span></div>
-            <div class="hud-bottom-item">✦ LINK: <span class="online">ESTÁVEL</span></div>
-            <div class="hud-bottom-item"><span class="warning">⚠</span> MARGEM: SEGURA</div>
+        <!-- Barra inferior (Reator Arc) -->
+        <div class="reactor-status">
+            <div class="reactor-item">⚡ REATOR ARC: <span class="value" id="arcPower">3.2</span> GW</div>
+            <div class="reactor-item">🌡️ TEMP: <span class="value" id="coreTemp">3,842</span>°C</div>
+            <div class="reactor-item">🔷 STATUS: <span class="value" id="coreStatus">NOMINAL</span></div>
         </div>
         
-        <button class="fullscreen-btn" id="fullscreenBtn">🔲 TELA CHEIA</button>
+        <button class="fullscreen-btn" id="fullscreenBtn">🔲 HOLOGRAM VIEW</button>
     </div>
     
-    <div id="loading">🔷 INICIALIZANDO HOLOGRAMA... 🔷</div>
+    <div id="loading">🔷 REATOR INICIALIZANDO... 🔷</div>
 
     <script type="importmap">
         {
@@ -565,32 +551,39 @@
         updateHUDClock();
         setInterval(updateHUDClock, 1000);
         
-        // Simular telemetria
+        // Simular telemetria da armadura
         let hudTime = 0;
         setInterval(() => {
             hudTime += 0.3;
-            const speed = 2384 + Math.sin(hudTime) * 50;
-            const alt = 42817 + Math.sin(hudTime * 0.7) * 120;
-            const energy = 847 + Math.sin(hudTime * 0.5) * 8;
-            const shield = 92 + Math.sin(hudTime * 0.4) * 3;
-            const hp = 87 + Math.sin(hudTime * 0.3) * 2;
-            const stamina = 76 + Math.sin(hudTime * 0.6) * 4;
+            const power = 98 + Math.sin(hudTime * 0.5) * 1.5;
+            const armor = 87 + Math.sin(hudTime * 0.3) * 2;
+            const repulsor = 100 + Math.sin(hudTime * 0.8) * 0;
+            const arcPower = 3.2 + Math.sin(hudTime * 0.4) * 0.1;
+            const coreTemp = 3842 + Math.sin(hudTime * 0.6) * 15;
             
-            document.getElementById('speedVal').textContent = Math.floor(speed).toLocaleString();
-            document.getElementById('altVal').textContent = Math.floor(alt).toLocaleString();
-            document.getElementById('energyVal').textContent = Math.floor(energy);
-            document.getElementById('shieldPercent').textContent = Math.floor(shield);
-            document.getElementById('hpPercent').textContent = Math.floor(hp);
-            document.getElementById('staminaPercent').textContent = Math.floor(stamina);
+            document.getElementById('powerLevel').innerHTML = Math.floor(power) + '<span style="font-size: 14px;">%</span>';
+            document.getElementById('armorIntegrity').innerHTML = Math.floor(armor) + '<span style="font-size: 14px;">%</span>';
+            document.getElementById('repulsorCharge').innerHTML = Math.floor(repulsor) + '<span style="font-size: 14px;">%</span>';
+            document.getElementById('arcPower').textContent = arcPower.toFixed(1);
+            document.getElementById('coreTemp').textContent = Math.floor(coreTemp).toLocaleString();
             
-            document.getElementById('shieldBar').style.width = Math.floor(shield) + '%';
-            document.getElementById('hpBar').style.width = Math.floor(hp) + '%';
-            document.getElementById('staminaBar').style.width = Math.floor(stamina) + '%';
+            // Status dinâmicos
+            const flightStatus = Math.sin(hudTime * 0.7) > 0 ? 'ONLINE' : 'STANDBY';
+            const commsStatus = Math.sin(hudTime * 0.5) > 0.3 ? 'STABLE' : 'SCANNING';
+            document.getElementById('flightSys').textContent = flightStatus;
+            document.getElementById('flightSys').style.color = flightStatus === 'ONLINE' ? '#44ff88' : '#ffaa44';
+            document.getElementById('commsSys').textContent = commsStatus;
             
-            // FPS e Ping simulados
-            document.getElementById('fpsVal').textContent = 120 + Math.floor(Math.sin(hudTime * 2) * 15);
-            document.getElementById('pingVal').textContent = 12 + Math.floor(Math.sin(hudTime * 1.5) * 3);
-        }, 300);
+            // Status do reator
+            const tempPercent = (coreTemp - 3500) / 500;
+            if (tempPercent > 0.8) {
+                document.getElementById('coreStatus').textContent = 'WARNING';
+                document.getElementById('coreStatus').style.color = '#ff6644';
+            } else {
+                document.getElementById('coreStatus').textContent = 'NOMINAL';
+                document.getElementById('coreStatus').style.color = '#44ff88';
+            }
+        }, 400);
         
         // ============================================================
         // TELA CHEIA
@@ -602,21 +595,21 @@
                 fullscreenBtn.innerHTML = '🔳 SAIR';
             } else {
                 document.exitFullscreen();
-                fullscreenBtn.innerHTML = '🔲 TELA CHEIA';
+                fullscreenBtn.innerHTML = '🔲 HOLOGRAM VIEW';
             }
         }
         fullscreenBtn.addEventListener('click', toggleFullscreen);
         
         // ============================================================
-        // THREE.JS - CENA 100% PRETA
+        // THREE.JS - REATOR ARC 3D
         // ============================================================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x000000);
         scene.fog = new THREE.FogExp2(0x000000, 0.008);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0.9, 3.8);
-        camera.lookAt(0, 0.7, 0);
+        camera.position.set(0, 0.2, 3.2);
+        camera.lookAt(0, 0.2, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -627,7 +620,7 @@
         const renderScene = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(window.innerWidth, window.innerHeight),
-            1.2, 0.5, 0.15
+            1.2, 0.5, 0.12
         );
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(renderScene);
@@ -639,132 +632,125 @@
         }, 800);
 
         // ============================================================
-        // LUZES
+        // REATOR ARC (ESTILO PEITO DO IRON MAN)
         // ============================================================
-        const ambientLight = new THREE.AmbientLight(0x111122);
-        scene.add(ambientLight);
         
-        const backLight = new THREE.PointLight(0x4466ff, 0.4);
-        backLight.position.set(0, 1.2, -2);
-        scene.add(backLight);
-        
-        const rimLight = new THREE.PointLight(0x00ffff, 0.3);
-        rimLight.position.set(1, 1.8, 1.5);
-        scene.add(rimLight);
-
-        // Grade holográfica
-        const gridHelper = new THREE.GridHelper(8, 20, 0x33aaff, 0x2266aa);
-        gridHelper.position.y = -0.9;
-        gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.15;
-        scene.add(gridHelper);
-        
-        // Anéis decorativos
-        const ringOuterGeo = new THREE.TorusGeometry(2.0, 0.03, 64, 200);
-        const ringOuterMat = new THREE.MeshStandardMaterial({ color: 0x44aaff, emissive: 0x2266aa, emissiveIntensity: 0.5, transparent: true, opacity: 0.5 });
+        // Anel externo
+        const ringOuterGeo = new THREE.TorusGeometry(0.55, 0.03, 64, 128);
+        const ringOuterMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x0066aa, emissiveIntensity: 0.6 });
         const ringOuter = new THREE.Mesh(ringOuterGeo, ringOuterMat);
-        ringOuter.rotation.x = Math.PI / 2;
-        ringOuter.position.y = -0.6;
+        ringOuter.position.set(0, -0.55, 0.3);
         scene.add(ringOuter);
         
-        const ringInnerGeo = new THREE.TorusGeometry(1.4, 0.02, 64, 200);
-        const ringInnerMat = new THREE.MeshStandardMaterial({ color: 0xff44ff, emissive: 0xff2288, emissiveIntensity: 0.4, transparent: true, opacity: 0.4 });
+        // Anel interno
+        const ringInnerGeo = new THREE.TorusGeometry(0.42, 0.02, 64, 128);
+        const ringInnerMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x0088cc, emissiveIntensity: 0.5 });
         const ringInner = new THREE.Mesh(ringInnerGeo, ringInnerMat);
-        ringInner.rotation.x = Math.PI / 2;
-        ringInner.position.y = -0.6;
+        ringInner.position.set(0, -0.55, 0.3);
         scene.add(ringInner);
         
-        // Partículas flutuantes
-        const particleCount = 2000;
-        const particleGeometry = new THREE.BufferGeometry();
+        // Esfera central (núcleo do reator)
+        const coreGeo = new THREE.SphereGeometry(0.22, 64, 64);
+        const coreMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.8, metalness: 0.9, roughness: 0.2 });
+        const coreSphere = new THREE.Mesh(coreGeo, coreMat);
+        coreSphere.position.set(0, -0.55, 0.3);
+        scene.add(coreSphere);
+        
+        // Partículas ao redor do reator (efeito energia)
+        const particleCount = 800;
+        const particleGeo = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
         for (let i = 0; i < particleCount; i++) {
-            particlePositions[i*3] = (Math.random() - 0.5) * 10;
-            particlePositions[i*3+1] = (Math.random() - 0.5) * 5 + 0.5;
-            particlePositions[i*3+2] = (Math.random() - 0.5) * 7;
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 0.65;
+            particlePositions[i*3] = Math.cos(angle) * radius * (Math.random() - 0.5);
+            particlePositions[i*3+1] = -0.55 + Math.sin(angle) * radius * 0.8;
+            particlePositions[i*3+2] = 0.3 + Math.sin(angle) * radius * 0.5;
         }
-        particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x66ccff, size: 0.02, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending });
-        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0x44ccff, size: 0.008, transparent: true, blending: THREE.AdditiveBlending });
+        const particles = new THREE.Points(particleGeo, particleMat);
         scene.add(particles);
         
+        // Raios de luz (estilo repulsor)
+        const rayCount = 8;
+        const rays = [];
+        for (let i = 0; i < rayCount; i++) {
+            const angle = (i / rayCount) * Math.PI * 2;
+            const rayGeo = new THREE.CylinderGeometry(0.02, 0.04, 0.35, 6);
+            const rayMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.5 });
+            const ray = new THREE.Mesh(rayGeo, rayMat);
+            ray.position.set(Math.cos(angle) * 0.65, -0.55 + Math.sin(angle) * 0.65 * 0.6, 0.3);
+            ray.lookAt(0, -0.55, 0.3);
+            scene.add(ray);
+            rays.push(ray);
+        }
+        
         // ============================================================
-        // CARD HOLOGRÁFICO PRINCIPAL
+        // HOLOGRAMA DE PONTOS (ESTILO JARVIS)
         // ============================================================
-        const cardWidth = 2.5;
-        const cardHeight = 3.3;
+        const hologramPoints = [];
+        // Criar uma esfera de pontos ao redor
+        for (let i = 0; i < 1200; i++) {
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const r = 1.2;
+            const x = Math.sin(phi) * Math.cos(theta) * r;
+            const y = Math.sin(phi) * Math.sin(theta) * r * 0.6 + 0.2;
+            const z = Math.cos(phi) * r * 0.8;
+            hologramPoints.push(x, y, z);
+        }
+        const holoGeo = new THREE.BufferGeometry();
+        holoGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(hologramPoints), 3));
+        const holoMat = new THREE.PointsMaterial({ color: 0x00aaff, size: 0.012, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+        const hologramField = new THREE.Points(holoGeo, holoMat);
+        scene.add(hologramField);
         
-        const cardGeometry = new THREE.BoxGeometry(cardWidth, cardHeight, 0.08);
-        const cardMaterial = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x2266aa, emissiveIntensity: 0.08, metalness: 0.85, roughness: 0.25, transparent: true, opacity: 0.2 });
-        const card = new THREE.Mesh(cardGeometry, cardMaterial);
-        card.position.set(0, 0.65, 0);
-        scene.add(card);
+        // ============================================================
+        // ANIMAÇÃO
+        // ============================================================
+        let time = 0;
         
-        const edgeGeometry = new THREE.BoxGeometry(cardWidth + 0.08, cardHeight + 0.08, 0.02);
-        const edgeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.6, transparent: true, opacity: 0.8 });
-        const edgeBorder = new THREE.Mesh(edgeGeometry, edgeMaterial);
-        edgeBorder.position.set(0, 0.65, 0.045);
-        scene.add(edgeBorder);
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            
+            // Rotação dos anéis
+            ringOuter.rotation.z += 0.01;
+            ringInner.rotation.z -= 0.008;
+            
+            // Pulso da esfera central
+            const scale = 1 + Math.sin(time * 8) * 0.04;
+            coreSphere.scale.set(scale, scale, scale);
+            
+            // Raios de luz pulsando
+            rays.forEach((ray, idx) => {
+                const intensity = 0.4 + Math.sin(time * 10 + idx) * 0.2;
+                ray.material.emissiveIntensity = intensity;
+            });
+            
+            // Partículas girando
+            particles.rotation.y += 0.01;
+            particles.rotation.x = Math.sin(time * 0.5) * 0.1;
+            
+            // Holograma girando suavemente
+            hologramField.rotation.y += 0.002;
+            hologramField.rotation.x = Math.sin(time * 0.3) * 0.05;
+            
+            effectComposer.render();
+        }
         
-        const edge2Geometry = new THREE.BoxGeometry(cardWidth - 0.15, cardHeight - 0.15, 0.01);
-        const edge2Material = new THREE.MeshStandardMaterial({ color: 0xff44ff, emissive: 0xff44ff, emissiveIntensity: 0.4, transparent: true, opacity: 0.7 });
-        const edgeBorder2 = new THREE.Mesh(edge2Geometry, edge2Material);
-        edgeBorder2.position.set(0, 0.65, 0.055);
-        scene.add(edgeBorder2);
+        animate();
         
-        // CSS2D Renderer para texto
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-        
-        const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        labelRenderer.domElement.style.position = 'absolute';
-        labelRenderer.domElement.style.top = '0px';
-        labelRenderer.domElement.style.left = '0px';
-        labelRenderer.domElement.style.pointerEvents = 'none';
-        document.body.appendChild(labelRenderer.domElement);
-        
-        const cardContent = document.createElement('div');
-        cardContent.style.cssText = `
-            width: 280px;
-            height: 360px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 22px 18px;
-            font-family: 'Share Tech Mono', 'Courier New', monospace;
-            color: #fff;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        `;
-        cardContent.innerHTML = `
-            <div style="text-align: center; margin-bottom: 8px;">
-                <div style="font-size: 9px; letter-spacing: 4px; color: #00ffff; margin-bottom: 4px;">✦ HOLOGRAPHIC CORE ✦</div>
-                <div style="font-size: 16px; font-weight: bold; color: #ff44ff;">SYSTEM INTERFACE</div>
-                <div style="width: 100px; height: 1px; background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent); margin: 8px auto;"></div>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                <div style="text-align: center; flex: 1;"><div style="font-size: 8px; color: #88aaff;">POTÊNCIA</div><div style="font-size: 20px; font-weight: bold; color: #00ffff;" id="cardPower">98.4%</div><div style="font-size: 7px; color: #44ff88;">▲ NOMINAL</div></div>
-                <div style="text-align: center; flex: 1;"><div style="font-size: 8px; color: #88aaff;">VELOCIDADE</div><div style="font-size: 20px; font-weight: bold; color: #ff44ff;" id="cardSpeed">2.3M</div><div style="font-size: 7px; color: #44ff88;">KM/H</div></div>
-                <div style="text-align: center; flex: 1;"><div style="font-size: 8px; color: #88aaff;">ENERGIA</div><div style="font-size: 20px; font-weight: bold; color: #44ff88;" id="cardEnergy">847</div><div style="font-size: 7px; color: #ff6644;">GW</div></div>
-            </div>
-            <div style="background: rgba(0,255,255,0.08); border-left: 2px solid #00ffff; padding: 8px; margin-bottom: 12px;">
-                <div style="font-size: 8px; color: #00ffff;">REATOR TERMAL</div>
-                <div style="font-size: 14px; font-weight: bold;" id="cardTemp">3,842°C</div>
-                <div style="width: 100%; height: 2px; background: #333; margin-top: 6px; border-radius: 2px;">
-                    <div id="cardTempBar" style="width: 72%; height: 100%; background: linear-gradient(90deg, #00ffff, #ff44ff); border-radius: 2px;"></div>
-                </div>
-            </div>
-            <div style="text-align: center; margin-top: 4px;">
-                <div style="font-size: 7px; color: #88aaff; letter-spacing: 3px;">✦ LINK ATIVO ✦</div>
-                <div style="font-size: 6px; color: #6688aa; margin-top: 4px;">telemetria em tempo real</div>
-            </div>
-        `;
-        
-        const cardHTML = new CSS2DObject(cardContent);
-        cardHTML.position.set(0, 0.65, 0.09);
-        scene.add(cardHTML);
-        
-        // Esfera central pulsante
-        const coreGeo = new THREE.SphereGeometry(0.2, 32, 32);
-        const coreMat = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.8 });
-        const coreSphere = new THREE.Mesh(coreGeo, coreMat);
-        coreSphere.position.set(0, -0.5,
+        // ============================================================
+        // RESPONSIVO
+        // ============================================================
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            effectComposer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

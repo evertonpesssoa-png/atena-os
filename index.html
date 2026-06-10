@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Holographic Cards - Dashboard Cyberpunk</title>
+    <title>Holographic Card - Futurista</title>
     <style>
         * {
             margin: 0;
@@ -15,80 +15,10 @@
             margin: 0;
             overflow: hidden;
             font-family: 'Courier New', monospace;
-            background: #050510;
+            background: radial-gradient(circle at center, #0a0a2a 0%, #020210 100%);
         }
 
-        /* TÍTULO HOLOGRÁFICO */
-        .title-container {
-            position: absolute;
-            top: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            z-index: 20;
-            pointer-events: none;
-        }
-
-        .main-title {
-            font-family: 'Courier New', monospace;
-            font-size: 1.8rem;
-            letter-spacing: 4px;
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 768px) {
-            .main-title { font-size: 1.2rem; letter-spacing: 2px; }
-            .subtitle { font-size: 0.6rem; }
-        }
-
-        .glow-text {
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .glow-text-secondary {
-            color: #ff44ff;
-            text-shadow: 0 0 10px #ff44ff, 0 0 20px #ff44aa;
-            animation: pulse 2s ease-in-out infinite 0.3s;
-        }
-
-        .title-line {
-            width: 150px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent);
-            margin: 10px auto;
-        }
-
-        .subtitle {
-            color: #88aaff;
-            font-family: monospace;
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* INSTRUÇÕES */
-        .controls-hint {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            color: #88aaff;
-            background: rgba(0,0,0,0.5);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 10px;
-            z-index: 20;
-            pointer-events: none;
-            backdrop-filter: blur(4px);
-        }
-
-        /* LOADING */
+        /* Loading */
         #loading {
             position: absolute;
             bottom: 50%;
@@ -102,6 +32,77 @@
             border-radius: 10px;
             border: 1px solid #00ffff;
             text-align: center;
+            backdrop-filter: blur(10px);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ffff; }
+            50% { opacity: 0.6; box-shadow: 0 0 30px #00ffff; }
+        }
+
+        /* Instruções */
+        .controls-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #88aaff;
+            background: rgba(0,0,0,0.5);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 11px;
+            z-index: 20;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            font-family: monospace;
+            border: 1px solid rgba(0,255,255,0.3);
+        }
+
+        /* Título */
+        .title-container {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .main-title {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .main-title { font-size: 1rem; letter-spacing: 2px; }
+            .controls-hint { font-size: 8px; padding: 4px 10px; }
+        }
+
+        .glow-text {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        .glow-text-secondary {
+            color: #ff44ff;
+            text-shadow: 0 0 10px #ff44ff, 0 0 20px #ff44aa;
+            animation: titlePulse 2s ease-in-out infinite 0.3s;
+        }
+
+        .title-line {
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent);
+            margin: 8px auto;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
     </style>
 </head>
@@ -109,19 +110,17 @@
     <div class="title-container">
         <h1 class="main-title">
             <span class="glow-text">✦ HOLOGRAPHIC</span>
-            <span class="glow-text-secondary"> DASHBOARD</span>
+            <span class="glow-text-secondary"> INTERFACE</span>
         </h1>
         <div class="title-line"></div>
-        <p class="subtitle">sistema de monitoramento em tempo real</p>
     </div>
     <div class="controls-hint">
-        🖱️ Arraste para girar | 🔍 Pinça para zoom
+        🖱️ ARRASTE PARA GIRAR | 🔍 PINÇA ZOOM
     </div>
     <div id="loading">
-        🔷 CARREGANDO HOLOGRAMA... 🔷
+        🔷 INICIALIZANDO HOLOGRAMA... 🔷
     </div>
 
-    <!-- Importação das bibliotecas -->
     <script type="importmap">
         {
             "imports": {
@@ -134,39 +133,44 @@
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        
         // ============================================================
         // INICIALIZAÇÃO
         // ============================================================
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050510);
-        scene.fog = new THREE.FogExp2(0x050510, 0.02);
+        scene.background = new THREE.Color(0x010118);
+        scene.fog = new THREE.FogExp2(0x010118, 0.008);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1, 5.5);
-        camera.lookAt(0, 0, 0);
+        camera.position.set(0, 1.2, 4.2);
+        camera.lookAt(0, 0.8, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.shadowMap.enabled = true;
+        renderer.toneMapping = THREE.ReinhardToneMapping;
         document.body.appendChild(renderer.domElement);
 
-        // CSS2 Renderer para os cards (HTML sobreposto)
-        const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        labelRenderer.domElement.style.position = 'absolute';
-        labelRenderer.domElement.style.top = '0px';
-        labelRenderer.domElement.style.left = '0px';
-        labelRenderer.domElement.style.pointerEvents = 'none';
-        document.body.appendChild(labelRenderer.domElement);
+        // Efeito Bloom (Glow profissional)
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(
+            new THREE.Vector2(window.innerWidth, window.innerHeight),
+            1.3,   // strength - intensidade
+            0.5,   // radius - espalhamento
+            0.2    // threshold - sensibilidade
+        );
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
 
         // Esconder loading
         setTimeout(() => {
             const loading = document.getElementById('loading');
             if (loading) loading.style.display = 'none';
-        }, 1000);
+        }, 800);
 
         // ============================================================
         // CONTROLES
@@ -175,14 +179,14 @@
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 1.2;
+        controls.autoRotateSpeed = 0.8;
         controls.enableZoom = true;
         controls.enablePan = false;
         controls.zoomSpeed = 1.0;
-        controls.target.set(0, 0.5, 0);
+        controls.target.set(0, 0.8, 0);
 
         // ============================================================
-        // LUZES E AMBIENTE
+        // LUZES
         // ============================================================
         const ambientLight = new THREE.AmbientLight(0x111122);
         scene.add(ambientLight);
@@ -191,66 +195,70 @@
         mainLight.position.set(2, 3, 4);
         scene.add(mainLight);
         
-        const backLight = new THREE.PointLight(0x4466ff, 0.5);
-        backLight.position.set(0, 1, -2);
+        const backLight = new THREE.PointLight(0x4466ff, 0.6);
+        backLight.position.set(0, 1.2, -2);
         scene.add(backLight);
         
-        const fillLight = new THREE.PointLight(0xff44ff, 0.3);
+        const fillLight = new THREE.PointLight(0xff44ff, 0.4);
         fillLight.position.set(-1, 1.5, 2);
         scene.add(fillLight);
+        
+        const rimLight = new THREE.PointLight(0x00ffff, 0.5);
+        rimLight.position.set(1, 1.8, 1.5);
+        scene.add(rimLight);
 
         // ============================================================
-        // EFEITOS VISUAIS
+        // EFEITOS VISUAIS DE FUNDO
         // ============================================================
         
         // Grade holográfica no chão
-        const gridHelper = new THREE.GridHelper(10, 20, 0x33aaff, 0x2266aa);
-        gridHelper.position.y = -1.2;
+        const gridHelper = new THREE.GridHelper(8, 20, 0x33aaff, 0x2266aa);
+        gridHelper.position.y = -1.0;
         gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.3;
+        gridHelper.material.opacity = 0.25;
         scene.add(gridHelper);
         
-        // Anel circular decorativo
-        const ringGeometry = new THREE.TorusGeometry(1.8, 0.03, 64, 200);
-        const ringMaterial = new THREE.MeshStandardMaterial({
+        // Anel circular externo
+        const ringOuterGeo = new THREE.TorusGeometry(2.2, 0.03, 64, 200);
+        const ringOuterMat = new THREE.MeshStandardMaterial({
             color: 0x44aaff,
             emissive: 0x2266aa,
-            emissiveIntensity: 0.6,
+            emissiveIntensity: 0.7,
+            transparent: true,
+            opacity: 0.6
+        });
+        const ringOuter = new THREE.Mesh(ringOuterGeo, ringOuterMat);
+        ringOuter.rotation.x = Math.PI / 2;
+        ringOuter.position.y = -0.7;
+        scene.add(ringOuter);
+        
+        // Anel circular interno
+        const ringInnerGeo = new THREE.TorusGeometry(1.6, 0.02, 64, 200);
+        const ringInnerMat = new THREE.MeshStandardMaterial({
+            color: 0xff44ff,
+            emissive: 0xff2288,
+            emissiveIntensity: 0.5,
             transparent: true,
             opacity: 0.5
         });
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring.rotation.x = Math.PI / 2;
-        ring.position.y = -1.0;
-        scene.add(ring);
-        
-        // Segundo anel (maior)
-        const ring2Geometry = new THREE.TorusGeometry(2.4, 0.02, 64, 200);
-        const ring2Material = new THREE.MeshStandardMaterial({
-            color: 0xff44ff,
-            emissive: 0xff2288,
-            emissiveIntensity: 0.4,
-            transparent: true,
-            opacity: 0.4
-        });
-        const ring2 = new THREE.Mesh(ring2Geometry, ring2Material);
-        ring2.rotation.x = Math.PI / 2;
-        ring2.position.y = -1.0;
-        scene.add(ring2);
+        const ringInner = new THREE.Mesh(ringInnerGeo, ringInnerMat);
+        ringInner.rotation.x = Math.PI / 2;
+        ringInner.position.y = -0.7;
+        scene.add(ringInner);
         
         // Partículas flutuantes (Sparkles)
-        const particleCount = 1500;
+        const particleCount = 2000;
         const particleGeometry = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
         for (let i = 0; i < particleCount; i++) {
-            particlePositions[i*3] = (Math.random() - 0.5) * 12;
-            particlePositions[i*3+1] = (Math.random() - 0.5) * 6;
-            particlePositions[i*3+2] = (Math.random() - 0.5) * 8;
+            particlePositions[i*3] = (Math.random() - 0.5) * 10;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 5 + 0.5;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 7;
         }
         particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
         const particleMaterial = new THREE.PointsMaterial({
             color: 0x66ccff,
-            size: 0.035,
+            size: 0.025,
             transparent: true,
             opacity: 0.4,
             blending: THREE.AdditiveBlending
@@ -259,116 +267,223 @@
         scene.add(particles);
         
         // ============================================================
-        // CRIAÇÃO DOS CARDS HOLOGRÁFICOS
+        // CARD HOLOGRÁFICO PRINCIPAL (Modelo 3D)
         // ============================================================
         
-        const cardsData = [
-            { title: 'USUÁRIOS', value: '12.4K', icon: '👥', color: '#00ffff', pos: [-2.2, 0.3, 0], delay: 0 },
-            { title: 'TRANSAÇÕES', value: '₿ 847.32', icon: '💎', color: '#ff44ff', pos: [0, 0.5, 0], delay: 0.5 },
-            { title: 'ATIVOS', value: '3.2M', icon: '📊', color: '#44ff88', pos: [2.2, 0.3, 0], delay: 1 },
-            { title: 'HASHRATE', value: '285 TH/s', icon: '⚡', color: '#ffaa44', pos: [-1.3, -0.8, 1.2], delay: 0.3 },
-            { title: 'TEMPERATURA', value: '42°C', icon: '🌡️', color: '#ff6644', pos: [1.3, -0.8, 1.2], delay: 0.8 },
-            { title: 'STATUS', value: 'ONLINE', icon: '🔷', color: '#44aaff', pos: [0, -1.0, 1.5], delay: 0.6 }
+        // Painel principal do card (vidro)
+        const cardWidth = 2.4;
+        const cardHeight = 3.2;
+        const cardDepth = 0.08;
+        
+        // Corpo principal (vidro fosco)
+        const cardGeometry = new THREE.BoxGeometry(cardWidth, cardHeight, cardDepth);
+        const cardMaterial = new THREE.MeshStandardMaterial({
+            color: 0x88aaff,
+            emissive: 0x2266aa,
+            emissiveIntensity: 0.12,
+            metalness: 0.85,
+            roughness: 0.25,
+            transparent: true,
+            opacity: 0.3
+        });
+        const card = new THREE.Mesh(cardGeometry, cardMaterial);
+        card.position.set(0, 0.7, 0);
+        card.castShadow = true;
+        card.receiveShadow = false;
+        scene.add(card);
+        
+        // Borda neon (externa)
+        const edgeGeometry = new THREE.BoxGeometry(cardWidth + 0.08, cardHeight + 0.08, 0.02);
+        const edgeMaterial = new THREE.MeshStandardMaterial({
+            color: 0x00ffff,
+            emissive: 0x00ffff,
+            emissiveIntensity: 0.6,
+            transparent: true,
+            opacity: 0.8
+        });
+        const edgeBorder = new THREE.Mesh(edgeGeometry, edgeMaterial);
+        edgeBorder.position.set(0, 0.7, 0.045);
+        scene.add(edgeBorder);
+        
+        // Segunda borda (interna, rosa)
+        const edge2Geometry = new THREE.BoxGeometry(cardWidth - 0.15, cardHeight - 0.15, 0.01);
+        const edge2Material = new THREE.MeshStandardMaterial({
+            color: 0xff44ff,
+            emissive: 0xff44ff,
+            emissiveIntensity: 0.4,
+            transparent: true,
+            opacity: 0.7
+        });
+        const edgeBorder2 = new THREE.Mesh(edge2Geometry, edge2Material);
+        edgeBorder2.position.set(0, 0.7, 0.055);
+        scene.add(edgeBorder2);
+        
+        // Cantos decorativos (pequenos cubos nas bordas)
+        const cornerMaterial = new THREE.MeshStandardMaterial({
+            color: 0x00ffff,
+            emissive: 0x00ffff,
+            emissiveIntensity: 0.8
+        });
+        
+        const corners = [
+            [-1.2, 1.65, 0.06], [1.2, 1.65, 0.06],
+            [-1.2, -0.25, 0.06], [1.2, -0.25, 0.06]
         ];
+        corners.forEach(pos => {
+            const corner = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.04), cornerMaterial);
+            corner.position.set(pos[0], pos[1], pos[2]);
+            scene.add(corner);
+        });
         
-        const cards = [];
+        // Linhas holográficas horizontais (dentro do card)
+        const lineMaterial = new THREE.MeshStandardMaterial({
+            color: 0x00ffff,
+            emissive: 0x00ffff,
+            emissiveIntensity: 0.5,
+            transparent: true,
+            opacity: 0.6
+        });
         
-        cardsData.forEach((data, idx) => {
-            // Criar o elemento HTML do card
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'holo-card';
-            cardDiv.style.cssText = `
-                width: 170px;
-                height: 220px;
-                background: rgba(10, 10, 30, 0.5);
-                backdrop-filter: blur(10px);
-                border-radius: 16px;
-                border: 1px solid ${data.color};
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-                cursor: pointer;
-                box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            `;
-            
-            cardDiv.innerHTML = `
-                <div style="font-size: 48px; margin-bottom: 12px; filter: drop-shadow(0 0 8px ${data.color}); animation: iconFloat 2s ease-in-out infinite;">
-                    ${data.icon}
-                </div>
-                <h3 style="color: #fff; font-size: 14px; letter-spacing: 2px; margin: 8px 0; font-family: monospace;">${data.title}</h3>
-                <div style="font-size: 26px; font-weight: bold; color: ${data.color}; font-family: monospace; text-shadow: 0 0 8px ${data.color}; margin: 8px 0;">
-                    ${data.value}
-                </div>
-                <div style="width: 60px; height: 2px; background: ${data.color}; margin: 12px 0; box-shadow: 0 0 5px ${data.color};"></div>
-                <div style="display: flex; gap: 15px; font-size: 9px; color: #88aaff; font-family: monospace;">
-                    <span style="color: #44ff88; text-shadow: 0 0 4px #44ff88;">● ACTIVE</span>
-                    <span>LIVE</span>
-                </div>
-            `;
-            
-            // Efeito hover
-            cardDiv.addEventListener('mouseenter', () => {
-                cardDiv.style.transform = 'scale(1.02)';
-                cardDiv.style.borderColor = '#fff';
-                cardDiv.style.boxShadow = `0 0 30px ${data.color}`;
-            });
-            cardDiv.addEventListener('mouseleave', () => {
-                cardDiv.style.transform = 'scale(1)';
-                cardDiv.style.borderColor = data.color;
-                cardDiv.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
-            });
-            
-            // Criar objeto CSS2D
-            const cardObject = new CSS2DObject(cardDiv);
-            cardObject.position.set(data.pos[0], data.pos[1], data.pos[2]);
-            scene.add(cardObject);
-            
-            cards.push({
-                obj: cardObject,
-                data: data,
-                initialY: data.pos[1],
-                delay: data.delay
-            });
-            
-            // Adicionar um cubo de luz atrás do card (efeito glow 3D)
-            const glowGeometry = new THREE.BoxGeometry(1.9, 2.4, 0.1);
-            const glowMaterial = new THREE.MeshStandardMaterial({
-                color: data.color,
-                emissive: data.color,
-                emissiveIntensity: 0.15,
-                transparent: true,
-                opacity: 0.2
-            });
-            const glowCube = new THREE.Mesh(glowGeometry, glowMaterial);
-            glowCube.position.set(data.pos[0], data.pos[1], data.pos[2] - 0.05);
-            scene.add(glowCube);
-            
-            // Guardar referência para animação
-            cards[idx].glowCube = glowCube;
+        const lineYs = [-0.1, 0.3, 0.7, 1.1, 1.5];
+        lineYs.forEach(y => {
+            const line = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.01, 0.02), lineMaterial);
+            line.position.set(0, y, 0.07);
+            scene.add(line);
         });
         
         // ============================================================
-        // TEXTO CENTRAL FLUTUANTE
+        // CONTEÚDO DO CARD (HTML com CSS2DRenderer)
         // ============================================================
-        const centerTextDiv = document.createElement('div');
-        centerTextDiv.style.cssText = `
-            color: #88aaff;
-            font-family: monospace;
-            font-size: 12px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px #88aaff;
-            background: rgba(0,0,0,0.3);
-            padding: 8px 16px;
-            border-radius: 20px;
-            backdrop-filter: blur(4px);
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+        
+        // Criar o conteúdo HTML do card
+        const cardContent = document.createElement('div');
+        cardContent.style.cssText = `
+            width: 260px;
+            height: 340px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 15px;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
         `;
-        centerTextDiv.textContent = '✦ ACTIVE SESSION ✦';
-        const centerText = new CSS2DObject(centerTextDiv);
-        centerText.position.set(0, 1.4, -0.8);
-        scene.add(centerText);
+        
+        cardContent.innerHTML = `
+            <div style="text-align: center; margin-bottom: 10px;">
+                <div style="font-size: 10px; letter-spacing: 3px; color: #00ffff; margin-bottom: 5px;">✦ SYSTEM STATUS ✦</div>
+                <div style="font-size: 18px; font-weight: bold; color: #ff44ff;">HOLOGRAPHIC DASHBOARD</div>
+                <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent); margin: 8px auto;"></div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 9px; color: #88aaff;">USUÁRIOS</div>
+                    <div style="font-size: 22px; font-weight: bold; color: #00ffff;">12.4K</div>
+                    <div style="font-size: 8px; color: #44ff88;">▲ +23%</div>
+                </div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 9px; color: #88aaff;">TRANSAÇÕES</div>
+                    <div style="font-size: 22px; font-weight: bold; color: #ff44ff;">₿ 847</div>
+                    <div style="font-size: 8px; color: #44ff88;">▲ +12%</div>
+                </div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 9px; color: #88aaff;">HASHRATE</div>
+                    <div style="font-size: 22px; font-weight: bold; color: #44ff88;">285 TH</div>
+                    <div style="font-size: 8px; color: #ff6644;">▼ -2%</div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(0,255,255,0.1); border-left: 2px solid #00ffff; padding: 8px; margin-bottom: 15px;">
+                <div style="font-size: 8px; color: #00ffff;">TEMPERATURA</div>
+                <div style="font-size: 16px; font-weight: bold;">42°C</div>
+                <div style="width: 100%; height: 2px; background: #333; margin-top: 5px; border-radius: 2px;">
+                    <div style="width: 65%; height: 100%; background: linear-gradient(90deg, #00ffff, #ff44ff); border-radius: 2px;"></div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px;">
+                <div style="flex: 1; background: rgba(255,68,255,0.1); border-radius: 5px; padding: 6px; text-align: center;">
+                    <div style="font-size: 7px; color: #ff44ff;">ATIVOS</div>
+                    <div style="font-size: 14px; font-weight: bold;">3.2M</div>
+                </div>
+                <div style="flex: 1; background: rgba(0,255,255,0.1); border-radius: 5px; padding: 6px; text-align: center;">
+                    <div style="font-size: 7px; color: #00ffff;">LATÊNCIA</div>
+                    <div style="font-size: 14px; font-weight: bold;">24ms</div>
+                </div>
+                <div style="flex: 1; background: rgba(68,255,136,0.1); border-radius: 5px; padding: 6px; text-align: center;">
+                    <div style="font-size: 7px; color: #44ff88;">STATUS</div>
+                    <div style="font-size: 12px; font-weight: bold; color: #44ff88;">ONLINE</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 5px;">
+                <div style="font-size: 7px; color: #88aaff; letter-spacing: 2px;">✦ LIVE DATA STREAM ✦</div>
+                <div style="font-size: 6px; color: #6688aa; margin-top: 4px;">atualizado em tempo real</div>
+            </div>
+        `;
+        
+        const cardHTML = new CSS2DObject(cardContent);
+        cardHTML.position.set(0, 0.7, 0.09);
+        scene.add(cardHTML);
+        
+        // ============================================================
+        // ESFERA HOLOGRÁFICA (efeito de núcleo)
+        // ============================================================
+        const coreGeometry = new THREE.SphereGeometry(0.22, 32, 32);
+        const coreMaterial = new THREE.MeshStandardMaterial({
+            color: 0x00ffff,
+            emissive: 0x00ffff,
+            emissiveIntensity: 0.8,
+            metalness: 0.9,
+            roughness: 0.1
+        });
+        const coreSphere = new THREE.Mesh(coreGeometry, coreMaterial);
+        coreSphere.position.set(0, -0.55, 0.15);
+        scene.add(coreSphere);
+        
+        // Anel ao redor da esfera
+        const sphereRingGeo = new THREE.TorusGeometry(0.28, 0.02, 32, 64);
+        const sphereRingMat = new THREE.MeshStandardMaterial({
+            color: 0xff44ff,
+            emissive: 0xff44ff,
+            emissiveIntensity: 0.6
+        });
+        const sphereRing = new THREE.Mesh(sphereRingGeo, sphereRingMat);
+        sphereRing.position.set(0, -0.55, 0.15);
+        scene.add(sphereRing);
+        
+        // ============================================================
+        // PARTÍCULAS AO REDOR DO CARD
+        // ============================================================
+        const orbParticleCount = 400;
+        const orbParticleGeo = new THREE.BufferGeometry();
+        const orbPositions = new Float32Array(orbParticleCount * 3);
+        for (let i = 0; i < orbParticleCount; i++) {
+            const angle = (i / orbParticleCount) * Math.PI * 2;
+            const radius = 1.5;
+            orbPositions[i*3] = Math.cos(angle) * radius;
+            orbPositions[i*3+1] = 0.7 + Math.sin(angle * 2) * 0.5;
+            orbPositions[i*3+2] = Math.sin(angle) * radius * 0.5;
+        }
+        orbParticleGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
+        const orbParticleMat = new THREE.PointsMaterial({
+            color: 0xff66cc,
+            size: 0.02,
+            transparent: true,
+            blending: THREE.AdditiveBlending
+        });
+        const orbParticles = new THREE.Points(orbParticleGeo, orbParticleMat);
+        scene.add(orbParticles);
         
         // ============================================================
         // ANIMAÇÃO
@@ -379,30 +494,50 @@
             requestAnimationFrame(animate);
             time += 0.016;
             
-            // Flutuação dos cards
-            cards.forEach((card, i) => {
-                const offsetY = Math.sin(time * 1.2 + card.delay) * 0.06;
-                card.obj.position.y = card.initialY + offsetY;
-                if (card.glowCube) {
-                    card.glowCube.position.y = card.initialY + offsetY;
-                }
+            // Flutuação suave do card
+            const floatY = Math.sin(time * 0.8) * 0.03;
+            card.position.y = 0.7 + floatY;
+            edgeBorder.position.y = 0.7 + floatY;
+            edgeBorder2.position.y = 0.7 + floatY;
+            cardHTML.position.y = 0.7 + floatY;
+            coreSphere.position.y = -0.55 + floatY;
+            sphereRing.position.y = -0.55 + floatY;
+            orbParticles.position.y = floatY;
+            
+            // Atualizar cantos
+            corners.forEach(corner => {
+                const cornerObj = scene.children.find(c => c.position.x === corner[0] && c.position.y === corner[1] + 0.7 && c.position.z === corner[2]);
+                if (cornerObj) cornerObj.position.y = corner[1] + 0.7 + floatY;
             });
             
-            // Rotação dos anéis
-            ring.rotation.z += 0.003;
-            ring2.rotation.z -= 0.002;
+            // Linhas horizontais
+            lineYs.forEach((y, idx) => {
+                const lineObj = scene.children.find(c => c.position.x === 0 && Math.abs(c.position.y - y) < 0.05);
+                if (lineObj) lineObj.position.y = y + floatY;
+            });
             
-            // Partículas girando lentamente
+            // Rotações
+            ringOuter.rotation.z += 0.002;
+            ringInner.rotation.z -= 0.003;
+            sphereRing.rotation.x += 0.01;
+            sphereRing.rotation.z += 0.01;
+            orbParticles.rotation.y += 0.005;
+            
+            // Pulso da esfera central
+            const scale = 1 + Math.sin(time * 8) * 0.05;
+            coreSphere.scale.set(scale, scale, scale);
+            
+            // Intensidade pulsante das luzes
+            const pulse = 0.5 + Math.sin(time * 3) * 0.2;
+            backLight.intensity = 0.6 + pulse * 0.2;
+            rimLight.intensity = 0.5 + pulse * 0.3;
+            
+            // Partículas flutuantes
             particles.rotation.y += 0.0005;
             particles.rotation.x = Math.sin(time * 0.1) * 0.05;
             
-            // Texto central pulsante
-            const pulse = 0.5 + Math.sin(time * 3) * 0.2;
-            centerTextDiv.style.opacity = 0.6 + pulse * 0.2;
-            
-            // Controles e renderização
             controls.update();
-            renderer.render(scene, camera);
+            effectComposer.render();
             labelRenderer.render(scene, camera);
         }
         
@@ -411,25 +546,15 @@
         // ============================================================
         // RESPONSIVO
         // ============================================================
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            effectComposer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        }
+        });
         
-        // Adicionar keyframes para animação do ícone
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes iconFloat {
-                0%, 100% { transform: translateY(0px); }
-                50% { transform: translateY(-5px); }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        console.log('✨ Holographic Cards carregado!');
+        console.log('✨ Holographic Card carregado!');
     </script>
 </body>
 </html>

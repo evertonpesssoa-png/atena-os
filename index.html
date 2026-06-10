@@ -3,86 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Goétia de Salomão - Selo Místico 3D</title>
+    <title>ARCANUM CYBERIA • Selo do Éter Digital</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Cinema', 'Courier New', monospace;
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
         }
         
-        #info {
+        #interface {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            color: #ffcc88;
-            background: rgba(0,0,0,0.7);
-            padding: 8px 16px;
-            border-radius: 8px;
-            backdrop-filter: blur(5px);
+            z-index: 20;
+            background: rgba(0, 5, 15, 0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            padding: 12px 20px;
+            border-left: 3px solid #0ff;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
             pointer-events: none;
-            z-index: 10;
-            font-size: 14px;
-            letter-spacing: 1px;
-            border-left: 3px solid #d4af37;
-            font-family: monospace;
+            font-family: 'Share Tech Mono', monospace;
         }
         
-        #title {
+        .title-glow {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            color: #0ff;
+            text-shadow: 0 0 8px #0ff, 0 0 2px #0ff;
+            margin: 0;
+        }
+        
+        .sub {
+            font-size: 0.7rem;
+            color: #aaf;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+        
+        #stats-panel {
             position: absolute;
             top: 20px;
             right: 20px;
-            color: #e6c87e;
-            background: rgba(0,0,0,0.6);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: bold;
-            letter-spacing: 3px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: #0ff;
+            font-family: monospace;
+            font-size: 12px;
+            border-right: 2px solid #0ff;
+            text-align: right;
             pointer-events: none;
-            backdrop-filter: blur(4px);
-            font-family: 'Georgia', serif;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            border: 1px solid rgba(212,175,55,0.5);
-            z-index: 10;
+            z-index: 20;
+            letter-spacing: 1px;
         }
         
-        .controls-note {
+        .control-note {
             position: absolute;
             bottom: 20px;
             right: 20px;
-            color: #aaa;
+            color: #6cf;
             background: rgba(0,0,0,0.5);
             padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 11px;
+            border-radius: 8px;
+            font-size: 10px;
             font-family: monospace;
+            backdrop-filter: blur(4px);
             pointer-events: none;
-            z-index: 10;
+            z-index: 20;
         }
         
-        @keyframes pulse {
-            0% { opacity: 0.6; text-shadow: 0 0 0px #d4af37; }
-            100% { opacity: 1; text-shadow: 0 0 8px #d4af37; }
+        button {
+            position: absolute;
+            bottom: 90px;
+            left: 20px;
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid #0ff;
+            color: #0ff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
+            z-index: 25;
+            pointer-events: auto;
         }
         
-        #title span {
-            animation: pulse 2s infinite alternate;
+        button:hover {
+            background: #0ff;
+            color: #000;
+            box-shadow: 0 0 15px #0ff;
+            text-shadow: none;
+        }
+        
+        @keyframes pulseText {
+            0% { opacity: 0.7; text-shadow: 0 0 0px #0ff; }
+            100% { opacity: 1; text-shadow: 0 0 6px #0ff; }
+        }
+        
+        .glitch {
+            animation: pulseText 1.5s infinite alternate;
         }
     </style>
 </head>
 <body>
-    <div id="title">
-        ⚝ SELO DA GOÉTIA - REI PAIMON ⚝
+    <div id="interface">
+        <div class="title-glow">✦ ARCANUM CYBERIA ✦</div>
+        <div class="sub">Selo do Éter Digital • Glifos Sintéticos</div>
     </div>
-    <div id="info">
-        ✦ Círculo de proteção ✦ Sigilo ancestral ✦ Chamas do Abismo ✦
+    <div id="stats-panel">
+        <span id="sigilStatus">⛭ CONEXÃO ETÉREA ESTÁVEL ⛭</span><br>
+        <span id="fluxValue">FLUXO: 87%</span>
     </div>
-    <div class="controls-note">
-        🖱️ Arraste para rotacionar | Scroll para zoom
+    <div class="control-note">
+        🖱️ ARRASTE para girar | SCROLL zoom | Clique no botão para transmutação
     </div>
+    <button id="transmuteBtn">⚡ TRANSMUTAR GLIFOS ⚡</button>
 
-    <!-- Importação das bibliotecas necessárias -->
     <script type="importmap">
         {
             "imports": {
@@ -99,163 +139,131 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
-        // --- Setup da cena, câmera, renderizador ---
+        // --- CENA PRINCIPAL ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050b1a);
-        scene.fog = new THREE.FogExp2(0x050b1a, 0.008); // névoa sutil
+        scene.background = new THREE.Color(0x010113);
+        scene.fog = new THREE.FogExp2(0x010113, 0.012);
         
-        // Câmera perspective
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(3, 2, 5);
-        camera.lookAt(0, 0, 0);
+        const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(3.2, 1.8, 4.5);
+        camera.lookAt(0, 0.2, 0);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.toneMapping = THREE.ReinhardToneMapping;
-        renderer.toneMappingExposure = 1.2;
+        renderer.toneMappingExposure = 1.3;
         document.body.appendChild(renderer.domElement);
         
-        // --- Efeitos de pós-processamento (Bloom para brilho mágico) ---
+        // --- POSTPROCESSING (BLOOM FORTE) ---
         const renderScene = new RenderPass(scene, camera);
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
-        bloomPass.threshold = 0.1;
-        bloomPass.strength = 0.9;
-        bloomPass.radius = 0.5;
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.9);
+        bloomPass.threshold = 0.08;
+        bloomPass.strength = 1.1;
+        bloomPass.radius = 0.6;
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(renderScene);
         effectComposer.addPass(bloomPass);
         
-        // --- Controles de órbita para interação ---
+        // --- CONTROLES COM AUTO-ROTAÇÃO INICIAL ---
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
+        controls.dampingFactor = 0.06;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 1.2;
+        controls.autoRotateSpeed = 1.4;
         controls.enableZoom = true;
         controls.enablePan = false;
         controls.zoomSpeed = 1.0;
-        controls.target.set(0, 0, 0);
+        controls.target.set(0, 0.2, 0);
         
-        // --- Luzes ---
-        // Luz ambiente suave
-        const ambientLight = new THREE.AmbientLight(0x221c3a);
-        scene.add(ambientLight);
+        // --- ILUMINAÇÃO DINÂMICA E CIBERNÉTICA ---
+        const ambient = new THREE.AmbientLight(0x111122);
+        scene.add(ambient);
         
-        // Luz principal direcional com tom dourado
-        const mainLight = new THREE.DirectionalLight(0xd4b87a, 1.2);
-        mainLight.position.set(2, 5, 3);
+        const mainLight = new THREE.DirectionalLight(0x66ccff, 1.0);
+        mainLight.position.set(2, 3, 2);
         scene.add(mainLight);
         
-        // Luz de preenchimento traseira azulada para contraste mágico
-        const backLight = new THREE.PointLight(0x3a2e6a, 0.8);
-        backLight.position.set(-2, 1, -3);
-        scene.add(backLight);
+        const fillLight = new THREE.PointLight(0x3366aa, 0.7);
+        fillLight.position.set(-1.5, 1, -2);
+        scene.add(fillLight);
         
-        // Luz lateral quente
-        const warmFill = new THREE.PointLight(0xc97e3a, 0.6);
-        warmFill.position.set(1.5, 1.2, 2);
-        scene.add(warmFill);
+        const rimLight = new THREE.PointLight(0xff44aa, 0.6);
+        rimLight.position.set(1, 1.5, -2.2);
+        scene.add(rimLight);
         
-        // Luz dinâmica pulsante no centro
-        const coreLight = new THREE.PointLight(0xff6633, 0.9, 8);
-        coreLight.position.set(0, 0.2, 0);
-        scene.add(coreLight);
+        // Luz central pulsante (núcleo do selo)
+        const coreBeacon = new THREE.PointLight(0x22ffff, 0.9, 7);
+        coreBeacon.position.set(0, 0.1, 0);
+        scene.add(coreBeacon);
         
-        // Chamas de partículas - sistema de fagulhas ao redor
-        const particleCount = 1200;
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlePositions = new Float32Array(particleCount * 3);
-        const particleColors = new Float32Array(particleCount * 3);
+        // --- GRUPO PRINCIPAL DO SELO ---
+        const sealGroup = new THREE.Group();
+        scene.add(sealGroup);
         
-        for (let i = 0; i < particleCount; i++) {
-            // Distribuição em anel esférico irregular com raio entre 1.3 e 2.4
-            const radius = 1.5 + Math.random() * 1.2;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(2 * Math.random() - 1);
-            
-            particlePositions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
-            particlePositions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6; // achatamento vertical
-            particlePositions[i*3+2] = radius * Math.cos(phi);
-            
-            // Cores: laranja, dourado, vermelho e roxo
-            const colorChoice = Math.random();
-            if (colorChoice < 0.6) {
-                particleColors[i*3] = 1.0;     // R
-                particleColors[i*3+1] = 0.5 + Math.random()*0.4; // G
-                particleColors[i*3+2] = 0.2 + Math.random()*0.3; // B
-            } else if (colorChoice < 0.85) {
-                particleColors[i*3] = 0.8;
-                particleColors[i*3+1] = 0.3;
-                particleColors[i*3+2] = 0.7;
-            } else {
-                particleColors[i*3] = 0.4;
-                particleColors[i*3+1] = 0.2;
-                particleColors[i*3+2] = 0.9;
-            }
-        }
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        // 1. ANÉIS DE ENERGIA (Torus com brilho)
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x33ccff, emissive: 0x1188aa, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.25 });
+        const outerRing = new THREE.Mesh(new THREE.TorusGeometry(1.58, 0.045, 128, 200), ringMat);
+        sealGroup.add(outerRing);
         
-        const particleMaterial = new THREE.PointsMaterial({ size: 0.035, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.7 });
-        const particleSystem = new THREE.Points(particlesGeometry, particleMaterial);
-        scene.add(particleSystem);
+        const midRingMat = new THREE.MeshStandardMaterial({ color: 0xff55cc, emissive: 0x551133, emissiveIntensity: 0.5 });
+        const midRing = new THREE.Mesh(new THREE.TorusGeometry(1.35, 0.035, 128, 200), midRingMat);
+        sealGroup.add(midRing);
         
-        // --- Elementos do Selo Principal ---
-        const seloGroup = new THREE.Group();
+        const innerRingMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x2266aa, emissiveIntensity: 0.7 });
+        const innerRing = new THREE.Mesh(new THREE.TorusGeometry(1.12, 0.03, 128, 200), innerRingMat);
+        sealGroup.add(innerRing);
         
-        // 1. Anel externo (círculo de proteção) - com textura dourada e detalhes runicos simulados
-        const outerRingGeometry = new THREE.TorusGeometry(1.65, 0.045, 128, 200);
-        const goldMaterial = new THREE.MeshStandardMaterial({ color: 0xd4af37, emissive: 0x442200, metalness: 0.85, roughness: 0.3, emissiveIntensity: 0.4 });
-        const outerRing = new THREE.Mesh(outerRingGeometry, goldMaterial);
-        seloGroup.add(outerRing);
+        // 2. GLIFOS PROCEDURAIS (canvas texturizado + mutação)
+        let currentGlyphTexture = null;
+        let glyphPlane = null;
         
-        // Segundo anel interno mais fino
-        const innerRingGeo = new THREE.TorusGeometry(1.42, 0.028, 128, 200);
-        const innerRing = new THREE.Mesh(innerRingGeo, new THREE.MeshStandardMaterial({ color: 0xbd9e3a, metalness: 0.7, roughness: 0.4, emissive: 0x331c00, emissiveIntensity: 0.2 }));
-        seloGroup.add(innerRing);
-        
-        // 2. Círculo central com sigilo desenhado via textura Canvas
-        const createSigilTexture = () => {
+        // Função para gerar glifos autorais (cibernéticos)
+        const generateGlyphCanvas = (seed = 0) => {
             const canvas = document.createElement('canvas');
             canvas.width = 1024;
             canvas.height = 1024;
             const ctx = canvas.getContext('2d');
             
-            // Fundo transparente com glow
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Configuração estilo pergaminho escuro
-            ctx.fillStyle = 'rgba(10, 8, 20, 0.85)';
+            // Fundo escuro com ruído digital
+            ctx.fillStyle = '#030318';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Bordas douradas do círculo interior
-            ctx.strokeStyle = '#e4b453';
-            ctx.lineWidth = 18;
-            ctx.beginPath();
-            ctx.arc(canvas.width/2, canvas.height/2, canvas.width*0.42, 0, Math.PI*2);
-            ctx.stroke();
+            // Efeito de grade / scanlines
+            ctx.strokeStyle = '#0ff220';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 40; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, i * 30);
+                ctx.lineTo(canvas.width, i * 30);
+                ctx.strokeStyle = `rgba(0, 255, 200, ${0.05 + Math.sin(i) * 0.03})`;
+                ctx.stroke();
+            }
             
+            // Círculos concêntricos (proteção digital)
+            ctx.strokeStyle = '#3eff9e';
             ctx.lineWidth = 8;
-            ctx.beginPath();
-            ctx.arc(canvas.width/2, canvas.height/2, canvas.width*0.36, 0, Math.PI*2);
-            ctx.stroke();
+            for (let r = 0; r < 3; r++) {
+                ctx.beginPath();
+                ctx.arc(canvas.width/2, canvas.height/2, 180 + r*70, 0, Math.PI*2);
+                ctx.stroke();
+            }
             
-            // Símbolos e sigilos da Goétia - inspirado no selo do Rei Paimon
+            // Estrutura hexagonal central modificada
             ctx.save();
             ctx.translate(canvas.width/2, canvas.height/2);
-            ctx.strokeStyle = '#c9a03d';
-            ctx.fillStyle = '#b8862c';
-            ctx.lineWidth = 14;
-            ctx.shadowBlur = 0;
+            ctx.strokeStyle = '#2ef7f7';
+            ctx.fillStyle = 'rgba(0, 255, 255, 0.08)';
+            ctx.lineWidth = 12;
             
-            // Hexagrama central
-            const radiusHex = canvas.width * 0.28;
-            for (let i = 0; i < 6; i++) {
-                const angle = (i * 60) * Math.PI / 180;
+            // Hexagrama de dados
+            const points = 6;
+            const radiusHex = 240;
+            for (let i = 0; i < points; i++) {
+                const angle = (i * 60) * Math.PI/180;
                 const x1 = Math.cos(angle) * radiusHex;
                 const y1 = Math.sin(angle) * radiusHex;
-                const angle2 = ((i+2) * 60) * Math.PI / 180;
+                const angle2 = ((i+2) * 60) * Math.PI/180;
                 const x2 = Math.cos(angle2) * radiusHex;
                 const y2 = Math.sin(angle2) * radiusHex;
                 ctx.beginPath();
@@ -264,256 +272,292 @@
                 ctx.stroke();
             }
             
-            // Círculo interno com pentagrama
-            ctx.beginPath();
-            ctx.arc(0, 0, radiusHex * 0.75, 0, Math.PI*2);
-            ctx.stroke();
+            // Glifos internos variáveis com base no seed
+            const symbols = ["⍟", "⌬", "⎔", "⫰", "⟁", "⨀", "◈", "⬟", "⊛", "⍣", "⌘", "⍋"];
+            const shuffled = [...symbols];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor((seed + i) % (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
             
-            // Pentagrama
-            const points = 5;
-            const outerR = radiusHex * 0.68;
-            for (let i = 0; i < points; i++) {
-                const angle = (i * 72 - 18) * Math.PI/180;
-                const x1 = Math.cos(angle) * outerR;
-                const y1 = Math.sin(angle) * outerR;
-                const angleNext = ((i+2) * 72 - 18) * Math.PI/180;
-                const x2 = Math.cos(angleNext) * outerR;
-                const y2 = Math.sin(angleNext) * outerR;
+            ctx.font = `bold ${Math.floor(52)}px "Segoe UI Symbol", monospace`;
+            ctx.fillStyle = '#4effdc';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = "#0ff";
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * 30 + seed * 7) * Math.PI/180;
+                const r = 320;
+                const x = Math.cos(angle) * r;
+                const y = Math.sin(angle) * r;
+                ctx.fillText(shuffled[i % shuffled.length], x - 18, y + 18);
+            }
+            
+            // Código binário decorativo
+            ctx.font = "22px 'Courier New'";
+            ctx.fillStyle = "#0fa";
+            for (let i = 0; i < 32; i++) {
+                const angleRan = (i * 37) * Math.PI/180;
+                const r = 390;
+                const binary = (Math.floor(Math.random() * 2)).toString();
+                const xb = Math.cos(angleRan) * r;
+                const yb = Math.sin(angleRan) * r;
+                ctx.fillText(binary, xb - 6, yb + 6);
+            }
+            
+            // Sigilo central mutante (forma geometrica)
+            ctx.beginPath();
+            const complexity = 5 + (seed % 4);
+            for (let i = 0; i < complexity; i++) {
+                const ang1 = (i * (360/complexity) + seed * 13) * Math.PI/180;
+                const ang2 = ((i+1) * (360/complexity) + seed * 13) * Math.PI/180;
+                const rad1 = 140;
+                const rad2 = 95;
+                const x1c = Math.cos(ang1) * rad1;
+                const y1c = Math.sin(ang1) * rad1;
+                const x2c = Math.cos(ang2) * rad2;
+                const y2c = Math.sin(ang2) * rad2;
                 ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
+                ctx.moveTo(x1c, y1c);
+                ctx.lineTo(x2c, y2c);
+                ctx.lineTo(Math.cos((ang1+ang2)/2) * 100, Math.sin((ang1+ang2)/2) * 100);
+                ctx.fillStyle = `rgba(0, ${150 + Math.sin(seed) * 100}, 255, 0.3)`;
+                ctx.fill();
                 ctx.stroke();
             }
             
-            // Glifos ao redor (círculo de caracteres)
-            ctx.font = `bold ${Math.floor(canvas.width * 0.07)}px "Segoe UI Symbol", "Arial Unicode MS", serif`;
-            ctx.fillStyle = '#e8bf6e';
-            ctx.shadowBlur = 6;
-            ctx.shadowColor = "#ffaa33";
-            const runes = ["⚝", "✧", "꧁", "꧂", "⛧", "☥", "⨀", "☉", "⛤", "✹", "🜍", "🝆"];
-            for (let i = 0; i < 12; i++) {
-                const angle = (i * 30) * Math.PI/180;
-                const r = canvas.width * 0.38;
-                const x = Math.cos(angle) * r;
-                const y = Math.sin(angle) * r;
-                ctx.save();
-                ctx.translate(x, y);
-                ctx.rotate(angle + Math.PI/2);
-                ctx.fillText(runes[i % runes.length], -15, 15);
-                ctx.restore();
-            }
-            
-            // inscrição latina/cabala fictícia
-            ctx.font = `24px "Courier New", monospace`;
-            ctx.fillStyle = "#cda45e";
-            ctx.fillText("AGLA • ON • BREATH • TETRAGRAMMATON", -280, -360);
-            ctx.fillText("⚝ SAPIENTIA • FORTITUDO • DECANUS ⚝", -270, 380);
-            
-            // símbolos de selo menor
-            ctx.font = `36px "Times New Roman"`;
-            ctx.fillStyle = "#dba642";
-            for (let i = 0; i < 8; i++) {
-                const angle = (i * 45) * Math.PI/180;
-                const r = canvas.width * 0.31;
-                const x = Math.cos(angle) * r;
-                const y = Math.sin(angle) * r;
-                ctx.fillText("⛧", x-12, y+12);
-            }
-            
             ctx.restore();
+            
+            // bordas externas glitch
+            for (let i = 0; i < 12; i++) {
+                ctx.strokeStyle = `hsl(${180 + i * 15}, 100%, 60%)`;
+                ctx.beginPath();
+                ctx.rect(30 + i*15, 30, canvas.width - 60 - i*30, canvas.height - 60);
+                ctx.stroke();
+            }
             
             const texture = new THREE.CanvasTexture(canvas);
             texture.needsUpdate = true;
             return texture;
         };
         
-        const sigilTexture = createSigilTexture();
-        const sigilPlaneMat = new THREE.MeshStandardMaterial({ map: sigilTexture, side: THREE.DoubleSide, emissive: 0x352010, emissiveIntensity: 0.4, metalness: 0.2, roughness: 0.5, transparent: true });
-        const sigilPlane = new THREE.Mesh(new THREE.CircleGeometry(1.3, 32), sigilPlaneMat);
-        sigilPlane.rotation.x = -0.05;
-        sigilPlane.position.z = 0.02;
-        seloGroup.add(sigilPlane);
+        const updateGlyph = (seedVal) => {
+            const newTex = generateGlyphCanvas(seedVal);
+            if (glyphPlane) {
+                glyphPlane.material.map.dispose();
+                glyphPlane.material.map = newTex;
+                glyphPlane.material.needsUpdate = true;
+            } else {
+                const mat = new THREE.MeshStandardMaterial({ map: newTex, side: THREE.DoubleSide, emissive: 0x114466, emissiveIntensity: 0.5, metalness: 0.3, roughness: 0.4, transparent: true });
+                glyphPlane = new THREE.Mesh(new THREE.CircleGeometry(1.05, 48), mat);
+                glyphPlane.rotation.x = -0.05;
+                glyphPlane.position.z = 0.03;
+                sealGroup.add(glyphPlane);
+            }
+        };
         
-        // --- Os 3 pontos de luz flutuante (velas/espíritos) ---
-        const candleGroup = new THREE.Group();
-        const sphereMat = new THREE.MeshStandardMaterial({ color: 0xff8844, emissive: 0xff3311, emissiveIntensity: 0.7, metalness: 0.1 });
-        const positions = [[1.2, 0.4, 0.9], [-1.0, 0.5, -1.1], [0.3, 1.1, -1.3], [-1.3, -0.2, 0.8]];
-        positions.forEach(pos => {
-            const orb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 24, 24), sphereMat);
+        updateGlyph(42); // inicial
+        
+        // 3. PARTÍCULAS DE FLUXO (essência digital)
+        const particleCount = 1800;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePos = new Float32Array(particleCount * 3);
+        const particleColorsArr = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            const rad = 1.2 + Math.random() * 1.5;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            particlePos[i*3] = rad * Math.sin(phi) * Math.cos(theta);
+            particlePos[i*3+1] = rad * Math.sin(phi) * Math.sin(theta) * 0.5;
+            particlePos[i*3+2] = rad * Math.cos(phi);
+            const colChoice = Math.random();
+            if (colChoice < 0.5) {
+                particleColorsArr[i*3] = 0.2 + Math.random()*0.8;
+                particleColorsArr[i*3+1] = 0.6 + Math.random()*0.4;
+                particleColorsArr[i*3+2] = 1.0;
+            } else {
+                particleColorsArr[i*3] = 1.0;
+                particleColorsArr[i*3+1] = 0.3 + Math.random()*0.5;
+                particleColorsArr[i*3+2] = 0.8;
+            }
+        }
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+        particleGeo.setAttribute('color', new THREE.BufferAttribute(particleColorsArr, 3));
+        const particleSys = new THREE.Points(particleGeo, new THREE.PointsMaterial({ size: 0.022, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true }));
+        sealGroup.add(particleSys);
+        
+        // 4. ESFERAS FLUTUANTES (sentinelas digitais)
+        const floatGroup = new THREE.Group();
+        const orbMat = new THREE.MeshStandardMaterial({ color: 0x33aaff, emissive: 0x2288ff, emissiveIntensity: 0.7 });
+        const positionsOrb = [[1.25, 0.2, 0.9], [-1.1, 0.3, -1.2], [0.4, 1.0, -1.3], [-1.3, -0.1, 0.7], [0.9, -0.4, 1.1]];
+        positionsOrb.forEach(pos => {
+            const orb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 24, 24), orbMat);
             orb.position.set(pos[0], pos[1], pos[2]);
-            candleGroup.add(orb);
-            
-            // glow effect com ponto de luz
-            const glowLight = new THREE.PointLight(0xff6633, 0.5, 4);
-            glowLight.position.set(pos[0], pos[1], pos[2]);
-            candleGroup.add(glowLight);
+            floatGroup.add(orb);
+            const glowPoint = new THREE.PointLight(0x33aaff, 0.45, 3);
+            glowPoint.position.set(pos[0], pos[1], pos[2]);
+            floatGroup.add(glowPoint);
         });
-        seloGroup.add(candleGroup);
+        sealGroup.add(floatGroup);
         
-        // --- Estrelas de Davi / hexagramas suspensos ---
-        const starGroup = new THREE.Group();
-        const starMaterial = new THREE.MeshStandardMaterial({ color: 0xdcb570, emissive: 0x442200, metalness: 0.75 });
-        for (let i = 0; i < 6; i++) {
-            const angleStar = (i * 60) * Math.PI/180;
-            const radiusStar = 1.85;
-            const xPos = Math.cos(angleStar) * radiusStar;
-            const zPos = Math.sin(angleStar) * radiusStar;
-            const starMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.12, 6), starMaterial);
-            starMesh.position.set(xPos, 0.15, zPos);
-            starGroup.add(starMesh);
+        // 5. PILARES DE LUZ VERTICAL (hologramas)
+        const lightPillars = new THREE.Group();
+        const pillarMat = new THREE.LineBasicMaterial({ color: 0x44ddff });
+        for (let i = 0; i < 24; i++) {
+            const ang = (i / 24) * Math.PI * 2;
+            const rad = 1.68;
+            const start = new THREE.Vector3(Math.cos(ang) * rad, -0.2, Math.sin(ang) * rad);
+            const end = new THREE.Vector3(Math.cos(ang) * rad, 0.85, Math.sin(ang) * rad);
+            const lineGeo = new THREE.BufferGeometry().setFromPoints([start, end]);
+            const lineObj = new THREE.Line(lineGeo, pillarMat);
+            lightPillars.add(lineObj);
         }
-        seloGroup.add(starGroup);
+        sealGroup.add(lightPillars);
         
-        // Anel externo com runas 3D pequenas - argolas decorativas
-        const runeRingGroup = new THREE.Group();
-        const runeSpheres = [];
-        for (let i = 0; i < 72; i++) {
-            const angle = (i / 72) * Math.PI * 2;
-            const radiusRun = 1.78;
-            const smallSphere = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), new THREE.MeshStandardMaterial({ color: 0xd4af37, emissive: 0x552200, emissiveIntensity: 0.3 }));
-            smallSphere.position.set(Math.cos(angle) * radiusRun, Math.sin(angle) * 0.08, Math.sin(angle) * radiusRun);
-            runeRingGroup.add(smallSphere);
-            runeSpheres.push(smallSphere);
+        // 6. ANEL DE SÍMBOLOS ROTATIVOS (ASCII cyber)
+        const symbolRingGroup = new THREE.Group();
+        const asciiSymbols = ["0", "1", "#", "%", "&", "*", "+", "⍟", "⌬"];
+        for (let i = 0; i < 48; i++) {
+            const angleSym = (i / 48) * Math.PI * 2;
+            const rSym = 1.85;
+            const div = document.createElement('div');
+            div.textContent = asciiSymbols[i % asciiSymbols.length];
+            div.style.color = "#0ff";
+            div.style.fontSize = "18px";
+            div.style.fontFamily = "monospace";
+            div.style.textShadow = "0 0 6px cyan";
+            div.style.position = "absolute";
+            const canvasTex = document.createElement('canvas');
+            canvasTex.width = 64;
+            canvasTex.height = 64;
+            const ctxTex = canvasTex.getContext('2d');
+            ctxTex.fillStyle = "#0ff";
+            ctxTex.font = "bold 36px monospace";
+            ctxTex.fillText(asciiSymbols[i % asciiSymbols.length], 12, 44);
+            const textureSprite = new THREE.CanvasTexture(canvasTex);
+            const spriteMat = new THREE.SpriteMaterial({ map: textureSprite, blending: THREE.AdditiveBlending });
+            const sprite = new THREE.Sprite(spriteMat);
+            sprite.scale.set(0.18, 0.18, 1);
+            sprite.position.set(Math.cos(angleSym) * rSym, Math.sin(angleSym) * 0.12, Math.sin(angleSym) * rSym);
+            symbolRingGroup.add(sprite);
         }
-        seloGroup.add(runeRingGroup);
+        sealGroup.add(symbolRingGroup);
         
-        // Adicionar um chão circular translúcido com glow
-        const floorGlowMat = new THREE.MeshStandardMaterial({ color: 0x1e1335, emissive: 0x331a44, emissiveIntensity: 0.25, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
-        const glowDisc = new THREE.Mesh(new THREE.CircleGeometry(2.3, 16), floorGlowMat);
-        glowDisc.rotation.x = -Math.PI / 2;
-        glowDisc.position.y = -0.2;
-        seloGroup.add(glowDisc);
-        
-        scene.add(seloGroup);
-        
-        // --- Adicionar partículas extras flutuantes (fumaça mágica) ---
-        const smokeParticleCount = 800;
-        const smokeGeo = new THREE.BufferGeometry();
-        const smokePositions = new Float32Array(smokeParticleCount * 3);
-        for (let i = 0; i < smokeParticleCount; i++) {
-            smokePositions[i*3] = (Math.random() - 0.5) * 5.5;
-            smokePositions[i*3+1] = Math.random() * 2.2;
-            smokePositions[i*3+2] = (Math.random() - 0.5) * 5;
+        // 7. NUVEM DE PARTÍCULAS DE "POEIRA CIBERNÉTICA"
+        const dustCount = 1200;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPos = new Float32Array(dustCount * 3);
+        for (let i = 0; i < dustCount; i++) {
+            dustPos[i*3] = (Math.random() - 0.5) * 5.5;
+            dustPos[i*3+1] = Math.random() * 2.5 - 0.5;
+            dustPos[i*3+2] = (Math.random() - 0.5) * 6;
         }
-        smokeGeo.setAttribute('position', new THREE.BufferAttribute(smokePositions, 3));
-        const smokeMat = new THREE.PointsMaterial({ color: 0x9977aa, size: 0.012, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending });
-        const smokeSys = new THREE.Points(smokeGeo, smokeMat);
-        scene.add(smokeSys);
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+        const dustMat = new THREE.PointsMaterial({ color: 0x88ccff, size: 0.008, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+        const dustSys = new THREE.Points(dustGeo, dustMat);
+        scene.add(dustSys);
         
-        // --- Eixo de energia vertical - linhas de luz (opcional) ---
-        const beamGroup = new THREE.Group();
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xffaa55 });
-        for (let i = 0; i < 36; i++) {
-            const ang = (i / 36) * Math.PI * 2;
-            const rad = 1.55;
-            const start = new THREE.Vector3(Math.cos(ang) * rad, -0.3, Math.sin(ang) * rad);
-            const end = new THREE.Vector3(Math.cos(ang) * rad, 0.65, Math.sin(ang) * rad);
-            const pointsArr = [start, end];
-            const lineGeo = new THREE.BufferGeometry().setFromPoints(pointsArr);
-            const lineObj = new THREE.Line(lineGeo, lineMat);
-            beamGroup.add(lineObj);
-        }
-        scene.add(beamGroup);
+        // 8. BASE CIRCULAR (chão tecnológico)
+        const techFloorMat = new THREE.MeshStandardMaterial({ color: 0x0a0a2a, emissive: 0x115588, emissiveIntensity: 0.2, metalness: 0.7, roughness: 0.4, transparent: true });
+        const techDisc = new THREE.Mesh(new THREE.CircleGeometry(2.4, 24), techFloorMat);
+        techDisc.rotation.x = -Math.PI / 2;
+        techDisc.position.y = -0.28;
+        sealGroup.add(techDisc);
         
-        // --- Animações ---
+        // --- ANIMAÇÃO E ESTADOS ---
         let time = 0;
+        let currentFlux = 87;
+        let transmuteSeed = 42;
         
-        // Animação das partículas flutuantes e rotação
-        const animate = () => {
+        const fluxElement = document.getElementById('fluxValue');
+        const statusElement = document.getElementById('sigilStatus');
+        
+        // Botão de transmutação
+        document.getElementById('transmuteBtn').addEventListener('click', () => {
+            transmuteSeed = Math.floor(Math.random() * 9999);
+            updateGlyph(transmuteSeed);
+            currentFlux = 65 + Math.random() * 30;
+            fluxElement.innerText = `FLUXO: ${Math.floor(currentFlux)}%`;
+            statusElement.innerText = `⛭ TRANSMUTAÇÃO ATIVA ⛭`;
+            setTimeout(() => {
+                statusElement.innerText = `⛭ CONEXÃO ETÉREA ESTÁVEL ⛭`;
+            }, 1800);
+            // efeito tátil
+            coreBeacon.intensity = 1.5;
+            setTimeout(() => { coreBeacon.intensity = 0.9; }, 300);
+            controls.autoRotateSpeed = 1.9;
+            setTimeout(() => { controls.autoRotateSpeed = 1.4; }, 1000);
+        });
+        
+        // Atualização do fluxo dinâmico
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                currentFlux += (Math.random() - 0.5) * 6;
+                currentFlux = Math.min(99, Math.max(42, currentFlux));
+                fluxElement.innerText = `FLUXO: ${Math.floor(currentFlux)}%`;
+            }
+        }, 2800);
+        
+        // Loop principal
+        function animate() {
             requestAnimationFrame(animate);
             time += 0.012;
             
-            // Movimento das partículas ao redor do selo
-            particleSystem.rotation.y = time * 0.15;
-            particleSystem.rotation.x = Math.sin(time * 0.23) * 0.1;
-            particleSystem.rotation.z = Math.cos(time * 0.19) * 0.05;
-            
-            // Fumaça sobe levemente
-            smokeSys.rotation.y += 0.002;
-            smokeSys.rotation.x = Math.sin(time * 0.1) * 0.05;
-            
-            // Pulsação da luz central
-            const intensityPulse = 0.7 + Math.sin(time * 3.5) * 0.35;
-            coreLight.intensity = intensityPulse;
-            
-            // Pequeno movimento nos orbes flutuantes
-            candleGroup.children.forEach((child, idx) => {
+            // Movimentos orgânicos
+            particleSys.rotation.y = time * 0.2;
+            particleSys.rotation.x = Math.sin(time * 0.25) * 0.1;
+            symbolRingGroup.rotation.y = time * 0.35;
+            symbolRingGroup.rotation.x = Math.sin(time * 0.4) * 0.08;
+            lightPillars.rotation.y = time * 0.12;
+            floatGroup.children.forEach((child, idx) => {
                 if (child.isMesh) {
-                    child.position.y += Math.sin(time * 3 + idx) * 0.003;
+                    child.position.y += Math.sin(time * 2.5 + idx) * 0.002;
                 }
                 if (child.isPointLight) {
-                    child.intensity = 0.45 + Math.sin(time * 4 + idx) * 0.2;
+                    child.intensity = 0.4 + Math.sin(time * 3 + idx) * 0.2;
                 }
             });
             
-            // Brilho das runas (pequenos pulsos)
-            runeSpheres.forEach((sphere, idx) => {
-                const mat = sphere.material;
-                if (mat) {
-                    const pulse = 0.3 + Math.sin(time * 3.2 + idx) * 0.2;
-                    mat.emissiveIntensity = pulse;
-                }
-            });
+            // Pulsação da luz central
+            coreBeacon.intensity = 0.7 + Math.sin(time * 4.2) * 0.35;
             
-            // Rotação lenta do selo principal e grupo de runas
-            seloGroup.rotation.y = Math.sin(time * 0.1) * 0.12;
-            seloGroup.rotation.x = Math.sin(time * 0.2) * 0.03;
-            starGroup.rotation.y = time * 0.2;
-            beamGroup.rotation.y = time * 0.08;
+            // Rotação suave geral do selo
+            sealGroup.rotation.y = Math.sin(time * 0.15) * 0.1;
+            sealGroup.rotation.x = Math.sin(time * 0.22) * 0.04;
             
-            // Autoroatação da câmera se não houver interação recente? O OrbitControls tem autoRotate, já ativado
+            // Partículas de poeira rodam lentamente
+            dustSys.rotation.y += 0.003;
+            
+            // Efeito de "respiração" nos anéis
+            const scalePulse = 1 + Math.sin(time * 3) * 0.005;
+            outerRing.scale.set(scalePulse, scalePulse, scalePulse);
+            midRing.scale.set(1 + Math.sin(time * 3.3) * 0.004, 1 + Math.sin(time * 3.3) * 0.004, 1);
+            
+            // Atualiza controles e render
             controls.update();
-            
-            // Atualizar textura do sigilo periodicamente para animar? Não necessário, mas pode recriar se quiser efeito cintilante
-            
-            // Render via EffectComposer
             effectComposer.render();
-        };
+        }
         
-        // Iniciar animação
         animate();
         
-        // Ajustar redimensionamento da janela
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
+        // Resize handler
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             effectComposer.setSize(window.innerWidth, window.innerHeight);
-        }
+        });
         
-        // Pequeno toque: console mágico
-        console.log('%c⚝ Selo da Goétia de Salomão invocado ⚝', 'color: #d4af37; font-size: 16px; font-family: monospace;');
+        // Estética final: console lore
+        console.log("%c🌀 ARCANUM CYBERIA | Selo de Éter Digital ativado. Glifos autorais prontos para transmutação. 🌀", "color: #0ff; font-size: 14px; font-family: monospace;");
         
-        // Adicionar um piso de luz circular sutil (efeito de chão)
-        const circleFloorMat = new THREE.MeshStandardMaterial({ color: 0x1c102e, emissive: 0x341f50, roughness: 0.7, metalness: 0.1, transparent: true, opacity: 0.3 });
-        const ritualCircle = new THREE.Mesh(new THREE.RingGeometry(2.0, 2.45, 64), circleFloorMat);
-        ritualCircle.rotation.x = -Math.PI / 2;
-        ritualCircle.position.y = -0.25;
-        scene.add(ritualCircle);
-        
-        // Pequenos tetraedros flutuantes (espíritos menores)
-        const spiritGroup = new THREE.Group();
-        const spiritMat = new THREE.MeshStandardMaterial({ color: 0xa97ac9, emissive: 0x662266, emissiveIntensity: 0.5 });
-        for (let i = 0; i < 12; i++) {
-            const tetraGeo = new THREE.ConeGeometry(0.055, 0.11, 4);
-            const tetra = new THREE.Mesh(tetraGeo, spiritMat);
-            const angleSpirit = (i / 12) * Math.PI * 2;
-            const radSpirit = 1.95;
-            tetra.position.set(Math.cos(angleSpirit) * radSpirit, 0.25 + Math.sin(angleSpirit*2)*0.1, Math.sin(angleSpirit) * radSpirit);
-            spiritGroup.add(tetra);
-        }
-        scene.add(spiritGroup);
-        
-        // Animar espíritos
-        function animateSpirits() {
-            requestAnimationFrame(animateSpirits);
-            spiritGroup.rotation.y += 0.008;
-            spiritGroup.children.forEach((child, idx) => {
-                child.position.y = 0.22 + Math.sin(Date.now() * 0.002 + idx) * 0.05;
-            });
-        }
-        animateSpirits();
+        // Pequenos "scanners" ocasionais
+        setInterval(() => {
+            if (Math.random() > 0.8) {
+                const randomColor = `hsl(${180 + Math.random() * 180}, 100%, 60%)`;
+                rimLight.color.set(randomColor);
+                setTimeout(() => rimLight.color.set('#ff44aa'), 400);
+            }
+        }, 2200);
         
     </script>
 </body>

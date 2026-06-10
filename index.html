@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Holographic Card - Futurista</title>
+    <title>Holographic Dashboard - Painel de Nave</title>
     <style>
         * {
             margin: 0;
@@ -18,22 +18,83 @@
             background: radial-gradient(circle at center, #0a0a2a 0%, #020210 100%);
         }
 
+        /* Botão de tela cheia */
+        .fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            color: #00ffff;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 1px;
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            border-color: #00ffff;
+        }
+
+        /* Indicador de status */
+        .status-bar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border-left: 3px solid #00ffff;
+            padding: 8px 15px;
+            z-index: 100;
+            font-family: monospace;
+            font-size: 10px;
+            color: #88aaff;
+            letter-spacing: 1px;
+        }
+
+        .status-bar span {
+            color: #44ff88;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #44ff88;
+            margin-right: 6px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px #44ff88; }
+            50% { opacity: 0.3; }
+        }
+
         /* Loading */
         #loading {
-            position: absolute;
+            position: fixed;
             bottom: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: #00ffff;
             font-family: monospace;
-            z-index: 100;
-            background: rgba(0,0,0,0.8);
-            padding: 15px 25px;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 30px;
             border-radius: 10px;
             border: 1px solid #00ffff;
             text-align: center;
             backdrop-filter: blur(10px);
             animation: pulse 1.5s ease-in-out infinite;
+            white-space: nowrap;
         }
 
         @keyframes pulse {
@@ -41,82 +102,33 @@
             50% { opacity: 0.6; box-shadow: 0 0 30px #00ffff; }
         }
 
-        /* Instruções */
-        .controls-hint {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: #88aaff;
-            background: rgba(0,0,0,0.5);
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-size: 11px;
-            z-index: 20;
-            pointer-events: none;
-            backdrop-filter: blur(8px);
-            font-family: monospace;
-            border: 1px solid rgba(0,255,255,0.3);
-        }
-
-        /* Título */
-        .title-container {
-            position: absolute;
+        /* Relógio digital */
+        .clock {
+            position: fixed;
             top: 20px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            z-index: 20;
-            pointer-events: none;
-        }
-
-        .main-title {
-            font-family: 'Courier New', monospace;
-            font-size: 1.5rem;
-            letter-spacing: 4px;
-            margin-bottom: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .main-title { font-size: 1rem; letter-spacing: 2px; }
-            .controls-hint { font-size: 8px; padding: 4px 10px; }
-        }
-
-        .glow-text {
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff;
-            animation: titlePulse 2s ease-in-out infinite;
-        }
-
-        .glow-text-secondary {
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border-right: 3px solid #ff44ff;
+            padding: 8px 15px;
+            z-index: 100;
+            font-family: monospace;
+            font-size: 14px;
             color: #ff44ff;
-            text-shadow: 0 0 10px #ff44ff, 0 0 20px #ff44aa;
-            animation: titlePulse 2s ease-in-out infinite 0.3s;
-        }
-
-        .title-line {
-            width: 200px;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent);
-            margin: 8px auto;
-        }
-
-        @keyframes titlePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="title-container">
-        <h1 class="main-title">
-            <span class="glow-text">✦ HOLOGRAPHIC</span>
-            <span class="glow-text-secondary"> INTERFACE</span>
-        </h1>
-        <div class="title-line"></div>
+    <div class="status-bar">
+        <span></span> SISTEMA OPERACIONAL | LINK ESTÁVEL
     </div>
-    <div class="controls-hint">
-        🖱️ ARRASTE PARA GIRAR | 🔍 PINÇA ZOOM
+    <div class="clock" id="clock">
+        00:00:00
     </div>
+    <button class="fullscreen-btn" id="fullscreenBtn">
+        🔲 EXPANDIR PARA TELA CHEIA
+    </button>
     <div id="loading">
         🔷 INICIALIZANDO HOLOGRAMA... 🔷
     </div>
@@ -132,21 +144,56 @@
 
     <script type="module">
         import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
         // ============================================================
-        // INICIALIZAÇÃO
+        // RELÓGIO DIGITAL
+        // ============================================================
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds} UTC`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+        
+        // ============================================================
+        // TELA CHEIA
+        // ============================================================
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                fullscreenBtn.innerHTML = '🔳 SAIR DA TELA CHEIA';
+            } else {
+                document.exitFullscreen();
+                fullscreenBtn.innerHTML = '🔲 EXPANDIR PARA TELA CHEIA';
+            }
+        }
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                fullscreenBtn.innerHTML = '🔳 SAIR DA TELA CHEIA';
+            } else {
+                fullscreenBtn.innerHTML = '🔲 EXPANDIR PARA TELA CHEIA';
+            }
+        });
+        
+        // ============================================================
+        // INICIALIZAÇÃO (CÂMERA FIXA, SEM ORBIT)
         // ============================================================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010118);
-        scene.fog = new THREE.FogExp2(0x010118, 0.008);
+        scene.fog = new THREE.FogExp2(0x010118, 0.01);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.2, 4.2);
-        camera.lookAt(0, 0.8, 0);
+        camera.position.set(0, 0.9, 3.8);
+        camera.lookAt(0, 0.7, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -154,13 +201,13 @@
         renderer.toneMapping = THREE.ReinhardToneMapping;
         document.body.appendChild(renderer.domElement);
 
-        // Efeito Bloom (Glow profissional)
+        // Efeito Bloom (Glow)
         const renderScene = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(window.innerWidth, window.innerHeight),
-            1.3,   // strength - intensidade
-            0.5,   // radius - espalhamento
-            0.2    // threshold - sensibilidade
+            1.4,   // strength
+            0.5,   // radius
+            0.15   // threshold
         );
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(renderScene);
@@ -173,161 +220,143 @@
         }, 800);
 
         // ============================================================
-        // CONTROLES
-        // ============================================================
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.8;
-        controls.enableZoom = true;
-        controls.enablePan = false;
-        controls.zoomSpeed = 1.0;
-        controls.target.set(0, 0.8, 0);
-
-        // ============================================================
         // LUZES
         // ============================================================
         const ambientLight = new THREE.AmbientLight(0x111122);
         scene.add(ambientLight);
         
-        const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.7);
         mainLight.position.set(2, 3, 4);
         scene.add(mainLight);
         
-        const backLight = new THREE.PointLight(0x4466ff, 0.6);
+        const backLight = new THREE.PointLight(0x4466ff, 0.5);
         backLight.position.set(0, 1.2, -2);
         scene.add(backLight);
         
-        const fillLight = new THREE.PointLight(0xff44ff, 0.4);
+        const fillLight = new THREE.PointLight(0xff44ff, 0.3);
         fillLight.position.set(-1, 1.5, 2);
         scene.add(fillLight);
         
-        const rimLight = new THREE.PointLight(0x00ffff, 0.5);
+        const rimLight = new THREE.PointLight(0x00ffff, 0.4);
         rimLight.position.set(1, 1.8, 1.5);
         scene.add(rimLight);
 
         // ============================================================
-        // EFEITOS VISUAIS DE FUNDO
+        // EFEITOS DE FUNDO
         // ============================================================
         
-        // Grade holográfica no chão
+        // Grade holográfica
         const gridHelper = new THREE.GridHelper(8, 20, 0x33aaff, 0x2266aa);
-        gridHelper.position.y = -1.0;
+        gridHelper.position.y = -0.9;
         gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.25;
+        gridHelper.material.opacity = 0.2;
         scene.add(gridHelper);
         
-        // Anel circular externo
-        const ringOuterGeo = new THREE.TorusGeometry(2.2, 0.03, 64, 200);
+        // Anel externo
+        const ringOuterGeo = new THREE.TorusGeometry(2.0, 0.03, 64, 200);
         const ringOuterMat = new THREE.MeshStandardMaterial({
             color: 0x44aaff,
             emissive: 0x2266aa,
-            emissiveIntensity: 0.7,
-            transparent: true,
-            opacity: 0.6
-        });
-        const ringOuter = new THREE.Mesh(ringOuterGeo, ringOuterMat);
-        ringOuter.rotation.x = Math.PI / 2;
-        ringOuter.position.y = -0.7;
-        scene.add(ringOuter);
-        
-        // Anel circular interno
-        const ringInnerGeo = new THREE.TorusGeometry(1.6, 0.02, 64, 200);
-        const ringInnerMat = new THREE.MeshStandardMaterial({
-            color: 0xff44ff,
-            emissive: 0xff2288,
-            emissiveIntensity: 0.5,
+            emissiveIntensity: 0.6,
             transparent: true,
             opacity: 0.5
         });
+        const ringOuter = new THREE.Mesh(ringOuterGeo, ringOuterMat);
+        ringOuter.rotation.x = Math.PI / 2;
+        ringOuter.position.y = -0.6;
+        scene.add(ringOuter);
+        
+        // Anel interno
+        const ringInnerGeo = new THREE.TorusGeometry(1.4, 0.02, 64, 200);
+        const ringInnerMat = new THREE.MeshStandardMaterial({
+            color: 0xff44ff,
+            emissive: 0xff2288,
+            emissiveIntensity: 0.4,
+            transparent: true,
+            opacity: 0.4
+        });
         const ringInner = new THREE.Mesh(ringInnerGeo, ringInnerMat);
         ringInner.rotation.x = Math.PI / 2;
-        ringInner.position.y = -0.7;
+        ringInner.position.y = -0.6;
         scene.add(ringInner);
         
-        // Partículas flutuantes (Sparkles)
-        const particleCount = 2000;
+        // Partículas flutuantes
+        const particleCount = 1500;
         const particleGeometry = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
         for (let i = 0; i < particleCount; i++) {
-            particlePositions[i*3] = (Math.random() - 0.5) * 10;
+            particlePositions[i*3] = (Math.random() - 0.5) * 9;
             particlePositions[i*3+1] = (Math.random() - 0.5) * 5 + 0.5;
-            particlePositions[i*3+2] = (Math.random() - 0.5) * 7;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 6;
         }
         particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
         const particleMaterial = new THREE.PointsMaterial({
             color: 0x66ccff,
-            size: 0.025,
+            size: 0.022,
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.35,
             blending: THREE.AdditiveBlending
         });
         const particles = new THREE.Points(particleGeometry, particleMaterial);
         scene.add(particles);
         
         // ============================================================
-        // CARD HOLOGRÁFICO PRINCIPAL (Modelo 3D)
+        // CARD PRINCIPAL
         // ============================================================
+        const cardWidth = 2.5;
+        const cardHeight = 3.3;
         
-        // Painel principal do card (vidro)
-        const cardWidth = 2.4;
-        const cardHeight = 3.2;
-        const cardDepth = 0.08;
-        
-        // Corpo principal (vidro fosco)
-        const cardGeometry = new THREE.BoxGeometry(cardWidth, cardHeight, cardDepth);
+        // Corpo principal (vidro)
+        const cardGeometry = new THREE.BoxGeometry(cardWidth, cardHeight, 0.08);
         const cardMaterial = new THREE.MeshStandardMaterial({
             color: 0x88aaff,
             emissive: 0x2266aa,
-            emissiveIntensity: 0.12,
+            emissiveIntensity: 0.1,
             metalness: 0.85,
             roughness: 0.25,
             transparent: true,
             opacity: 0.3
         });
         const card = new THREE.Mesh(cardGeometry, cardMaterial);
-        card.position.set(0, 0.7, 0);
-        card.castShadow = true;
-        card.receiveShadow = false;
+        card.position.set(0, 0.65, 0);
         scene.add(card);
         
-        // Borda neon (externa)
+        // Borda neon externa
         const edgeGeometry = new THREE.BoxGeometry(cardWidth + 0.08, cardHeight + 0.08, 0.02);
         const edgeMaterial = new THREE.MeshStandardMaterial({
             color: 0x00ffff,
             emissive: 0x00ffff,
-            emissiveIntensity: 0.6,
+            emissiveIntensity: 0.7,
             transparent: true,
-            opacity: 0.8
+            opacity: 0.9
         });
         const edgeBorder = new THREE.Mesh(edgeGeometry, edgeMaterial);
-        edgeBorder.position.set(0, 0.7, 0.045);
+        edgeBorder.position.set(0, 0.65, 0.045);
         scene.add(edgeBorder);
         
-        // Segunda borda (interna, rosa)
+        // Borda interna rosa
         const edge2Geometry = new THREE.BoxGeometry(cardWidth - 0.15, cardHeight - 0.15, 0.01);
         const edge2Material = new THREE.MeshStandardMaterial({
             color: 0xff44ff,
             emissive: 0xff44ff,
-            emissiveIntensity: 0.4,
+            emissiveIntensity: 0.5,
             transparent: true,
-            opacity: 0.7
+            opacity: 0.8
         });
         const edgeBorder2 = new THREE.Mesh(edge2Geometry, edge2Material);
-        edgeBorder2.position.set(0, 0.7, 0.055);
+        edgeBorder2.position.set(0, 0.65, 0.055);
         scene.add(edgeBorder2);
         
-        // Cantos decorativos (pequenos cubos nas bordas)
+        // Cantos decorativos
         const cornerMaterial = new THREE.MeshStandardMaterial({
             color: 0x00ffff,
             emissive: 0x00ffff,
-            emissiveIntensity: 0.8
+            emissiveIntensity: 0.9
         });
         
         const corners = [
-            [-1.2, 1.65, 0.06], [1.2, 1.65, 0.06],
-            [-1.2, -0.25, 0.06], [1.2, -0.25, 0.06]
+            [-1.25, 1.7, 0.06], [1.25, 1.7, 0.06],
+            [-1.25, -0.4, 0.06], [1.25, -0.4, 0.06]
         ];
         corners.forEach(pos => {
             const corner = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.04), cornerMaterial);
@@ -335,7 +364,7 @@
             scene.add(corner);
         });
         
-        // Linhas holográficas horizontais (dentro do card)
+        // Linhas holográficas horizontais
         const lineMaterial = new THREE.MeshStandardMaterial({
             color: 0x00ffff,
             emissive: 0x00ffff,
@@ -344,15 +373,15 @@
             opacity: 0.6
         });
         
-        const lineYs = [-0.1, 0.3, 0.7, 1.1, 1.5];
+        const lineYs = [-0.15, 0.25, 0.65, 1.05, 1.45];
         lineYs.forEach(y => {
-            const line = new THREE.Mesh(new THREE.BoxGeometry(2.0, 0.01, 0.02), lineMaterial);
+            const line = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.01, 0.02), lineMaterial);
             line.position.set(0, y, 0.07);
             scene.add(line);
         });
         
         // ============================================================
-        // CONTEÚDO DO CARD (HTML com CSS2DRenderer)
+        // CONTEÚDO DO CARD (CSS2DRenderer)
         // ============================================================
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
         
@@ -364,125 +393,124 @@
         labelRenderer.domElement.style.pointerEvents = 'none';
         document.body.appendChild(labelRenderer.domElement);
         
-        // Criar o conteúdo HTML do card
         const cardContent = document.createElement('div');
         cardContent.style.cssText = `
-            width: 260px;
-            height: 340px;
+            width: 280px;
+            height: 360px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px 15px;
+            padding: 22px 18px;
             font-family: 'Courier New', monospace;
             color: #fff;
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
         `;
         
         cardContent.innerHTML = `
-            <div style="text-align: center; margin-bottom: 10px;">
-                <div style="font-size: 10px; letter-spacing: 3px; color: #00ffff; margin-bottom: 5px;">✦ SYSTEM STATUS ✦</div>
-                <div style="font-size: 18px; font-weight: bold; color: #ff44ff;">HOLOGRAPHIC DASHBOARD</div>
-                <div style="width: 80px; height: 1px; background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent); margin: 8px auto;"></div>
+            <div style="text-align: center; margin-bottom: 8px;">
+                <div style="font-size: 9px; letter-spacing: 4px; color: #00ffff; margin-bottom: 4px;">✦ NAVE SISTEMA ✦</div>
+                <div style="font-size: 16px; font-weight: bold; color: #ff44ff;">HOLOGRAPHIC DASHBOARD</div>
+                <div style="width: 100px; height: 1px; background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent); margin: 8px auto;"></div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
                 <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 9px; color: #88aaff;">USUÁRIOS</div>
-                    <div style="font-size: 22px; font-weight: bold; color: #00ffff;">12.4K</div>
-                    <div style="font-size: 8px; color: #44ff88;">▲ +23%</div>
+                    <div style="font-size: 8px; color: #88aaff;">POTÊNCIA</div>
+                    <div style="font-size: 20px; font-weight: bold; color: #00ffff;">98.4%</div>
+                    <div style="font-size: 7px; color: #44ff88;">▲ NOMINAL</div>
                 </div>
                 <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 9px; color: #88aaff;">TRANSAÇÕES</div>
-                    <div style="font-size: 22px; font-weight: bold; color: #ff44ff;">₿ 847</div>
-                    <div style="font-size: 8px; color: #44ff88;">▲ +12%</div>
+                    <div style="font-size: 8px; color: #88aaff;">VELOCIDADE</div>
+                    <div style="font-size: 20px; font-weight: bold; color: #ff44ff;">2.3M km/h</div>
+                    <div style="font-size: 7px; color: #44ff88;">▲ CRUZEIRO</div>
                 </div>
                 <div style="text-align: center; flex: 1;">
-                    <div style="font-size: 9px; color: #88aaff;">HASHRATE</div>
-                    <div style="font-size: 22px; font-weight: bold; color: #44ff88;">285 TH</div>
-                    <div style="font-size: 8px; color: #ff6644;">▼ -2%</div>
-                </div>
-            </div>
-            
-            <div style="background: rgba(0,255,255,0.1); border-left: 2px solid #00ffff; padding: 8px; margin-bottom: 15px;">
-                <div style="font-size: 8px; color: #00ffff;">TEMPERATURA</div>
-                <div style="font-size: 16px; font-weight: bold;">42°C</div>
-                <div style="width: 100%; height: 2px; background: #333; margin-top: 5px; border-radius: 2px;">
-                    <div style="width: 65%; height: 100%; background: linear-gradient(90deg, #00ffff, #ff44ff); border-radius: 2px;"></div>
+                    <div style="font-size: 8px; color: #88aaff;">ENERGIA</div>
+                    <div style="font-size: 20px; font-weight: bold; color: #44ff88;">847 GW</div>
+                    <div style="font-size: 7px; color: #ff6644;">▼ -2%</div>
                 </div>
             </div>
             
-            <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 15px;">
-                <div style="flex: 1; background: rgba(255,68,255,0.1); border-radius: 5px; padding: 6px; text-align: center;">
-                    <div style="font-size: 7px; color: #ff44ff;">ATIVOS</div>
-                    <div style="font-size: 14px; font-weight: bold;">3.2M</div>
+            <div style="background: rgba(0,255,255,0.08); border-left: 2px solid #00ffff; padding: 8px; margin-bottom: 12px;">
+                <div style="font-size: 8px; color: #00ffff;">REATOR TERMAL</div>
+                <div style="font-size: 14px; font-weight: bold;">3,842°C</div>
+                <div style="width: 100%; height: 2px; background: #333; margin-top: 6px; border-radius: 2px;">
+                    <div style="width: 72%; height: 100%; background: linear-gradient(90deg, #00ffff, #ff44ff); border-radius: 2px;"></div>
                 </div>
-                <div style="flex: 1; background: rgba(0,255,255,0.1); border-radius: 5px; padding: 6px; text-align: center;">
-                    <div style="font-size: 7px; color: #00ffff;">LATÊNCIA</div>
-                    <div style="font-size: 14px; font-weight: bold;">24ms</div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; gap: 8px; margin-bottom: 12px;">
+                <div style="flex: 1; background: rgba(255,68,255,0.08); border-radius: 5px; padding: 6px; text-align: center;">
+                    <div style="font-size: 7px; color: #ff44ff;">SISTEMAS</div>
+                    <div style="font-size: 13px; font-weight: bold;">100%</div>
                 </div>
-                <div style="flex: 1; background: rgba(68,255,136,0.1); border-radius: 5px; padding: 6px; text-align: center;">
+                <div style="flex: 1; background: rgba(0,255,255,0.08); border-radius: 5px; padding: 6px; text-align: center;">
+                    <div style="font-size: 7px; color: #00ffff;">SHIELD</div>
+                    <div style="font-size: 13px; font-weight: bold;">84%</div>
+                </div>
+                <div style="flex: 1; background: rgba(68,255,136,0.08); border-radius: 5px; padding: 6px; text-align: center;">
                     <div style="font-size: 7px; color: #44ff88;">STATUS</div>
-                    <div style="font-size: 12px; font-weight: bold; color: #44ff88;">ONLINE</div>
+                    <div style="font-size: 11px; font-weight: bold; color: #44ff88;">ONLINE</div>
                 </div>
             </div>
             
-            <div style="text-align: center; margin-top: 5px;">
-                <div style="font-size: 7px; color: #88aaff; letter-spacing: 2px;">✦ LIVE DATA STREAM ✦</div>
-                <div style="font-size: 6px; color: #6688aa; margin-top: 4px;">atualizado em tempo real</div>
+            <div style="text-align: center; margin-top: 4px;">
+                <div style="font-size: 7px; color: #88aaff; letter-spacing: 3px;">✦ TELEMETRIA ATIVA ✦</div>
+                <div style="font-size: 6px; color: #6688aa; margin-top: 4px;">dados em tempo real | link estável</div>
             </div>
         `;
         
         const cardHTML = new CSS2DObject(cardContent);
-        cardHTML.position.set(0, 0.7, 0.09);
+        cardHTML.position.set(0, 0.65, 0.09);
         scene.add(cardHTML);
         
         // ============================================================
-        // ESFERA HOLOGRÁFICA (efeito de núcleo)
+        // ESFERA HOLOGRÁFICA (Núcleo)
         // ============================================================
-        const coreGeometry = new THREE.SphereGeometry(0.22, 32, 32);
+        const coreGeometry = new THREE.SphereGeometry(0.2, 32, 32);
         const coreMaterial = new THREE.MeshStandardMaterial({
             color: 0x00ffff,
             emissive: 0x00ffff,
-            emissiveIntensity: 0.8,
+            emissiveIntensity: 0.9,
             metalness: 0.9,
             roughness: 0.1
         });
         const coreSphere = new THREE.Mesh(coreGeometry, coreMaterial);
-        coreSphere.position.set(0, -0.55, 0.15);
+        coreSphere.position.set(0, -0.5, 0.12);
         scene.add(coreSphere);
         
-        // Anel ao redor da esfera
-        const sphereRingGeo = new THREE.TorusGeometry(0.28, 0.02, 32, 64);
+        // Anel da esfera
+        const sphereRingGeo = new THREE.TorusGeometry(0.26, 0.02, 32, 64);
         const sphereRingMat = new THREE.MeshStandardMaterial({
             color: 0xff44ff,
             emissive: 0xff44ff,
-            emissiveIntensity: 0.6
+            emissiveIntensity: 0.7
         });
         const sphereRing = new THREE.Mesh(sphereRingGeo, sphereRingMat);
-        sphereRing.position.set(0, -0.55, 0.15);
+        sphereRing.position.set(0, -0.5, 0.12);
         scene.add(sphereRing);
         
         // ============================================================
-        // PARTÍCULAS AO REDOR DO CARD
+        // PARTÍCULAS ORBITAIS
         // ============================================================
-        const orbParticleCount = 400;
-        const orbParticleGeo = new THREE.BufferGeometry();
-        const orbPositions = new Float32Array(orbParticleCount * 3);
-        for (let i = 0; i < orbParticleCount; i++) {
-            const angle = (i / orbParticleCount) * Math.PI * 2;
-            const radius = 1.5;
-            orbPositions[i*3] = Math.cos(angle) * radius;
-            orbPositions[i*3+1] = 0.7 + Math.sin(angle * 2) * 0.5;
-            orbPositions[i*3+2] = Math.sin(angle) * radius * 0.5;
+        const orbCount = 300;
+        const orbGeo = new THREE.BufferGeometry();
+        const orbPos = new Float32Array(orbCount * 3);
+        for (let i = 0; i < orbCount; i++) {
+            const angle = (i / orbCount) * Math.PI * 2;
+            const radius = 1.4;
+            orbPos[i*3] = Math.cos(angle) * radius;
+            orbPos[i*3+1] = 0.65 + Math.sin(angle * 2) * 0.6;
+            orbPos[i*3+2] = Math.sin(angle) * radius * 0.5;
         }
-        orbParticleGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
-        const orbParticleMat = new THREE.PointsMaterial({
+        orbGeo.setAttribute('position', new THREE.BufferAttribute(orbPos, 3));
+        const orbMat = new THREE.PointsMaterial({
             color: 0xff66cc,
-            size: 0.02,
+            size: 0.018,
             transparent: true,
             blending: THREE.AdditiveBlending
         });
-        const orbParticles = new THREE.Points(orbParticleGeo, orbParticleMat);
+        const orbParticles = new THREE.Points(orbGeo, orbMat);
         scene.add(orbParticles);
         
         // ============================================================
@@ -494,49 +522,32 @@
             requestAnimationFrame(animate);
             time += 0.016;
             
-            // Flutuação suave do card
-            const floatY = Math.sin(time * 0.8) * 0.03;
-            card.position.y = 0.7 + floatY;
-            edgeBorder.position.y = 0.7 + floatY;
-            edgeBorder2.position.y = 0.7 + floatY;
-            cardHTML.position.y = 0.7 + floatY;
-            coreSphere.position.y = -0.55 + floatY;
-            sphereRing.position.y = -0.55 + floatY;
-            orbParticles.position.y = floatY;
-            
-            // Atualizar cantos
-            corners.forEach(corner => {
-                const cornerObj = scene.children.find(c => c.position.x === corner[0] && c.position.y === corner[1] + 0.7 && c.position.z === corner[2]);
-                if (cornerObj) cornerObj.position.y = corner[1] + 0.7 + floatY;
-            });
-            
-            // Linhas horizontais
-            lineYs.forEach((y, idx) => {
-                const lineObj = scene.children.find(c => c.position.x === 0 && Math.abs(c.position.y - y) < 0.05);
-                if (lineObj) lineObj.position.y = y + floatY;
+            // Flutuação suave
+            const floatY = Math.sin(time * 0.6) * 0.025;
+            const elements = [card, edgeBorder, edgeBorder2, cardHTML, coreSphere, sphereRing, orbParticles];
+            elements.forEach(el => {
+                if (el) el.position.y = (el === card ? 0.65 : el === coreSphere ? -0.5 : el === sphereRing ? -0.5 : 0.65) + floatY;
             });
             
             // Rotações
-            ringOuter.rotation.z += 0.002;
-            ringInner.rotation.z -= 0.003;
-            sphereRing.rotation.x += 0.01;
-            sphereRing.rotation.z += 0.01;
-            orbParticles.rotation.y += 0.005;
+            ringOuter.rotation.z += 0.0015;
+            ringInner.rotation.z -= 0.002;
+            sphereRing.rotation.x += 0.008;
+            sphereRing.rotation.z += 0.008;
+            orbParticles.rotation.y += 0.003;
             
-            // Pulso da esfera central
-            const scale = 1 + Math.sin(time * 8) * 0.05;
+            // Pulso da esfera
+            const scale = 1 + Math.sin(time * 6) * 0.06;
             coreSphere.scale.set(scale, scale, scale);
             
-            // Intensidade pulsante das luzes
-            const pulse = 0.5 + Math.sin(time * 3) * 0.2;
-            backLight.intensity = 0.6 + pulse * 0.2;
-            rimLight.intensity = 0.5 + pulse * 0.3;
+            // Pulsar luzes
+            const pulse = 0.4 + Math.sin(time * 2.5) * 0.2;
+            backLight.intensity = 0.5 + pulse * 0.2;
             
-            // Partículas flutuantes
-            particles.rotation.y += 0.0005;
-            particles.rotation.x = Math.sin(time * 0.1) * 0.05;
+            // Partículas
+            particles.rotation.y += 0.0004;
+            particles.rotation.x = Math.sin(time * 0.08) * 0.04;
             
-            controls.update();
             effectComposer.render();
             labelRenderer.render(scene, camera);
         }
@@ -554,7 +565,7 @@
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log('✨ Holographic Card carregado!');
+        console.log('✨ Painel de Nave Holográfico carregado!');
     </script>
 </body>
 </html>

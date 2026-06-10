@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SCI-FI HUD - GRÁFICOS INTERATIVOS</title>
+    <title>SCI-FI HUD - GLASS MORPHISM + GLOW</title>
     <style>
         * {
             margin: 0;
@@ -12,83 +12,158 @@
         }
 
         body {
-            background: radial-gradient(circle at center, #0a0a1a 0%, #010105 100%);
+            background: radial-gradient(ellipse at center, #0a0a2a 0%, #020210 100%);
             font-family: 'Share Tech Mono', 'Courier New', monospace;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* ============================================================ */
+        /* EFEITOS DE FUNDO (GLOW FLUTUANTE) */
+        /* ============================================================ */
+        .glow-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: floatGlow 20s ease-in-out infinite;
+        }
+
+        .glow-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #00ffff, transparent);
+            top: 10%;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .glow-orb-2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #ff44ff, transparent);
+            bottom: 10%;
+            right: -80px;
+            animation-delay: 3s;
+        }
+
+        .glow-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #44ff88, transparent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 6s;
+            opacity: 0.2;
+        }
+
+        .glow-orb-4 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #ffaa44, transparent);
+            top: 70%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .glow-orb-5 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, #8866ff, transparent);
+            top: 20%;
+            right: 15%;
+            animation-delay: 5s;
+        }
+
+        @keyframes floatGlow {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+            33% { transform: translate(30px, -40px) scale(1.1); opacity: 0.5; }
+            66% { transform: translate(-20px, 30px) scale(0.9); opacity: 0.35; }
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 255, 0.03) 0px,
+                rgba(0, 255, 255, 0.03) 2px,
+                transparent 2px,
+                transparent 6px
+            );
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Dashboard container */
         .dashboard {
             max-width: 1600px;
             margin: 0 auto;
-        }
-
-        /* HUD Header */
-        .hud-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 15px;
-            border-bottom: 2px solid #00ffff;
             position: relative;
+            z-index: 10;
         }
 
-        .hud-header h1 {
-            color: #00ffff;
-            font-size: clamp(18px, 5vw, 28px);
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px #00ffff;
-        }
-
-        .hud-header p {
-            color: #88aaff;
-            font-size: clamp(10px, 3vw, 12px);
-            letter-spacing: 2px;
-        }
-
-        /* Grid responsivo */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .grid-full {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        /* Cards HUD */
+        /* ============================================================ */
+        /* CARDS DE VIDRO (GLASS MORPHISM) */
+        /* ============================================================ */
         .hud-card {
-            background: rgba(0, 10, 20, 0.75);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 12px;
+            background: rgba(10, 20, 40, 0.35);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            border-radius: 16px;
             padding: 18px;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .hud-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .hud-card:hover::before {
+            left: 100%;
         }
 
         .hud-card:hover {
             border-color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+            transform: translateY(-3px);
         }
 
+        /* Header dos cards */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            padding-bottom: 8px;
+            padding-bottom: 10px;
             border-bottom: 1px solid rgba(0, 255, 255, 0.3);
             flex-wrap: wrap;
             gap: 10px;
@@ -97,14 +172,23 @@
         .card-title {
             color: #00ffff;
             font-size: 12px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
+            text-shadow: 0 0 5px #00ffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .icon {
+            font-size: 14px;
         }
 
         /* Legendas interativas */
         .chart-legend {
             display: flex;
-            gap: 15px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
 
         .legend-item {
@@ -112,19 +196,21 @@
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
             transition: all 0.2s;
             font-size: 10px;
+            background: rgba(0, 255, 255, 0.05);
         }
 
         .legend-item:hover {
-            background: rgba(0, 255, 255, 0.1);
+            background: rgba(0, 255, 255, 0.15);
+            transform: scale(1.02);
         }
 
         .legend-color {
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             border-radius: 2px;
         }
 
@@ -134,7 +220,7 @@
 
         .legend-item.hidden .legend-text {
             text-decoration: line-through;
-            opacity: 0.5;
+            opacity: 0.4;
         }
 
         /* Container do gráfico */
@@ -148,30 +234,31 @@
         /* Tooltip customizado */
         .custom-tooltip {
             position: fixed;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             border: 1px solid #00ffff;
-            border-radius: 8px;
-            padding: 10px 15px;
+            border-radius: 12px;
+            padding: 12px 18px;
             font-family: monospace;
             font-size: 11px;
             pointer-events: none;
             z-index: 1000;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
             transition: all 0.05s ease;
         }
 
         .custom-tooltip .tooltip-title {
             color: #00ffff;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-weight: bold;
+            letter-spacing: 1px;
         }
 
         .custom-tooltip .tooltip-row {
             display: flex;
             justify-content: space-between;
-            gap: 20px;
-            margin: 3px 0;
+            gap: 25px;
+            margin: 4px 0;
         }
 
         .custom-tooltip .tooltip-label {
@@ -183,24 +270,16 @@
             font-weight: bold;
         }
 
-        /* Crosshair interativo */
-        .crosshair-v {
+        /* Crosshair */
+        .crosshair-v, .crosshair-h {
             position: fixed;
-            width: 1px;
-            background: rgba(0, 255, 255, 0.5);
+            background: rgba(0, 255, 255, 0.4);
             pointer-events: none;
             z-index: 999;
-            box-shadow: 0 0 4px #00ffff;
+            box-shadow: 0 0 5px #00ffff;
         }
-
-        .crosshair-h {
-            position: fixed;
-            height: 1px;
-            background: rgba(0, 255, 255, 0.5);
-            pointer-events: none;
-            z-index: 999;
-            box-shadow: 0 0 4px #00ffff;
-        }
+        .crosshair-v { width: 1px; }
+        .crosshair-h { height: 1px; }
 
         /* Valores em tempo real */
         .live-values {
@@ -217,13 +296,20 @@
             flex: 1;
             text-align: center;
             background: rgba(0, 255, 255, 0.05);
-            border-radius: 6px;
+            border-radius: 8px;
             padding: 8px;
+            transition: all 0.2s;
+        }
+
+        .live-card:hover {
+            background: rgba(0, 255, 255, 0.1);
+            transform: scale(1.02);
         }
 
         .live-card .label {
             color: #88aaff;
             font-size: 9px;
+            letter-spacing: 1px;
         }
 
         .live-card .value {
@@ -237,15 +323,15 @@
         .chart-controls {
             display: flex;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .chart-btn {
             background: rgba(0, 255, 255, 0.1);
             border: 1px solid #00ffff;
             color: #00ffff;
-            padding: 4px 10px;
-            border-radius: 4px;
+            padding: 5px 12px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 10px;
             font-family: monospace;
@@ -254,8 +340,38 @@
 
         .chart-btn:hover {
             background: rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 8px #00ffff;
+            box-shadow: 0 0 10px #00ffff;
         }
+
+        /* Header principal */
+        .hud-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(10, 20, 40, 0.3);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+
+        .hud-header h1 {
+            color: #00ffff;
+            font-size: clamp(18px, 5vw, 28px);
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .hud-header p {
+            color: #88aaff;
+            font-size: clamp(10px, 3vw, 12px);
+            letter-spacing: 2px;
+        }
+
+        /* Grids */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .grid-full { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
 
         /* Responsivo */
         @media (max-width: 768px) {
@@ -264,7 +380,6 @@
             .chart-container { height: 220px; }
             .grid-2 { grid-template-columns: 1fr; }
             .live-card .value { font-size: 14px; }
-            .chart-legend { justify-content: center; }
         }
 
         /* Scrollbar */
@@ -274,34 +389,43 @@
     </style>
 </head>
 <body>
+    <!-- GLOW FLUTUANTE POR TRÁS -->
+    <div class="glow-background">
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+        <div class="glow-orb glow-orb-3"></div>
+        <div class="glow-orb glow-orb-4"></div>
+        <div class="glow-orb glow-orb-5"></div>
+    </div>
+    <div class="scanlines"></div>
+
     <div class="dashboard">
         <div class="hud-header">
-            <h1>✦ INTERACTIVE HOLOGRAPHIC DASHBOARD ✦</h1>
-            <p>SISTEMA DE MONITORAMENTO | CLIQUE NAS LEGENDAS | PASSE O MOUSE SOBRE OS GRÁFICOS</p>
+            <h1>✦ HOLOGRAPHIC GLASS DASHBOARD ✦</h1>
+            <p>SISTEMA DE MONITORAMENTO | EFEITO VIDRO + GLOW FLUTUANTE</p>
         </div>
 
-        <!-- GRÁFICO 1: Velocidade com zoom interativo -->
+        <!-- GRÁFICO 1: Velocidade -->
         <div class="grid-2">
             <div class="hud-card">
                 <div class="card-header">
-                    <span class="card-title">📈 VELOCIDADE x TEMPO</span>
-                    <div class="chart-legend" id="speedLegend"></div>
+                    <span class="card-title"><span class="icon">📈</span> VELOCIDADE x TEMPO</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="speedChart"></canvas>
                 </div>
                 <div class="chart-controls">
-                    <button class="chart-btn" onclick="zoomIn('speed')">🔍 ZOOM IN</button>
-                    <button class="chart-btn" onclick="zoomOut('speed')">🔍 ZOOM OUT</button>
-                    <button class="chart-btn" onclick="resetZoom('speed')">⟳ RESET</button>
+                    <button class="chart-btn" onclick="zoomInSpeed()">🔍 ZOOM IN</button>
+                    <button class="chart-btn" onclick="zoomOutSpeed()">🔍 ZOOM OUT</button>
+                    <button class="chart-btn" onclick="resetSpeedZoom()">⟳ RESET</button>
                 </div>
                 <div class="live-values" id="speedLive"></div>
             </div>
 
-            <!-- GRÁFICO 2: Múltiplas métricas com toggle -->
+            <!-- GRÁFICO 2: Múltiplas métricas -->
             <div class="hud-card">
                 <div class="card-header">
-                    <span class="card-title">⚡ SISTEMAS CRÍTICOS</span>
+                    <span class="card-title"><span class="icon">⚡</span> SISTEMAS CRÍTICOS</span>
                     <div class="chart-legend" id="multiLegend"></div>
                 </div>
                 <div class="chart-container">
@@ -311,11 +435,11 @@
             </div>
         </div>
 
-        <!-- GRÁFICO 3: Radar interativo -->
+        <!-- GRÁFICOS 3,4,5 -->
         <div class="grid-3">
             <div class="hud-card">
                 <div class="card-header">
-                    <span class="card-title">🔄 STATUS DOS SISTEMAS</span>
+                    <span class="card-title"><span class="icon">🔄</span> STATUS DOS SISTEMAS</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="radarChart"></canvas>
@@ -323,10 +447,9 @@
                 <div class="live-values" id="radarLive"></div>
             </div>
 
-            <!-- GRÁFICO 4: Barras com interação -->
             <div class="hud-card">
                 <div class="card-header">
-                    <span class="card-title">📊 RECURSOS DA NAVE</span>
+                    <span class="card-title"><span class="icon">📊</span> RECURSOS DA NAVE</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="barChart"></canvas>
@@ -334,10 +457,9 @@
                 <div class="live-values" id="barLive"></div>
             </div>
 
-            <!-- GRÁFICO 5: Doughnut com clique -->
             <div class="hud-card">
                 <div class="card-header">
-                    <span class="card-title">🍩 DISTRIBUIÇÃO DE ENERGIA</span>
+                    <span class="card-title"><span class="icon">🍩</span> DISTRIBUIÇÃO DE ENERGIA</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="doughnutChart"></canvas>
@@ -346,12 +468,11 @@
             </div>
         </div>
 
-        <!-- GRÁFICO 6: Área com zoom e pan -->
+        <!-- GRÁFICO 6: Área com zoom -->
         <div class="grid-full">
             <div class="hud-card">
                 <div class="card-header">
-                    <span class="card-title">🌊 CONSUMO DE ENERGIA (HISTÓRICO)</span>
-                    <div class="chart-legend" id="areaLegend"></div>
+                    <span class="card-title"><span class="icon">🌊</span> CONSUMO DE ENERGIA (HISTÓRICO)</span>
                 </div>
                 <div class="chart-container" style="height: 320px;">
                     <canvas id="areaChart"></canvas>
@@ -372,57 +493,41 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
 
     <script>
         // ============================================================
-        // CONFIGURAÇÃO GLOBAL DO TOOLTIP E CROSSHAIR
+        // TOOLTIP E CROSSHAIR
         // ============================================================
         const tooltip = document.getElementById('customTooltip');
         const crosshairV = document.getElementById('crosshairV');
         const crosshairH = document.getElementById('crosshairH');
 
         function showTooltip(event, datasets, labels, pointIndex, chartId) {
-            if (!pointIndex && pointIndex !== 0) {
-                tooltip.style.display = 'none';
-                return;
-            }
-            
-            const rect = event.target.getBoundingClientRect();
-            const x = event.clientX;
-            const y = event.clientY;
+            if (!pointIndex && pointIndex !== 0) { tooltip.style.display = 'none'; return; }
             
             let html = `<div class="tooltip-title">📡 ${labels[pointIndex]}</div>`;
-            
             datasets.forEach(dataset => {
                 if (dataset.hidden) return;
                 const value = dataset.data[pointIndex];
-                let displayValue = value;
+                let displayValue = typeof value === 'number' ? value.toLocaleString() : value;
                 if (chartId === 'multi' && dataset.label === 'Temperatura') displayValue = value.toFixed(0) + '°C';
                 else if (chartId === 'multi' && dataset.label === 'Pressão') displayValue = value.toFixed(2) + ' atm';
                 else if (chartId === 'multi' && dataset.label === 'Velocidade') displayValue = value.toFixed(0) + ' km/h';
-                else if (typeof value === 'number') displayValue = value.toLocaleString();
                 
-                html += `
-                    <div class="tooltip-row">
-                        <span class="tooltip-label">${dataset.label}:</span>
-                        <span class="tooltip-value">${displayValue}</span>
-                    </div>
-                `;
+                html += `<div class="tooltip-row"><span class="tooltip-label">${dataset.label}:</span><span class="tooltip-value">${displayValue}</span></div>`;
             });
             
             tooltip.innerHTML = html;
             tooltip.style.display = 'block';
-            tooltip.style.left = (x + 15) + 'px';
-            tooltip.style.top = (y - 40) + 'px';
+            tooltip.style.left = (event.clientX + 15) + 'px';
+            tooltip.style.top = (event.clientY - 40) + 'px';
             
-            // Crosshair
             crosshairV.style.display = 'block';
             crosshairH.style.display = 'block';
-            crosshairV.style.left = x + 'px';
+            crosshairV.style.left = event.clientX + 'px';
             crosshairV.style.top = '0px';
             crosshairV.style.height = window.innerHeight + 'px';
-            crosshairH.style.top = y + 'px';
+            crosshairH.style.top = event.clientY + 'px';
             crosshairH.style.left = '0px';
             crosshairH.style.width = window.innerWidth + 'px';
         }
@@ -434,7 +539,7 @@
         }
 
         // ============================================================
-        // GRÁFICO 1: VELOCIDADE (COM ZOOM)
+        // GRÁFICO 1: VELOCIDADE
         // ============================================================
         const speedCtx = document.getElementById('speedChart').getContext('2d');
         let speedChart;
@@ -445,83 +550,50 @@
             
             speedChart = new Chart(speedCtx, {
                 type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Velocidade (km/h)',
-                        data: speedData,
-                        borderColor: '#00ffff',
-                        backgroundColor: 'rgba(0, 255, 255, 0.1)',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                        pointBackgroundColor: '#00ffff',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
+                data: { labels, datasets: [{ label: 'Velocidade (km/h)', data: speedData, borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.08)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#00ffff', tension: 0.3, fill: true }] },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { labels: { color: '#88aaff' } },
-                        tooltip: { enabled: false, external: (context) => {
-                            const tooltipModel = context.tooltip;
-                            if (tooltipModel.body && tooltipModel.dataPoints) {
-                                const point = tooltipModel.dataPoints[0];
-                                showTooltip({ clientX: point.element.x, clientY: point.element.y, target: speedChart.canvas }, 
-                                    speedChart.data.datasets, speedChart.data.labels, point.dataIndex, 'speed');
-                            } else hideTooltip();
-                        } },
-                        zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'x' } }
-                    },
-                    scales: {
-                        x: { grid: { color: 'rgba(0, 255, 255, 0.1)' }, ticks: { color: '#88aaff' } },
-                        y: { grid: { color: 'rgba(0, 255, 255, 0.1)' }, ticks: { color: '#88aaff' }, title: { display: true, text: 'km/h', color: '#88aaff' } }
-                    }
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#88aaff' } }, tooltip: { enabled: false, external: (ctx) => {
+                        if (ctx.tooltip.body && ctx.tooltip.dataPoints) {
+                            const p = ctx.tooltip.dataPoints[0];
+                            showTooltip({ clientX: p.element.x, clientY: p.element.y }, speedChart.data.datasets, speedChart.data.labels, p.dataIndex, 'speed');
+                        } else hideTooltip();
+                    } }, zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, mode: 'x' } } },
+                    scales: { x: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } }, y: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } } }
                 }
             });
         }
 
         // ============================================================
-        // GRÁFICO 2: MÚLTIPLAS MÉTRICAS (COM TOGGLE)
+        // GRÁFICO 2: MÚLTIPLAS MÉTRICAS
         // ============================================================
         const multiCtx = document.getElementById('multiChart').getContext('2d');
         let multiChart;
         
         function initMultiChart() {
             const labels = Array.from({length: 24}, (_, i) => `${i}h`);
-            const multiData = {
-                labels: labels,
-                datasets: [
-                    { label: 'Velocidade', data: Array.from({length: 24}, () => 2000 + Math.random() * 1000), borderColor: '#00ffff', borderWidth: 2, pointRadius: 2, tension: 0.3, hidden: false },
-                    { label: 'Temperatura', data: Array.from({length: 24}, () => 3500 + Math.random() * 500), borderColor: '#ff6644', borderWidth: 2, pointRadius: 2, tension: 0.3, hidden: false, yAxisID: 'y' },
-                    { label: 'Pressão', data: Array.from({length: 24}, () => 1.0 + Math.random() * 0.5), borderColor: '#44ff88', borderWidth: 2, pointRadius: 2, tension: 0.3, hidden: false, yAxisID: 'y1' }
-                ]
-            };
-            
             multiChart = new Chart(multiCtx, {
                 type: 'line',
-                data: multiData,
+                data: {
+                    labels,
+                    datasets: [
+                        { label: 'Velocidade', data: Array.from({length: 24}, () => 2000 + Math.random() * 1000), borderColor: '#00ffff', borderWidth: 2, pointRadius: 2, tension: 0.3 },
+                        { label: 'Temperatura', data: Array.from({length: 24}, () => 3500 + Math.random() * 500), borderColor: '#ff6644', borderWidth: 2, pointRadius: 2, tension: 0.3, yAxisID: 'y' },
+                        { label: 'Pressão', data: Array.from({length: 24}, () => 1.0 + Math.random() * 0.5), borderColor: '#44ff88', borderWidth: 2, pointRadius: 2, tension: 0.3, yAxisID: 'y1' }
+                    ]
+                },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false, external: (context) => {
-                            const tooltipModel = context.tooltip;
-                            if (tooltipModel.body && tooltipModel.dataPoints) {
-                                const point = tooltipModel.dataPoints[0];
-                                showTooltip({ clientX: point.element.x, clientY: point.element.y, target: multiChart.canvas },
-                                    multiChart.data.datasets, multiChart.data.labels, point.dataIndex, 'multi');
-                            } else hideTooltip();
-                        } }
-                    },
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false, external: (ctx) => {
+                        if (ctx.tooltip.body && ctx.tooltip.dataPoints) {
+                            const p = ctx.tooltip.dataPoints[0];
+                            showTooltip({ clientX: p.element.x, clientY: p.element.y }, multiChart.data.datasets, multiChart.data.labels, p.dataIndex, 'multi');
+                        } else hideTooltip();
+                    } } },
                     scales: {
-                        x: { grid: { color: 'rgba(0, 255, 255, 0.1)' }, ticks: { color: '#88aaff' } },
-                        y: { position: 'left', grid: { color: 'rgba(0, 255, 255, 0.1)' }, ticks: { color: '#00ffff' }, title: { display: true, text: 'Velocidade / Temp', color: '#00ffff' } },
-                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#44ff88' }, title: { display: true, text: 'Pressão (atm)', color: '#44ff88' } }
+                        x: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } },
+                        y: { position: 'left', grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#00ffff' } },
+                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#44ff88' } }
                     }
                 }
             });
@@ -536,24 +608,8 @@
         function initRadarChart() {
             radarChart = new Chart(radarCtx, {
                 type: 'radar',
-                data: {
-                    labels: ['Propulsão', 'Navegação', 'Comunicação', 'Escudos', 'Armas', 'Suporte'],
-                    datasets: [{
-                        label: 'Eficiência',
-                        data: [92, 98, 94, 76, 87, 82],
-                        borderColor: '#00ffff',
-                        backgroundColor: 'rgba(0, 255, 255, 0.2)',
-                        borderWidth: 2,
-                        pointRadius: 5,
-                        pointBackgroundColor: '#ff44ff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#88aaff' } } },
-                    scales: { r: { grid: { color: 'rgba(0, 255, 255, 0.2)' }, ticks: { color: '#88aaff' }, pointLabels: { color: '#88aaff' } } }
-                }
+                data: { labels: ['Propulsão', 'Navegação', 'Comunicação', 'Escudos', 'Armas', 'Suporte'], datasets: [{ label: 'Eficiência', data: [92, 98, 94, 76, 87, 82], borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.15)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#ff44ff' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { r: { grid: { color: 'rgba(0, 255, 255, 0.15)' }, ticks: { color: '#88aaff' }, pointLabels: { color: '#88aaff' } } } }
             });
         }
 
@@ -566,31 +622,13 @@
         function initBarChart() {
             barChart = new Chart(barCtx, {
                 type: 'bar',
-                data: {
-                    labels: ['Energia', 'Água', 'Oxigênio', 'Alimentos', 'Munição', 'Combustível'],
-                    datasets: [{
-                        label: 'Nível (%)',
-                        data: [87, 64, 92, 58, 76, 71],
-                        backgroundColor: 'rgba(0, 255, 255, 0.6)',
-                        borderColor: '#00ffff',
-                        borderWidth: 1,
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#88aaff' } } },
-                    scales: {
-                        x: { ticks: { color: '#88aaff' }, grid: { color: 'rgba(0, 255, 255, 0.1)' } },
-                        y: { ticks: { color: '#88aaff' }, grid: { color: 'rgba(0, 255, 255, 0.1)' }, max: 100, title: { display: true, text: 'Percentual (%)', color: '#88aaff' } }
-                    }
-                }
+                data: { labels: ['Energia', 'Água', 'Oxigênio', 'Alimentos', 'Munição', 'Combustível'], datasets: [{ label: 'Nível (%)', data: [87, 64, 92, 58, 76, 71], backgroundColor: 'rgba(0, 255, 255, 0.5)', borderColor: '#00ffff', borderWidth: 1, borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { x: { ticks: { color: '#88aaff' }, grid: { color: 'rgba(0, 255, 255, 0.08)' } }, y: { ticks: { color: '#88aaff' }, grid: { color: 'rgba(0, 255, 255, 0.08)' }, max: 100 } } }
             });
         }
 
         // ============================================================
-        // GRÁFICO 5: DOUGHNUT COM CLIQUE
+        // GRÁFICO 5: DOUGHNUT
         // ============================================================
         const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
         let doughnutChart;
@@ -598,80 +636,47 @@
         function initDoughnutChart() {
             doughnutChart = new Chart(doughnutCtx, {
                 type: 'doughnut',
-                data: {
-                    labels: ['Propulsão', 'Escudos', 'Sistemas', 'Armas', 'Suporte'],
-                    datasets: [{
-                        data: [35, 25, 20, 12, 8],
-                        backgroundColor: ['#00ffff', '#ff44ff', '#44ff88', '#ffaa44', '#8866ff'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#88aaff' } } },
-                    onClick: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            const index = activeElements[0].index;
-                            const label = doughnutChart.data.labels[index];
-                            const value = doughnutChart.data.datasets[0].data[index];
-                            alert(`🔷 ${label}: ${value}% da energia total`);
-                        }
-                    }
-                }
+                data: { labels: ['Propulsão', 'Escudos', 'Sistemas', 'Armas', 'Suporte'], datasets: [{ data: [35, 25, 20, 12, 8], backgroundColor: ['#00ffff', '#ff44ff', '#44ff88', '#ffaa44', '#8866ff'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#88aaff' } } }, onClick: (e, active) => { if (active.length) alert(`🔷 ${doughnutChart.data.labels[active[0].index]}: ${doughnutChart.data.datasets[0].data[active[0].index]}% da energia`); } }
             });
         }
 
         // ============================================================
-        // GRÁFICO 6: ÁREA (COM ZOOM E PAN)
+        // GRÁFICO 6: ÁREA
         // ============================================================
         const areaCtx = document.getElementById('areaChart').getContext('2d');
         let areaChart;
         
         function initAreaChart() {
             const labels = Array.from({length: 60}, (_, i) => `${i}s`);
-            const energyData = Array.from({length: 60}, () => 800 + Math.random() * 200);
-            const tempData = Array.from({length: 60}, () => 3600 + Math.random() * 400);
-            
             areaChart = new Chart(areaCtx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels,
                     datasets: [
-                        { label: 'Energia (GW)', data: energyData, borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 },
-                        { label: 'Temperatura (°C)', data: tempData, borderColor: '#ff6644', backgroundColor: 'rgba(255, 102, 68, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }
+                        { label: 'Energia (GW)', data: Array.from({length: 60}, () => 800 + Math.random() * 200), borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.08)', borderWidth: 2, fill: true, tension: 0.3 },
+                        { label: 'Temperatura (°C)', data: Array.from({length: 60}, () => 3600 + Math.random() * 400), borderColor: '#ff6644', backgroundColor: 'rgba(255, 102, 68, 0.08)', borderWidth: 2, fill: true, tension: 0.3 }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { labels: { color: '#88aaff' } },
-                        tooltip: { enabled: false, external: (context) => {
-                            const tooltipModel = context.tooltip;
-                            if (tooltipModel.body && tooltipModel.dataPoints) {
-                                const point = tooltipModel.dataPoints[0];
-                                showTooltip({ clientX: point.element.x, clientY: point.element.y, target: areaChart.canvas },
-                                    areaChart.data.datasets, areaChart.data.labels, point.dataIndex, 'area');
-                            } else hideTooltip();
-                        } },
-                        zoom: { pan: { enabled: true, mode: 'xy' }, zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: 'xy' } }
-                    },
-                    scales: {
-                        x: { grid: { color: 'rgba(0, 255, 255, 0.1)' }, ticks: { color: '#88aaff' } },
-                        y: { grid: { color: 'rgba(0, 255, 255, 0.1)' }, ticks: { color: '#88aaff' } }
-                    }
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#88aaff' } }, tooltip: { enabled: false, external: (ctx) => {
+                        if (ctx.tooltip.body && ctx.tooltip.dataPoints) {
+                            const p = ctx.tooltip.dataPoints[0];
+                            showTooltip({ clientX: p.element.x, clientY: p.element.y }, areaChart.data.datasets, areaChart.data.labels, p.dataIndex, 'area');
+                        } else hideTooltip();
+                    } }, zoom: { pan: { enabled: true, mode: 'xy' }, zoom: { wheel: { enabled: true }, mode: 'xy' } } },
+                    scales: { x: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } }, y: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } } }
                 }
             });
         }
 
         // ============================================================
-        // FUNÇÕES DE ZOOM
+        // ZOOM FUNCTIONS
         // ============================================================
-        function zoomIn(chartId) { if (speedChart) speedChart.zoom(1.1); }
-        function zoomOut(chartId) { if (speedChart) speedChart.zoom(0.9); }
-        function resetZoom(chartId) { if (speedChart) speedChart.resetZoom(); }
+        function zoomInSpeed() { if (speedChart) speedChart.zoom(1.1); }
+        function zoomOutSpeed() { if (speedChart) speedChart.zoom(0.9); }
+        function resetSpeedZoom() { if (speedChart) speedChart.resetZoom(); }
         function zoomInArea() { if (areaChart) areaChart.zoom(1.1); }
         function zoomOutArea() { if (areaChart) areaChart.zoom(0.9); }
         function resetAreaZoom() { if (areaChart) areaChart.resetZoom(); }
@@ -686,32 +691,23 @@
         initDoughnutChart();
         initAreaChart();
 
-        // Adicionar legendas interativas para toggle de datasets
+        // Construir legendas interativas
         function buildMultiLegend() {
             const container = document.getElementById('multiLegend');
-            if (!container) return;
+            if (!container || !multiChart) return;
             container.innerHTML = '';
             multiChart.data.datasets.forEach((dataset, i) => {
                 const item = document.createElement('div');
                 item.className = 'legend-item';
-                item.innerHTML = `
-                    <div class="legend-color" style="background: ${dataset.borderColor}"></div>
-                    <span class="legend-text">${dataset.label}</span>
-                `;
-                item.onclick = () => {
-                    dataset.hidden = !dataset.hidden;
-                    multiChart.update();
-                    item.classList.toggle('hidden', dataset.hidden);
-                };
+                item.innerHTML = `<div class="legend-color" style="background: ${dataset.borderColor}"></div><span class="legend-text">${dataset.label}</span>`;
+                item.onclick = () => { dataset.hidden = !dataset.hidden; multiChart.update(); item.classList.toggle('hidden', dataset.hidden); };
                 container.appendChild(item);
             });
         }
         
-        setTimeout(() => {
-            if (multiChart) buildMultiLegend();
-        }, 500);
+        setTimeout(() => { if (multiChart) buildMultiLegend(); }, 500);
 
-        // Atualizar dados em tempo real
+        // Atualização em tempo real
         setInterval(() => {
             if (speedChart) {
                 const newData = speedChart.data.datasets[0].data.slice(1);
@@ -719,7 +715,6 @@
                 speedChart.data.datasets[0].data = newData;
                 speedChart.update('none');
             }
-            
             if (areaChart) {
                 const newEnergy = areaChart.data.datasets[0].data.slice(1);
                 const newTemp = areaChart.data.datasets[1].data.slice(1);
@@ -729,13 +724,15 @@
                 areaChart.data.datasets[1].data = newTemp;
                 areaChart.update('none');
             }
-            
             if (radarChart) {
-                const newData = radarChart.data.datasets[0].data.map(() => 70 + Math.random() * 25);
-                radarChart.data.datasets[0].data = newData;
+                radarChart.data.datasets[0].data = radarChart.data.datasets[0].data.map(() => 70 + Math.random() * 25);
                 radarChart.update('none');
             }
-        }, 3000);
+            if (barChart) {
+                barChart.data.datasets[0].data = barChart.data.datasets[0].data.map(() => 50 + Math.random() * 45);
+                barChart.update('none');
+            }
+        }, 4000);
     </script>
 </body>
 </html>

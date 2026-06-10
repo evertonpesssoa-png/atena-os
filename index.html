@@ -3,48 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Holograma - Mulher</title>
+    <title>Holographic Cards - Dashboard Cyberpunk</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            background: black;
+            margin: 0;
             overflow: hidden;
+            font-family: 'Courier New', monospace;
+            background: #050510;
         }
-        
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        #instrucoes {
-            position: fixed;
-            bottom: 15px;
+
+        /* TÍTULO HOLOGRÁFICO */
+        .title-container {
+            position: absolute;
+            top: 20px;
             left: 0;
             right: 0;
             text-align: center;
-            color: #ff66cc;
-            background: rgba(0,0,0,0.5);
-            font-family: monospace;
-            font-size: 12px;
-            padding: 8px;
-            z-index: 9999;
+            z-index: 20;
             pointer-events: none;
+        }
+
+        .main-title {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            letter-spacing: 4px;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-title { font-size: 1.2rem; letter-spacing: 2px; }
+            .subtitle { font-size: 0.6rem; }
+        }
+
+        .glow-text {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .glow-text-secondary {
+            color: #ff44ff;
+            text-shadow: 0 0 10px #ff44ff, 0 0 20px #ff44aa;
+            animation: pulse 2s ease-in-out infinite 0.3s;
+        }
+
+        .title-line {
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent);
+            margin: 10px auto;
+        }
+
+        .subtitle {
+            color: #88aaff;
+            font-family: monospace;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* INSTRUÇÕES */
+        .controls-hint {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            color: #88aaff;
+            background: rgba(0,0,0,0.5);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            z-index: 20;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+
+        /* LOADING */
+        #loading {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-family: monospace;
+            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid #00ffff;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div id="instrucoes">
-        💜 Holograma Feminino | Use o dedo para girar | Toque e arraste
+    <div class="title-container">
+        <h1 class="main-title">
+            <span class="glow-text">✦ HOLOGRAPHIC</span>
+            <span class="glow-text-secondary"> DASHBOARD</span>
+        </h1>
+        <div class="title-line"></div>
+        <p class="subtitle">sistema de monitoramento em tempo real</p>
     </div>
-    
+    <div class="controls-hint">
+        🖱️ Arraste para girar | 🔍 Pinça para zoom
+    </div>
+    <div id="loading">
+        🔷 CARREGANDO HOLOGRAMA... 🔷
+    </div>
+
+    <!-- Importação das bibliotecas -->
     <script type="importmap">
         {
             "imports": {
@@ -53,257 +130,306 @@
             }
         }
     </script>
-    
+
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        
-        // ======================
-        // CENA
-        // ======================
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        // ============================================================
+        // INICIALIZAÇÃO
+        // ============================================================
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x000000);
-        scene.fog = new THREE.FogExp2(0x000000, 0.008);
-        
-        // ======================
-        // CÂMERA
-        // ======================
+        scene.background = new THREE.Color(0x050510);
+        scene.fog = new THREE.FogExp2(0x050510, 0.02);
+
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.2, 4.8);
-        
-        // ======================
-        // RENDERER
-        // ======================
+        camera.position.set(0, 1, 5.5);
+        camera.lookAt(0, 0, 0);
+
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
-        
-        // ======================
+
+        // CSS2 Renderer para os cards (HTML sobreposto)
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        // Esconder loading
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading) loading.style.display = 'none';
+        }, 1000);
+
+        // ============================================================
         // CONTROLES
-        // ======================
+        // ============================================================
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.2;
         controls.enableZoom = true;
-        controls.enablePan = true;
-        controls.zoomSpeed = 0.8;
-        controls.rotateSpeed = 1.2;
-        controls.target.set(0, 1, 0);
+        controls.enablePan = false;
+        controls.zoomSpeed = 1.0;
+        controls.target.set(0, 0.5, 0);
+
+        // ============================================================
+        // LUZES E AMBIENTE
+        // ============================================================
+        const ambientLight = new THREE.AmbientLight(0x111122);
+        scene.add(ambientLight);
         
-        // ======================
-        // HOLOGRAMA - CONTOURNO DA MULHER
-        // ======================
-        const positions = [];
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        mainLight.position.set(2, 3, 4);
+        scene.add(mainLight);
         
-        // ===== CABEÇA (formato oval suave) =====
-        for (let ang = 0; ang < 360; ang += 4) {
-            const rad = ang * Math.PI / 180;
-            const px = Math.cos(rad) * 0.38;
-            const py = 1.85 + Math.sin(rad) * 0.48;
-            const pz = (Math.random() - 0.5) * 0.08;
-            positions.push(px, py, pz);
-        }
+        const backLight = new THREE.PointLight(0x4466ff, 0.5);
+        backLight.position.set(0, 1, -2);
+        scene.add(backLight);
         
-        // ===== PESCOÇO =====
-        for (let ang = -25; ang <= 25; ang += 5) {
-            const rad = ang * Math.PI / 180;
-            const px = Math.cos(rad) * 0.19;
-            for (let y = 1.48; y <= 1.72; y += 0.04) {
-                positions.push(px, y, (Math.random() - 0.5) * 0.08);
-            }
-        }
+        const fillLight = new THREE.PointLight(0xff44ff, 0.3);
+        fillLight.position.set(-1, 1.5, 2);
+        scene.add(fillLight);
+
+        // ============================================================
+        // EFEITOS VISUAIS
+        // ============================================================
         
-        // ===== OMBROS (curva sensual) =====
-        for (let x = -0.65; x <= 0.65; x += 0.035) {
-            const y = 1.48 - Math.abs(x) * 0.18;
-            positions.push(x, y, (Math.random() - 0.5) * 0.08);
-        }
+        // Grade holográfica no chão
+        const gridHelper = new THREE.GridHelper(10, 20, 0x33aaff, 0x2266aa);
+        gridHelper.position.y = -1.2;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.3;
+        scene.add(gridHelper);
         
-        // ===== BRAÇOS (finos e delicados) =====
-        for (let side = -1; side <= 1; side += 2) {
-            for (let y = 0.85; y <= 1.42; y += 0.045) {
-                const x = side * (0.52 - (1.42 - y) * 0.15);
-                positions.push(x, y, (Math.random() - 0.5) * 0.1);
-            }
-            // Antebraços
-            for (let y = 0.45; y <= 0.82; y += 0.045) {
-                const x = side * (0.44 - (0.82 - y) * 0.1);
-                positions.push(x, y, (Math.random() - 0.5) * 0.1);
-            }
-        }
-        
-        // ===== TRONCO (curvas femininas - peito, cintura fina, quadril largo) =====
-        // Lado esquerdo e direito do corpo
-        for (let y = 0.45; y <= 1.45; y += 0.035) {
-            let width;
-            if (y > 1.25) {
-                width = 0.44;  // busto
-            } else if (y > 0.95) {
-                width = 0.36;  // cintura fina
-            } else if (y > 0.55) {
-                width = 0.48;  // quadril largo
-            } else {
-                width = 0.42;  // virilha
-            }
-            positions.push(-width, y, (Math.random() - 0.5) * 0.1);
-            positions.push(width, y, (Math.random() - 0.5) * 0.1);
-        }
-        
-        // ===== CINTURA (marcação especial) =====
-        for (let ang = 0; ang < 360; ang += 15) {
-            const rad = ang * Math.PI / 180;
-            const px = Math.cos(rad) * 0.31;
-            const py = 0.98;
-            positions.push(px, py, (Math.random() - 0.5) * 0.08);
-        }
-        
-        // ===== QUADRIL (curvas largas) =====
-        for (let ang = 0; ang < 360; ang += 8) {
-            const rad = ang * Math.PI / 180;
-            const px = Math.cos(rad) * 0.52;
-            for (let y = 0.6; y <= 0.9; y += 0.04) {
-                positions.push(px, y, (Math.random() - 0.5) * 0.1);
-            }
-        }
-        
-        // ===== PERNAS (longas e finas) =====
-        for (let leg = -1; leg <= 1; leg += 2) {
-            // Coxas
-            for (let y = 0.2; y <= 0.58; y += 0.04) {
-                const x = leg * 0.2;
-                positions.push(x, y, (Math.random() - 0.5) * 0.08);
-            }
-            // Panturrilhas
-            for (let y = -0.35; y <= 0.18; y += 0.04) {
-                const x = leg * 0.15;
-                positions.push(x, y, (Math.random() - 0.5) * 0.08);
-            }
-            // Pés (leve toque)
-            positions.push(leg * 0.12, -0.42, (Math.random() - 0.5) * 0.1);
-        }
-        
-        // ===== CABELO (longo e volumoso, caindo dos ombros) =====
-        for (let i = 0; i < 1800; i++) {
-            const ang = Math.random() * Math.PI * 2;
-            const raio = 0.45 + Math.random() * 0.35;
-            const yOff = 1.7 + Math.random() * 0.6;
-            const xOff = Math.cos(ang) * raio * (1 - (yOff - 1.7) * 0.4);
-            const yOffFinal = yOff - Math.random() * 0.25;
-            positions.push(xOff, yOffFinal, (Math.random() - 0.5) * 0.2);
-        }
-        
-        // ===== DETALHES: BUSTO (curvas suaves) =====
-        for (let ang = 0; ang < 360; ang += 12) {
-            const rad = ang * Math.PI / 180;
-            const px = 0.48 + Math.cos(rad) * 0.09;
-            const py = 1.32 + Math.sin(rad) * 0.09;
-            positions.push(px, py, 0.12);
-            positions.push(-px, py, 0.12);
-        }
-        
-        // ===== DETALHES: VIRILHA/QUADRIL =====
-        for (let ang = 0; ang < 360; ang += 15) {
-            const rad = ang * Math.PI / 180;
-            const px = Math.cos(rad) * 0.44;
-            const py = 0.5 + Math.sin(rad) * 0.08;
-            positions.push(px, py, (Math.random() - 0.5) * 0.1);
-        }
-        
-        console.log(`✨ Holograma criado: ${positions.length / 3} pontos formando o contorno`);
-        
-        // ======================
-        // CRIAR OS PONTOS
-        // ======================
-        const geometry = new THREE.BufferGeometry();
-        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-        
-        const material = new THREE.PointsMaterial({
-            color: 0xff44aa,  // rosa/azul vibrante
-            size: 0.042,
+        // Anel circular decorativo
+        const ringGeometry = new THREE.TorusGeometry(1.8, 0.03, 64, 200);
+        const ringMaterial = new THREE.MeshStandardMaterial({
+            color: 0x44aaff,
+            emissive: 0x2266aa,
+            emissiveIntensity: 0.6,
             transparent: true,
-            opacity: 0.85,
-            blending: THREE.AdditiveBlending
+            opacity: 0.5
         });
+        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = -1.0;
+        scene.add(ring);
         
-        const hologram = new THREE.Points(geometry, material);
-        scene.add(hologram);
-        
-        // ======================
-        // PARTÍCULAS FLUTUANTES (efeito mágico)
-        // ======================
-        const floatingCount = 1500;
-        const floatingPos = [];
-        for (let i = 0; i < floatingCount; i++) {
-            floatingPos.push((Math.random() - 0.5) * 6.5);
-            floatingPos.push((Math.random() - 0.5) * 4.5 + 0.5);
-            floatingPos.push((Math.random() - 0.5) * 4.5);
-        }
-        const floatingGeo = new THREE.BufferGeometry();
-        floatingGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(floatingPos), 3));
-        const floatingMat = new THREE.PointsMaterial({
-            color: 0xff77cc,
-            size: 0.02,
+        // Segundo anel (maior)
+        const ring2Geometry = new THREE.TorusGeometry(2.4, 0.02, 64, 200);
+        const ring2Material = new THREE.MeshStandardMaterial({
+            color: 0xff44ff,
+            emissive: 0xff2288,
+            emissiveIntensity: 0.4,
             transparent: true,
-            opacity: 0.35,
-            blending: THREE.AdditiveBlending
+            opacity: 0.4
         });
-        const floatingPoints = new THREE.Points(floatingGeo, floatingMat);
-        scene.add(floatingPoints);
+        const ring2 = new THREE.Mesh(ring2Geometry, ring2Material);
+        ring2.rotation.x = Math.PI / 2;
+        ring2.position.y = -1.0;
+        scene.add(ring2);
         
-        // ======================
-        // PONTOS EXTRA: CABELO (tons diferentes)
-        // ======================
-        const hairPositions = [];
-        for (let i = 0; i < 800; i++) {
-            const ang = Math.random() * Math.PI * 2;
-            const raio = 0.5 + Math.random() * 0.45;
-            const yOff = 1.65 + Math.random() * 0.7;
-            hairPositions.push(Math.cos(ang) * raio, yOff, (Math.random() - 0.5) * 0.22);
+        // Partículas flutuantes (Sparkles)
+        const particleCount = 1500;
+        const particleGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 12;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 6;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 8;
         }
-        const hairGeo = new THREE.BufferGeometry();
-        hairGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(hairPositions), 3));
-        const hairMat = new THREE.PointsMaterial({
-            color: 0xff88dd,
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMaterial = new THREE.PointsMaterial({
+            color: 0x66ccff,
             size: 0.035,
             transparent: true,
-            opacity: 0.7,
+            opacity: 0.4,
             blending: THREE.AdditiveBlending
         });
-        const hairPoints = new THREE.Points(hairGeo, hairMat);
-        scene.add(hairPoints);
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
         
-        // ======================
+        // ============================================================
+        // CRIAÇÃO DOS CARDS HOLOGRÁFICOS
+        // ============================================================
+        
+        const cardsData = [
+            { title: 'USUÁRIOS', value: '12.4K', icon: '👥', color: '#00ffff', pos: [-2.2, 0.3, 0], delay: 0 },
+            { title: 'TRANSAÇÕES', value: '₿ 847.32', icon: '💎', color: '#ff44ff', pos: [0, 0.5, 0], delay: 0.5 },
+            { title: 'ATIVOS', value: '3.2M', icon: '📊', color: '#44ff88', pos: [2.2, 0.3, 0], delay: 1 },
+            { title: 'HASHRATE', value: '285 TH/s', icon: '⚡', color: '#ffaa44', pos: [-1.3, -0.8, 1.2], delay: 0.3 },
+            { title: 'TEMPERATURA', value: '42°C', icon: '🌡️', color: '#ff6644', pos: [1.3, -0.8, 1.2], delay: 0.8 },
+            { title: 'STATUS', value: 'ONLINE', icon: '🔷', color: '#44aaff', pos: [0, -1.0, 1.5], delay: 0.6 }
+        ];
+        
+        const cards = [];
+        
+        cardsData.forEach((data, idx) => {
+            // Criar o elemento HTML do card
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'holo-card';
+            cardDiv.style.cssText = `
+                width: 170px;
+                height: 220px;
+                background: rgba(10, 10, 30, 0.5);
+                backdrop-filter: blur(10px);
+                border-radius: 16px;
+                border: 1px solid ${data.color};
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            `;
+            
+            cardDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 12px; filter: drop-shadow(0 0 8px ${data.color}); animation: iconFloat 2s ease-in-out infinite;">
+                    ${data.icon}
+                </div>
+                <h3 style="color: #fff; font-size: 14px; letter-spacing: 2px; margin: 8px 0; font-family: monospace;">${data.title}</h3>
+                <div style="font-size: 26px; font-weight: bold; color: ${data.color}; font-family: monospace; text-shadow: 0 0 8px ${data.color}; margin: 8px 0;">
+                    ${data.value}
+                </div>
+                <div style="width: 60px; height: 2px; background: ${data.color}; margin: 12px 0; box-shadow: 0 0 5px ${data.color};"></div>
+                <div style="display: flex; gap: 15px; font-size: 9px; color: #88aaff; font-family: monospace;">
+                    <span style="color: #44ff88; text-shadow: 0 0 4px #44ff88;">● ACTIVE</span>
+                    <span>LIVE</span>
+                </div>
+            `;
+            
+            // Efeito hover
+            cardDiv.addEventListener('mouseenter', () => {
+                cardDiv.style.transform = 'scale(1.02)';
+                cardDiv.style.borderColor = '#fff';
+                cardDiv.style.boxShadow = `0 0 30px ${data.color}`;
+            });
+            cardDiv.addEventListener('mouseleave', () => {
+                cardDiv.style.transform = 'scale(1)';
+                cardDiv.style.borderColor = data.color;
+                cardDiv.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+            });
+            
+            // Criar objeto CSS2D
+            const cardObject = new CSS2DObject(cardDiv);
+            cardObject.position.set(data.pos[0], data.pos[1], data.pos[2]);
+            scene.add(cardObject);
+            
+            cards.push({
+                obj: cardObject,
+                data: data,
+                initialY: data.pos[1],
+                delay: data.delay
+            });
+            
+            // Adicionar um cubo de luz atrás do card (efeito glow 3D)
+            const glowGeometry = new THREE.BoxGeometry(1.9, 2.4, 0.1);
+            const glowMaterial = new THREE.MeshStandardMaterial({
+                color: data.color,
+                emissive: data.color,
+                emissiveIntensity: 0.15,
+                transparent: true,
+                opacity: 0.2
+            });
+            const glowCube = new THREE.Mesh(glowGeometry, glowMaterial);
+            glowCube.position.set(data.pos[0], data.pos[1], data.pos[2] - 0.05);
+            scene.add(glowCube);
+            
+            // Guardar referência para animação
+            cards[idx].glowCube = glowCube;
+        });
+        
+        // ============================================================
+        // TEXTO CENTRAL FLUTUANTE
+        // ============================================================
+        const centerTextDiv = document.createElement('div');
+        centerTextDiv.style.cssText = `
+            color: #88aaff;
+            font-family: monospace;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #88aaff;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+        `;
+        centerTextDiv.textContent = '✦ ACTIVE SESSION ✦';
+        const centerText = new CSS2DObject(centerTextDiv);
+        centerText.position.set(0, 1.4, -0.8);
+        scene.add(centerText);
+        
+        // ============================================================
         // ANIMAÇÃO
-        // ======================
+        // ============================================================
         let time = 0;
         
         function animate() {
             requestAnimationFrame(animate);
             time += 0.016;
             
-            hologram.rotation.y = Math.sin(time * 0.12) * 0.08;
-            hologram.position.y = Math.sin(time * 0.9) * 0.015;
+            // Flutuação dos cards
+            cards.forEach((card, i) => {
+                const offsetY = Math.sin(time * 1.2 + card.delay) * 0.06;
+                card.obj.position.y = card.initialY + offsetY;
+                if (card.glowCube) {
+                    card.glowCube.position.y = card.initialY + offsetY;
+                }
+            });
             
-            hairPoints.rotation.y = Math.sin(time * 0.12) * 0.08;
-            hairPoints.position.y = Math.sin(time * 0.9) * 0.015;
+            // Rotação dos anéis
+            ring.rotation.z += 0.003;
+            ring2.rotation.z -= 0.002;
             
-            floatingPoints.rotation.y += 0.0012;
-            floatingPoints.rotation.x = Math.sin(time * 0.08) * 0.03;
+            // Partículas girando lentamente
+            particles.rotation.y += 0.0005;
+            particles.rotation.x = Math.sin(time * 0.1) * 0.05;
             
+            // Texto central pulsante
+            const pulse = 0.5 + Math.sin(time * 3) * 0.2;
+            centerTextDiv.style.opacity = 0.6 + pulse * 0.2;
+            
+            // Controles e renderização
             controls.update();
             renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
         }
         
         animate();
         
-        // ======================
+        // ============================================================
         // RESPONSIVO
-        // ======================
-        window.addEventListener('resize', () => {
+        // ============================================================
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // Adicionar keyframes para animação do ícone
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes iconFloat {
+                0%, 100% { transform: translateY(0px); }
+                50% { transform: translateY(-5px); }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        console.log('✨ Holographic Cards carregado!');
     </script>
 </body>
 </html>

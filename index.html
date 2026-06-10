@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SCI-FI HUD - GLASS MORPHISM + GLOW</title>
+    <title>HOLOGRAPHIC SCAN - Vidro + Holograma 3D + Gráficos</title>
     <style>
         * {
             margin: 0;
@@ -12,16 +12,14 @@
         }
 
         body {
-            background: radial-gradient(ellipse at center, #0a0a2a 0%, #020210 100%);
+            background: radial-gradient(ellipse at center, #0a0a2a 0%, #010105 100%);
             font-family: 'Share Tech Mono', 'Courier New', monospace;
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
             overflow-x: hidden;
         }
 
         /* ============================================================ */
-        /* EFEITOS DE FUNDO (GLOW FLUTUANTE) */
+        /* GLOW FLUTUANTE POR TRÁS */
         /* ============================================================ */
         .glow-background {
             position: fixed;
@@ -38,61 +36,20 @@
             position: absolute;
             border-radius: 50%;
             filter: blur(60px);
-            opacity: 0.4;
+            opacity: 0.35;
             animation: floatGlow 20s ease-in-out infinite;
         }
 
-        .glow-orb-1 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, #00ffff, transparent);
-            top: 10%;
-            left: -100px;
-            animation-delay: 0s;
-        }
-
-        .glow-orb-2 {
-            width: 350px;
-            height: 350px;
-            background: radial-gradient(circle, #ff44ff, transparent);
-            bottom: 10%;
-            right: -80px;
-            animation-delay: 3s;
-        }
-
-        .glow-orb-3 {
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, #44ff88, transparent);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: 6s;
-            opacity: 0.2;
-        }
-
-        .glow-orb-4 {
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, #ffaa44, transparent);
-            top: 70%;
-            left: 20%;
-            animation-delay: 2s;
-        }
-
-        .glow-orb-5 {
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, #8866ff, transparent);
-            top: 20%;
-            right: 15%;
-            animation-delay: 5s;
-        }
+        .glow-orb-1 { width: 450px; height: 450px; background: radial-gradient(circle, #00ffff, transparent); top: 5%; left: -100px; animation-delay: 0s; }
+        .glow-orb-2 { width: 380px; height: 380px; background: radial-gradient(circle, #ff44ff, transparent); bottom: 5%; right: -80px; animation-delay: 3s; }
+        .glow-orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #44ff88, transparent); top: 40%; left: 30%; animation-delay: 6s; opacity: 0.2; }
+        .glow-orb-4 { width: 300px; height: 300px; background: radial-gradient(circle, #ffaa44, transparent); top: 70%; left: 10%; animation-delay: 2s; }
+        .glow-orb-5 { width: 320px; height: 320px; background: radial-gradient(circle, #8866ff, transparent); top: 15%; right: 15%; animation-delay: 5s; }
 
         @keyframes floatGlow {
-            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
-            33% { transform: translate(30px, -40px) scale(1.1); opacity: 0.5; }
-            66% { transform: translate(-20px, 30px) scale(0.9); opacity: 0.35; }
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 40px) scale(0.95); }
         }
 
         /* Scanlines */
@@ -102,248 +59,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 255, 255, 0.03) 0px,
-                rgba(0, 255, 255, 0.03) 2px,
-                transparent 2px,
-                transparent 6px
-            );
+            background: repeating-linear-gradient(0deg, rgba(0, 255, 255, 0.03) 0px, rgba(0, 255, 255, 0.03) 2px, transparent 2px, transparent 6px);
             pointer-events: none;
             z-index: 5;
         }
 
-        /* Dashboard container */
+        /* Dashboard */
         .dashboard {
             max-width: 1600px;
             margin: 0 auto;
             position: relative;
             z-index: 10;
+            padding: 20px;
         }
 
-        /* ============================================================ */
-        /* CARDS DE VIDRO (GLASS MORPHISM) */
-        /* ============================================================ */
-        .hud-card {
-            background: rgba(10, 20, 40, 0.35);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 255, 255, 0.25);
-            border-radius: 16px;
-            padding: 18px;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .hud-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-            transition: left 0.6s ease;
-        }
-
-        .hud-card:hover::before {
-            left: 100%;
-        }
-
-        .hud-card:hover {
-            border-color: #00ffff;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
-            transform: translateY(-3px);
-        }
-
-        /* Header dos cards */
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .card-title {
-            color: #00ffff;
-            font-size: 12px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-shadow: 0 0 5px #00ffff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-title .icon {
-            font-size: 14px;
-        }
-
-        /* Legendas interativas */
-        .chart-legend {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            padding: 4px 10px;
-            border-radius: 20px;
-            transition: all 0.2s;
-            font-size: 10px;
-            background: rgba(0, 255, 255, 0.05);
-        }
-
-        .legend-item:hover {
-            background: rgba(0, 255, 255, 0.15);
-            transform: scale(1.02);
-        }
-
-        .legend-color {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-        }
-
-        .legend-text {
-            color: #88aaff;
-        }
-
-        .legend-item.hidden .legend-text {
-            text-decoration: line-through;
-            opacity: 0.4;
-        }
-
-        /* Container do gráfico */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 280px;
-            cursor: crosshair;
-        }
-
-        /* Tooltip customizado */
-        .custom-tooltip {
-            position: fixed;
-            background: rgba(0, 0, 0, 0.95);
-            border: 1px solid #00ffff;
-            border-radius: 12px;
-            padding: 12px 18px;
-            font-family: monospace;
-            font-size: 11px;
-            pointer-events: none;
-            z-index: 1000;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            transition: all 0.05s ease;
-        }
-
-        .custom-tooltip .tooltip-title {
-            color: #00ffff;
-            margin-bottom: 8px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .custom-tooltip .tooltip-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 25px;
-            margin: 4px 0;
-        }
-
-        .custom-tooltip .tooltip-label {
-            color: #88aaff;
-        }
-
-        .custom-tooltip .tooltip-value {
-            color: #ff44ff;
-            font-weight: bold;
-        }
-
-        /* Crosshair */
-        .crosshair-v, .crosshair-h {
-            position: fixed;
-            background: rgba(0, 255, 255, 0.4);
-            pointer-events: none;
-            z-index: 999;
-            box-shadow: 0 0 5px #00ffff;
-        }
-        .crosshair-v { width: 1px; }
-        .crosshair-h { height: 1px; }
-
-        /* Valores em tempo real */
-        .live-values {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(0, 255, 255, 0.2);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .live-card {
-            flex: 1;
-            text-align: center;
-            background: rgba(0, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 8px;
-            transition: all 0.2s;
-        }
-
-        .live-card:hover {
-            background: rgba(0, 255, 255, 0.1);
-            transform: scale(1.02);
-        }
-
-        .live-card .label {
-            color: #88aaff;
-            font-size: 9px;
-            letter-spacing: 1px;
-        }
-
-        .live-card .value {
-            color: #00ffff;
-            font-size: 18px;
-            font-weight: bold;
-            text-shadow: 0 0 5px #00ffff;
-        }
-
-        /* Botões de zoom */
-        .chart-controls {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .chart-btn {
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid #00ffff;
-            color: #00ffff;
-            padding: 5px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 10px;
-            font-family: monospace;
-            transition: all 0.2s;
-        }
-
-        .chart-btn:hover {
-            background: rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 10px #00ffff;
-        }
-
-        /* Header principal */
+        /* Header de vidro */
         .hud-header {
             text-align: center;
             margin-bottom: 30px;
@@ -352,7 +82,6 @@
             backdrop-filter: blur(12px);
             border-radius: 20px;
             border: 1px solid rgba(0, 255, 255, 0.3);
-            position: relative;
         }
 
         .hud-header h1 {
@@ -369,27 +98,131 @@
         }
 
         /* Grids */
-        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .grid-full { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
-
-        /* Responsivo */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .hud-card { padding: 12px; }
-            .chart-container { height: 220px; }
-            .grid-2 { grid-template-columns: 1fr; }
-            .live-card .value { font-size: 14px; }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; background: #010105; }
-        ::-webkit-scrollbar-track { background: #0a0a1a; }
-        ::-webkit-scrollbar-thumb { background: #00ffff; border-radius: 3px; }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Cards de vidro */
+        .glass-card {
+            background: rgba(10, 20, 40, 0.35);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            border-radius: 20px;
+            padding: 18px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .glass-card:hover::before { left: 100%; }
+        .glass-card:hover { border-color: #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); transform: translateY(-3px); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .card-title {
+            color: #00ffff;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        /* Container do holograma 3D */
+        .hologram-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        .hologram-container:active { cursor: grabbing; }
+
+        /* Gráficos */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+        }
+
+        canvas { max-width: 100%; }
+
+        /* Botões */
+        .chart-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .chart-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Valores ao vivo */
+        .live-values {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+            gap: 10px;
+        }
+
+        .live-card {
+            flex: 1;
+            text-align: center;
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .live-card .label { color: #88aaff; font-size: 9px; }
+        .live-card .value { color: #00ffff; font-size: 18px; font-weight: bold; text-shadow: 0 0 5px #00ffff; }
+
+        @media (max-width: 768px) {
+            .dashboard { padding: 10px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .hologram-container { height: 300px; }
+            .chart-container { height: 200px; }
+        }
     </style>
 </head>
 <body>
-    <!-- GLOW FLUTUANTE POR TRÁS -->
     <div class="glow-background">
         <div class="glow-orb glow-orb-1"></div>
         <div class="glow-orb glow-orb-2"></div>
@@ -401,338 +234,387 @@
 
     <div class="dashboard">
         <div class="hud-header">
-            <h1>✦ HOLOGRAPHIC GLASS DASHBOARD ✦</h1>
-            <p>SISTEMA DE MONITORAMENTO | EFEITO VIDRO + GLOW FLUTUANTE</p>
+            <h1>✦ HOLOGRAPHIC SCAN SYSTEM ✦</h1>
+            <p>VIDRO + HOLOGRAMA 3D + LUZ DE SCAN + GRÁFICOS INTERATIVOS</p>
         </div>
 
-        <!-- GRÁFICO 1: Velocidade -->
+        <!-- HOLOGRAMA 3D PRINCIPAL -->
+        <div class="glass-card" style="margin-bottom: 20px;">
+            <div class="card-header">
+                <span class="card-title">🔮 HOLOGRAMA 3D | ESCULTURA FLUTUANTE</span>
+                <span class="card-title" style="font-size: 9px;">🖱️ ARRASTE PARA GIRAR</span>
+            </div>
+            <div class="hologram-container" id="hologramContainer">
+                <canvas id="hologramCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 15px; margin-top: 15px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 12px; height: 12px; background: #00ffff; border-radius: 2px;"></div>
+                    <span style="color: #88aaff; font-size: 10px;">LUZ DE SCAN ATIVA</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 12px; height: 12px; background: #ff44ff; border-radius: 50%; animation: pulse 1s infinite;"></div>
+                    <span style="color: #88aaff; font-size: 10px;">HOLOGRAMA 3D</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICOS -->
         <div class="grid-2">
-            <div class="hud-card">
+            <div class="glass-card">
                 <div class="card-header">
-                    <span class="card-title"><span class="icon">📈</span> VELOCIDADE x TEMPO</span>
+                    <span class="card-title">📈 VELOCIDADE DE SCAN</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="speedChart"></canvas>
                 </div>
-                <div class="chart-controls">
-                    <button class="chart-btn" onclick="zoomInSpeed()">🔍 ZOOM IN</button>
-                    <button class="chart-btn" onclick="zoomOutSpeed()">🔍 ZOOM OUT</button>
-                    <button class="chart-btn" onclick="resetSpeedZoom()">⟳ RESET</button>
+                <div class="live-values">
+                    <div class="live-card"><div class="label">SCAN ATUAL</div><div class="value" id="scanValue">2,384</div></div>
+                    <div class="live-card"><div class="label">EFICIÊNCIA</div><div class="value" id="efficiencyValue">94%</div></div>
                 </div>
-                <div class="live-values" id="speedLive"></div>
+                <button class="chart-btn" onclick="resetSpeedZoom()">⟳ RESET ZOOM</button>
             </div>
 
-            <!-- GRÁFICO 2: Múltiplas métricas -->
-            <div class="hud-card">
+            <div class="glass-card">
                 <div class="card-header">
-                    <span class="card-title"><span class="icon">⚡</span> SISTEMAS CRÍTICOS</span>
-                    <div class="chart-legend" id="multiLegend"></div>
+                    <span class="card-title">⚡ SISTEMAS DE HOLOGRAMA</span>
                 </div>
                 <div class="chart-container">
-                    <canvas id="multiChart"></canvas>
+                    <canvas id="systemsChart"></canvas>
                 </div>
-                <div class="live-values" id="multiLive"></div>
+                <div class="live-values">
+                    <div class="live-card"><div class="label">PROCESSAMENTO</div><div class="value" id="processValue">87%</div></div>
+                    <div class="live-card"><div class="label">RESOLUÇÃO</div><div class="value" id="resolutionValue">4K</div></div>
+                </div>
             </div>
         </div>
 
-        <!-- GRÁFICOS 3,4,5 -->
         <div class="grid-3">
-            <div class="hud-card">
-                <div class="card-header">
-                    <span class="card-title"><span class="icon">🔄</span> STATUS DOS SISTEMAS</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="radarChart"></canvas>
-                </div>
-                <div class="live-values" id="radarLive"></div>
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">🔄 STATUS DOS SISTEMAS</span></div>
+                <div class="chart-container"><canvas id="radarChart"></canvas></div>
             </div>
-
-            <div class="hud-card">
-                <div class="card-header">
-                    <span class="card-title"><span class="icon">📊</span> RECURSOS DA NAVE</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                </div>
-                <div class="live-values" id="barLive"></div>
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">📊 RECURSOS DO HOLOGRAMA</span></div>
+                <div class="chart-container"><canvas id="barChart"></canvas></div>
             </div>
-
-            <div class="hud-card">
-                <div class="card-header">
-                    <span class="card-title"><span class="icon">🍩</span> DISTRIBUIÇÃO DE ENERGIA</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="doughnutChart"></canvas>
-                </div>
-                <div class="live-values" id="doughnutLive"></div>
-            </div>
-        </div>
-
-        <!-- GRÁFICO 6: Área com zoom -->
-        <div class="grid-full">
-            <div class="hud-card">
-                <div class="card-header">
-                    <span class="card-title"><span class="icon">🌊</span> CONSUMO DE ENERGIA (HISTÓRICO)</span>
-                </div>
-                <div class="chart-container" style="height: 320px;">
-                    <canvas id="areaChart"></canvas>
-                </div>
-                <div class="chart-controls">
-                    <button class="chart-btn" onclick="zoomInArea()">🔍 ZOOM IN</button>
-                    <button class="chart-btn" onclick="zoomOutArea()">🔍 ZOOM OUT</button>
-                    <button class="chart-btn" onclick="resetAreaZoom()">⟳ RESET</button>
-                </div>
-                <div class="live-values" id="areaLive"></div>
+            <div class="glass-card">
+                <div class="card-header"><span class="card-title">🍩 DISTRIBUIÇÃO DE ENERGIA</span></div>
+                <div class="chart-container"><canvas id="doughnutChart"></canvas></div>
             </div>
         </div>
     </div>
 
-    <div class="custom-tooltip" id="customTooltip" style="display: none;"></div>
-    <div class="crosshair-v" id="crosshairV" style="display: none;"></div>
-    <div class="crosshair-h" id="crosshairH" style="display: none;"></div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
-
-    <script>
-        // ============================================================
-        // TOOLTIP E CROSSHAIR
-        // ============================================================
-        const tooltip = document.getElementById('customTooltip');
-        const crosshairV = document.getElementById('crosshairV');
-        const crosshairH = document.getElementById('crosshairH');
-
-        function showTooltip(event, datasets, labels, pointIndex, chartId) {
-            if (!pointIndex && pointIndex !== 0) { tooltip.style.display = 'none'; return; }
-            
-            let html = `<div class="tooltip-title">📡 ${labels[pointIndex]}</div>`;
-            datasets.forEach(dataset => {
-                if (dataset.hidden) return;
-                const value = dataset.data[pointIndex];
-                let displayValue = typeof value === 'number' ? value.toLocaleString() : value;
-                if (chartId === 'multi' && dataset.label === 'Temperatura') displayValue = value.toFixed(0) + '°C';
-                else if (chartId === 'multi' && dataset.label === 'Pressão') displayValue = value.toFixed(2) + ' atm';
-                else if (chartId === 'multi' && dataset.label === 'Velocidade') displayValue = value.toFixed(0) + ' km/h';
-                
-                html += `<div class="tooltip-row"><span class="tooltip-label">${dataset.label}:</span><span class="tooltip-value">${displayValue}</span></div>`;
-            });
-            
-            tooltip.innerHTML = html;
-            tooltip.style.display = 'block';
-            tooltip.style.left = (event.clientX + 15) + 'px';
-            tooltip.style.top = (event.clientY - 40) + 'px';
-            
-            crosshairV.style.display = 'block';
-            crosshairH.style.display = 'block';
-            crosshairV.style.left = event.clientX + 'px';
-            crosshairV.style.top = '0px';
-            crosshairV.style.height = window.innerHeight + 'px';
-            crosshairH.style.top = event.clientY + 'px';
-            crosshairH.style.left = '0px';
-            crosshairH.style.width = window.innerWidth + 'px';
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 5px #ff44ff; }
+            50% { opacity: 0.5; box-shadow: 0 0 15px #ff44ff; }
         }
+    </style>
 
-        function hideTooltip() {
-            tooltip.style.display = 'none';
-            crosshairV.style.display = 'none';
-            crosshairH.style.display = 'none';
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
         }
+    </script>
 
-        // ============================================================
-        // GRÁFICO 1: VELOCIDADE
-        // ============================================================
-        const speedCtx = document.getElementById('speedChart').getContext('2d');
-        let speedChart;
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         
-        function initSpeedChart() {
-            const labels = Array.from({length: 30}, (_, i) => `${i*2}s`);
-            const speedData = Array.from({length: 30}, () => 2100 + Math.random() * 800);
+        // ============================================================
+        // HOLOGRAMA 3D + LUZ DE SCAN
+        // ============================================================
+        const container = document.getElementById('hologramContainer');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        scene.fog = new THREE.FogExp2(0x000000, 0.015);
+        
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        camera.position.set(0, 1.2, 4);
+        camera.lookAt(0, 0.8, 0);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+        
+        // Efeito Bloom
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(width, height), 1.0, 0.5, 0.1);
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // Controles para girar o holograma
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.5;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.target.set(0, 0.8, 0);
+        
+        // ============================================================
+        // LUZ DE SCAN (LINHA SUBINDO E DESCENDO)
+        // ============================================================
+        // Criar uma geometria de plano para a linha de scan
+        const scanPlaneGeometry = new THREE.PlaneGeometry(2.2, 0.03);
+        const scanMaterial = new THREE.MeshStandardMaterial({
+            color: 0x00ffff,
+            emissive: 0x00ffff,
+            emissiveIntensity: 0.8,
+            transparent: true,
+            opacity: 0.9
+        });
+        const scanLine = new THREE.Mesh(scanPlaneGeometry, scanMaterial);
+        scanLine.position.set(0, -0.5, 0.5);
+        scene.add(scanLine);
+        
+        // ============================================================
+        // HOLOGRAMA FEMININO (ESCULTURA DE PONTOS)
+        // ============================================================
+        const positions = [];
+        
+        // Cabeça
+        for (let ang = 0; ang < 360; ang += 4) {
+            const rad = ang * Math.PI / 180;
+            positions.push(Math.cos(rad) * 0.32, 1.75 + Math.sin(rad) * 0.42, (Math.random() - 0.5) * 0.12);
+        }
+        
+        // Pescoço
+        for (let y = 1.42; y <= 1.68; y += 0.04) {
+            for (let ang = -20; ang <= 20; ang += 8) {
+                const rad = ang * Math.PI / 180;
+                positions.push(Math.cos(rad) * 0.16, y, (Math.random() - 0.5) * 0.1);
+            }
+        }
+        
+        // Ombros
+        for (let x = -0.58; x <= 0.58; x += 0.04) {
+            const y = 1.42 - Math.abs(x) * 0.18;
+            positions.push(x, y, (Math.random() - 0.5) * 0.1);
+        }
+        
+        // Braços
+        for (let side = -1; side <= 1; side += 2) {
+            for (let y = 0.85; y <= 1.38; y += 0.05) {
+                const x = side * (0.48 - (1.38 - y) * 0.12);
+                positions.push(x, y, (Math.random() - 0.5) * 0.12);
+            }
+            for (let y = 0.45; y <= 0.82; y += 0.05) {
+                const x = side * (0.42 - (0.82 - y) * 0.08);
+                positions.push(x, y, (Math.random() - 0.5) * 0.1);
+            }
+        }
+        
+        // Tronco (curvas)
+        for (let y = 0.45; y <= 1.38; y += 0.04) {
+            let width;
+            if (y > 1.2) width = 0.42;
+            else if (y > 0.95) width = 0.34;
+            else if (y > 0.55) width = 0.46;
+            else width = 0.4;
+            positions.push(-width, y, (Math.random() - 0.5) * 0.12);
+            positions.push(width, y, (Math.random() - 0.5) * 0.12);
+        }
+        
+        // Quadril
+        for (let ang = 0; ang < 360; ang += 6) {
+            const rad = ang * Math.PI / 180;
+            const px = Math.cos(rad) * 0.5;
+            for (let y = 0.55; y <= 0.88; y += 0.04) {
+                positions.push(px, y, (Math.random() - 0.5) * 0.12);
+            }
+        }
+        
+        // Pernas
+        for (let leg = -1; leg <= 1; leg += 2) {
+            for (let y = 0.05; y <= 0.52; y += 0.05) {
+                positions.push(leg * 0.19, y, (Math.random() - 0.5) * 0.1);
+            }
+            for (let y = -0.42; y <= 0.02; y += 0.05) {
+                positions.push(leg * 0.14, y, (Math.random() - 0.5) * 0.1);
+            }
+        }
+        
+        // Cabelo
+        for (let i = 0; i < 1200; i++) {
+            const ang = Math.random() * Math.PI * 2;
+            const raio = 0.42 + Math.random() * 0.32;
+            const yOff = 1.68 + Math.random() * 0.58;
+            positions.push(Math.cos(ang) * raio, yOff, (Math.random() - 0.5) * 0.22);
+        }
+        
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+        
+        const material = new THREE.PointsMaterial({
+            color: 0x44aaff,
+            size: 0.022,
+            transparent: true,
+            opacity: 0.85,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const hologram = new THREE.Points(geometry, material);
+        scene.add(hologram);
+        
+        // ============================================================
+        // ANÉIS GIRATÓRIOS
+        // ============================================================
+        const ringGeo = new THREE.TorusGeometry(0.85, 0.02, 64, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x00ffff, emissive: 0x00ffff, emissiveIntensity: 0.5 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.set(0, 0.7, 0);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
+        
+        const ring2Geo = new THREE.TorusGeometry(1.1, 0.015, 64, 200);
+        const ring2Mat = new THREE.MeshStandardMaterial({ color: 0xff44ff, emissive: 0xff44ff, emissiveIntensity: 0.4 });
+        const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+        ring2.position.set(0, 0.7, 0);
+        ring2.rotation.x = Math.PI / 2;
+        scene.add(ring2);
+        
+        // ============================================================
+        // PARTÍCULAS FLUTUANTES
+        // ============================================================
+        const particleCount = 1500;
+        const particleGeo = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 4;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 3 + 0.7;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 3;
+        }
+        particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particleMat = new THREE.PointsMaterial({ color: 0x88aaff, size: 0.008, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+        const particles = new THREE.Points(particleGeo, particleMat);
+        scene.add(particles);
+        
+        // ============================================================
+        // ANIMAÇÃO DA LUZ DE SCAN
+        // ============================================================
+        let scanDirection = 1;
+        let scanY = -0.5;
+        
+        function animateScan() {
+            scanY += 0.008 * scanDirection;
+            if (scanY > 1.5) { scanY = 1.5; scanDirection = -1; }
+            if (scanY < -0.5) { scanY = -0.5; scanDirection = 1; }
+            scanLine.position.y = scanY;
             
-            speedChart = new Chart(speedCtx, {
+            // Intensidade pulsante
+            const intensity = 0.6 + Math.sin(Date.now() * 0.015) * 0.3;
+            scanMaterial.emissiveIntensity = intensity;
+        }
+        
+        // ============================================================
+        // ANIMAÇÃO PRINCIPAL
+        // ============================================================
+        let time = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            
+            animateScan();
+            
+            hologram.rotation.y = Math.sin(time * 0.15) * 0.1;
+            hologram.position.y = Math.sin(time * 0.8) * 0.02;
+            
+            ring.rotation.z += 0.008;
+            ring2.rotation.z -= 0.006;
+            
+            particles.rotation.y += 0.002;
+            
+            controls.update();
+            effectComposer.render();
+        }
+        
+        animate();
+        
+        // ============================================================
+        // REDIMENSIONAR
+        // ============================================================
+        window.addEventListener('resize', () => {
+            const newWidth = container.clientWidth;
+            const newHeight = container.clientHeight;
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(newWidth, newHeight);
+            effectComposer.setSize(newWidth, newHeight);
+        });
+        
+        // ============================================================
+        // GRÁFICOS COM CHART.JS
+        // ============================================================
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+        script.onload = () => {
+            // Gráfico de Velocidade
+            const speedCtx = document.getElementById('speedChart').getContext('2d');
+            new Chart(speedCtx, {
                 type: 'line',
-                data: { labels, datasets: [{ label: 'Velocidade (km/h)', data: speedData, borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.08)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#00ffff', tension: 0.3, fill: true }] },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#88aaff' } }, tooltip: { enabled: false, external: (ctx) => {
-                        if (ctx.tooltip.body && ctx.tooltip.dataPoints) {
-                            const p = ctx.tooltip.dataPoints[0];
-                            showTooltip({ clientX: p.element.x, clientY: p.element.y }, speedChart.data.datasets, speedChart.data.labels, p.dataIndex, 'speed');
-                        } else hideTooltip();
-                    } }, zoom: { pan: { enabled: true, mode: 'x' }, zoom: { wheel: { enabled: true }, mode: 'x' } } },
-                    scales: { x: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } }, y: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } } }
-                }
+                data: { labels: Array.from({length: 20}, (_, i) => `${i*2}s`), datasets: [{ label: 'Scan Rate', data: Array.from({length: 20}, () => 2000 + Math.random() * 1000), borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { x: { ticks: { color: '#88aaff' } }, y: { ticks: { color: '#88aaff' } } } }
             });
-        }
-
-        // ============================================================
-        // GRÁFICO 2: MÚLTIPLAS MÉTRICAS
-        // ============================================================
-        const multiCtx = document.getElementById('multiChart').getContext('2d');
-        let multiChart;
-        
-        function initMultiChart() {
-            const labels = Array.from({length: 24}, (_, i) => `${i}h`);
-            multiChart = new Chart(multiCtx, {
+            
+            // Gráfico de Sistemas
+            const systemsCtx = document.getElementById('systemsChart').getContext('2d');
+            new Chart(systemsCtx, {
                 type: 'line',
-                data: {
-                    labels,
-                    datasets: [
-                        { label: 'Velocidade', data: Array.from({length: 24}, () => 2000 + Math.random() * 1000), borderColor: '#00ffff', borderWidth: 2, pointRadius: 2, tension: 0.3 },
-                        { label: 'Temperatura', data: Array.from({length: 24}, () => 3500 + Math.random() * 500), borderColor: '#ff6644', borderWidth: 2, pointRadius: 2, tension: 0.3, yAxisID: 'y' },
-                        { label: 'Pressão', data: Array.from({length: 24}, () => 1.0 + Math.random() * 0.5), borderColor: '#44ff88', borderWidth: 2, pointRadius: 2, tension: 0.3, yAxisID: 'y1' }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { enabled: false, external: (ctx) => {
-                        if (ctx.tooltip.body && ctx.tooltip.dataPoints) {
-                            const p = ctx.tooltip.dataPoints[0];
-                            showTooltip({ clientX: p.element.x, clientY: p.element.y }, multiChart.data.datasets, multiChart.data.labels, p.dataIndex, 'multi');
-                        } else hideTooltip();
-                    } } },
-                    scales: {
-                        x: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } },
-                        y: { position: 'left', grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#00ffff' } },
-                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#44ff88' } }
-                    }
-                }
+                data: { labels: Array.from({length: 20}, (_, i) => `${i*2}s`), datasets: [{ label: 'Processamento', data: Array.from({length: 20}, () => 70 + Math.random() * 25), borderColor: '#ff44ff', backgroundColor: 'rgba(255, 68, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { x: { ticks: { color: '#88aaff' } }, y: { ticks: { color: '#88aaff' }, max: 100 } } }
             });
-        }
-
-        // ============================================================
-        // GRÁFICO 3: RADAR
-        // ============================================================
-        const radarCtx = document.getElementById('radarChart').getContext('2d');
-        let radarChart;
-        
-        function initRadarChart() {
-            radarChart = new Chart(radarCtx, {
+            
+            // Radar
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            new Chart(radarCtx, {
                 type: 'radar',
-                data: { labels: ['Propulsão', 'Navegação', 'Comunicação', 'Escudos', 'Armas', 'Suporte'], datasets: [{ label: 'Eficiência', data: [92, 98, 94, 76, 87, 82], borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.15)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#ff44ff' }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { r: { grid: { color: 'rgba(0, 255, 255, 0.15)' }, ticks: { color: '#88aaff' }, pointLabels: { color: '#88aaff' } } } }
+                data: { labels: ['Resolução', 'Taxa Scan', 'Estabilidade', 'Brilho', 'Contraste', 'Fidelidade'], datasets: [{ label: 'Qualidade', data: [92, 88, 95, 85, 90, 87], borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.2)', borderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { r: { ticks: { color: '#88aaff' }, pointLabels: { color: '#88aaff' } } } }
             });
-        }
-
-        // ============================================================
-        // GRÁFICO 4: BARRAS
-        // ============================================================
-        const barCtx = document.getElementById('barChart').getContext('2d');
-        let barChart;
-        
-        function initBarChart() {
-            barChart = new Chart(barCtx, {
+            
+            // Barras
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
                 type: 'bar',
-                data: { labels: ['Energia', 'Água', 'Oxigênio', 'Alimentos', 'Munição', 'Combustível'], datasets: [{ label: 'Nível (%)', data: [87, 64, 92, 58, 76, 71], backgroundColor: 'rgba(0, 255, 255, 0.5)', borderColor: '#00ffff', borderWidth: 1, borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { x: { ticks: { color: '#88aaff' }, grid: { color: 'rgba(0, 255, 255, 0.08)' } }, y: { ticks: { color: '#88aaff' }, grid: { color: 'rgba(0, 255, 255, 0.08)' }, max: 100 } } }
+                data: { labels: ['CPU', 'GPU', 'Memória', 'Largura Banda', 'Armazenamento'], datasets: [{ label: 'Uso (%)', data: [87, 94, 62, 78, 45], backgroundColor: 'rgba(0, 255, 255, 0.6)', borderColor: '#00ffff', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { y: { max: 100, ticks: { color: '#88aaff' } }, x: { ticks: { color: '#88aaff' } } } }
             });
-        }
-
-        // ============================================================
-        // GRÁFICO 5: DOUGHNUT
-        // ============================================================
-        const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-        let doughnutChart;
-        
-        function initDoughnutChart() {
-            doughnutChart = new Chart(doughnutCtx, {
+            
+            // Doughnut
+            const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+            new Chart(doughnutCtx, {
                 type: 'doughnut',
-                data: { labels: ['Propulsão', 'Escudos', 'Sistemas', 'Armas', 'Suporte'], datasets: [{ data: [35, 25, 20, 12, 8], backgroundColor: ['#00ffff', '#ff44ff', '#44ff88', '#ffaa44', '#8866ff'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#88aaff' } } }, onClick: (e, active) => { if (active.length) alert(`🔷 ${doughnutChart.data.labels[active[0].index]}: ${doughnutChart.data.datasets[0].data[active[0].index]}% da energia`); } }
+                data: { labels: ['Renderização', 'Scan 3D', 'Efeitos', 'Processamento', 'Outros'], datasets: [{ data: [35, 28, 20, 12, 5], backgroundColor: ['#00ffff', '#ff44ff', '#44ff88', '#ffaa44', '#8866ff'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#88aaff' } } } }
             });
-        }
-
-        // ============================================================
-        // GRÁFICO 6: ÁREA
-        // ============================================================
-        const areaCtx = document.getElementById('areaChart').getContext('2d');
-        let areaChart;
+        };
+        document.head.appendChild(script);
         
-        function initAreaChart() {
-            const labels = Array.from({length: 60}, (_, i) => `${i}s`);
-            areaChart = new Chart(areaCtx, {
-                type: 'line',
-                data: {
-                    labels,
-                    datasets: [
-                        { label: 'Energia (GW)', data: Array.from({length: 60}, () => 800 + Math.random() * 200), borderColor: '#00ffff', backgroundColor: 'rgba(0, 255, 255, 0.08)', borderWidth: 2, fill: true, tension: 0.3 },
-                        { label: 'Temperatura (°C)', data: Array.from({length: 60}, () => 3600 + Math.random() * 400), borderColor: '#ff6644', backgroundColor: 'rgba(255, 102, 68, 0.08)', borderWidth: 2, fill: true, tension: 0.3 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#88aaff' } }, tooltip: { enabled: false, external: (ctx) => {
-                        if (ctx.tooltip.body && ctx.tooltip.dataPoints) {
-                            const p = ctx.tooltip.dataPoints[0];
-                            showTooltip({ clientX: p.element.x, clientY: p.element.y }, areaChart.data.datasets, areaChart.data.labels, p.dataIndex, 'area');
-                        } else hideTooltip();
-                    } }, zoom: { pan: { enabled: true, mode: 'xy' }, zoom: { wheel: { enabled: true }, mode: 'xy' } } },
-                    scales: { x: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } }, y: { grid: { color: 'rgba(0, 255, 255, 0.08)' }, ticks: { color: '#88aaff' } } }
-                }
-            });
-        }
-
-        // ============================================================
-        // ZOOM FUNCTIONS
-        // ============================================================
-        function zoomInSpeed() { if (speedChart) speedChart.zoom(1.1); }
-        function zoomOutSpeed() { if (speedChart) speedChart.zoom(0.9); }
-        function resetSpeedZoom() { if (speedChart) speedChart.resetZoom(); }
-        function zoomInArea() { if (areaChart) areaChart.zoom(1.1); }
-        function zoomOutArea() { if (areaChart) areaChart.zoom(0.9); }
-        function resetAreaZoom() { if (areaChart) areaChart.resetZoom(); }
-
-        // ============================================================
-        // INICIALIZAÇÃO
-        // ============================================================
-        initSpeedChart();
-        initMultiChart();
-        initRadarChart();
-        initBarChart();
-        initDoughnutChart();
-        initAreaChart();
-
-        // Construir legendas interativas
-        function buildMultiLegend() {
-            const container = document.getElementById('multiLegend');
-            if (!container || !multiChart) return;
-            container.innerHTML = '';
-            multiChart.data.datasets.forEach((dataset, i) => {
-                const item = document.createElement('div');
-                item.className = 'legend-item';
-                item.innerHTML = `<div class="legend-color" style="background: ${dataset.borderColor}"></div><span class="legend-text">${dataset.label}</span>`;
-                item.onclick = () => { dataset.hidden = !dataset.hidden; multiChart.update(); item.classList.toggle('hidden', dataset.hidden); };
-                container.appendChild(item);
-            });
-        }
-        
-        setTimeout(() => { if (multiChart) buildMultiLegend(); }, 500);
-
-        // Atualização em tempo real
+        // Simular valores ao vivo
         setInterval(() => {
-            if (speedChart) {
-                const newData = speedChart.data.datasets[0].data.slice(1);
-                newData.push(2100 + Math.random() * 800);
-                speedChart.data.datasets[0].data = newData;
-                speedChart.update('none');
-            }
-            if (areaChart) {
-                const newEnergy = areaChart.data.datasets[0].data.slice(1);
-                const newTemp = areaChart.data.datasets[1].data.slice(1);
-                newEnergy.push(800 + Math.random() * 200);
-                newTemp.push(3600 + Math.random() * 400);
-                areaChart.data.datasets[0].data = newEnergy;
-                areaChart.data.datasets[1].data = newTemp;
-                areaChart.update('none');
-            }
-            if (radarChart) {
-                radarChart.data.datasets[0].data = radarChart.data.datasets[0].data.map(() => 70 + Math.random() * 25);
-                radarChart.update('none');
-            }
-            if (barChart) {
-                barChart.data.datasets[0].data = barChart.data.datasets[0].data.map(() => 50 + Math.random() * 45);
-                barChart.update('none');
-            }
-        }, 4000);
+            document.getElementById('scanValue').textContent = Math.floor(2000 + Math.random() * 800).toLocaleString();
+            document.getElementById('efficiencyValue').textContent = Math.floor(80 + Math.random() * 18) + '%';
+            document.getElementById('processValue').textContent = Math.floor(70 + Math.random() * 25) + '%';
+            document.getElementById('resolutionValue').textContent = Math.random() > 0.5 ? '4K' : (Math.random() > 0.5 ? '8K' : 'HD');
+        }, 3000);
+        
+        function resetSpeedZoom() { console.log('Zoom reset'); }
+        window.resetSpeedZoom = resetSpeedZoom;
     </script>
 </body>
 </html>

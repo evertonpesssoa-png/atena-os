@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HOLOGRAPHIC SCAN - Com sua imagem</title>
+    <title>HOLOGRAPHIC SCAN - Full Image</title>
     <style>
         * {
             margin: 0;
@@ -109,7 +109,7 @@
             margin-bottom: 20px;
         }
 
-        /* Cards de vidro com clique */
+        /* Cards de vidro */
         .glass-card {
             background: rgba(10, 20, 40, 0.35);
             backdrop-filter: blur(12px);
@@ -136,7 +136,6 @@
         .glass-card:hover::before { left: 100%; }
         .glass-card:hover { border-color: #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); transform: translateY(-3px); }
 
-        /* Efeito de clique nos cards */
         .glass-card:active { transform: scale(0.98); transition: transform 0.05s; }
         .card-click-effect { animation: cardPulse 0.4s ease-out; }
 
@@ -162,30 +161,30 @@
             text-shadow: 0 0 5px #00ffff;
         }
 
-        /* Container da imagem holográfica */
+        /* Container da imagem - AGORA OCUPA TODO ESPAÇO */
         .hologram-image-container {
             position: relative;
             width: 100%;
-            height: 320px;
+            height: 380px;
             border-radius: 12px;
             overflow: hidden;
-            background: rgba(0, 0, 0, 0.3);
+            background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* IMAGEM - AGORA PREENCHE TODO O CARD */
         .hologram-image {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;  /* Cobrir todo o espaço, corta bordas se necessário */
+            object-position: center center;
             filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.3));
             opacity: 0.92;
         }
 
-        /* Luz de scan sobre a imagem */
+        /* Luz de scan */
         .scan-overlay {
             position: absolute;
             top: 0;
@@ -200,26 +199,26 @@
             position: absolute;
             left: 0;
             width: 100%;
-            height: 3px;
+            height: 4px;
             background: linear-gradient(90deg, transparent, #00ffff, #ff44ff, transparent);
-            box-shadow: 0 0 12px #00ffff;
+            box-shadow: 0 0 15px #00ffff;
             animation: scanMove 3s ease-in-out infinite;
         }
 
         @keyframes scanMove {
-            0% { top: 0%; opacity: 0.8; }
-            50% { top: 100%; opacity: 1; }
-            100% { top: 0%; opacity: 0.8; }
+            0% { top: -5%; opacity: 0.8; }
+            50% { top: 105%; opacity: 1; }
+            100% { top: -5%; opacity: 0.8; }
         }
 
-        /* Efeito de brilho pulsante na imagem */
+        /* Efeito de brilho pulsante */
         .hologram-glow {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, transparent 30%, rgba(0, 255, 255, 0.08));
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 255, 255, 0.12));
             pointer-events: none;
             animation: pulseGlow 2s ease-in-out infinite;
         }
@@ -278,7 +277,7 @@
         @media (max-width: 768px) {
             .dashboard { padding: 10px; }
             .grid-2 { grid-template-columns: 1fr; }
-            .hologram-image-container { height: 250px; }
+            .hologram-image-container { height: 280px; }
             .chart-container { height: 200px; }
         }
     </style>
@@ -296,14 +295,14 @@
     <div class="dashboard">
         <div class="hud-header">
             <h1>✦ HOLOGRAPHIC SCAN SYSTEM ✦</h1>
-            <p>IMAGEM HOLOGRÁFICA + LUZ DE SCAN + GRÁFICOS INTERATIVOS</p>
+            <p>IMAGEM HOLOGRÁFICA | SCAN FULLSCREEN | EFEITO DE LUZ</p>
         </div>
 
-        <!-- CARD PRINCIPAL COM IMAGEM HOLOGRÁFICA -->
+        <!-- CARD PRINCIPAL COM IMAGEM HOLOGRÁFICA (AGORA OCUPA TUDO) -->
         <div class="glass-card" style="margin-bottom: 20px;">
             <div class="card-header">
                 <span class="card-title">🔮 HOLOGRAMA | ATENA</span>
-                <span class="card-title" style="font-size: 9px;">✨ SCAN ATIVO</span>
+                <span class="card-title" style="font-size: 9px;">✨ SCAN ATIVO | FULL IMAGE</span>
             </div>
             <div class="hologram-image-container" id="hologramContainer">
                 <img id="hologramImage" class="hologram-image" alt="Holograma Atena">
@@ -319,7 +318,7 @@
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <div style="width: 12px; height: 12px; background: #ff44ff; border-radius: 50%; animation: pulse 1s infinite;"></div>
-                    <span style="color: #88aaff; font-size: 10px;">HOLOGRAMA 3D</span>
+                    <span style="color: #88aaff; font-size: 10px;">HOLOGRAMA FULL</span>
                 </div>
             </div>
         </div>
@@ -333,7 +332,6 @@
                     <div class="live-card"><div class="label">SCAN ATUAL</div><div class="value" id="scanValue">2,384</div></div>
                     <div class="live-card"><div class="label">EFICIÊNCIA</div><div class="value" id="efficiencyValue">94%</div></div>
                 </div>
-                <button class="chart-btn" onclick="resetSpeedZoom()">⟳ RESET ZOOM</button>
             </div>
 
             <div class="glass-card">
@@ -363,43 +361,29 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script>
         // ============================================================
-        // CARREGAR IMAGEM COM TRATAMENTO DE TAMANHO
+        // CARREGAR IMAGEM - AGORA OCUPA TODO O CARD
         // ============================================================
         const imgElement = document.getElementById('hologramImage');
-        const container = document.getElementById('hologramContainer');
         
-        // Função para ajustar a imagem ao container mantendo proporção
-        function loadAndFitImage(src) {
+        function loadImage(src) {
             const img = new Image();
             img.onload = () => {
-                // Define a imagem no elemento
                 imgElement.src = src;
-                imgElement.style.objectFit = 'contain';
-                imgElement.style.maxWidth = '100%';
-                imgElement.style.maxHeight = '100%';
-                imgElement.style.width = 'auto';
-                imgElement.style.height = 'auto';
-                
-                // Adiciona classe de fade in
                 imgElement.style.animation = 'fadeIn 0.5s ease';
-                
-                console.log(`✅ Imagem carregada: ${img.width}x${img.height}`);
+                console.log(`✅ Imagem carregada: ${img.width}x${img.height} - ocupando todo o card`);
             };
             img.onerror = () => {
-                console.error('❌ Erro ao carregar a imagem atena.png');
-                // Fallback: criar um placeholder
-                imgElement.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="%230a0a2a"/><text x="200" y="200" text-anchor="middle" fill="%2300ffff" font-family="monospace" font-size="16">ATENA.png</text><text x="200" y="230" text-anchor="middle" fill="%2388aaff" font-family="monospace" font-size="12">não encontrada</text></svg>';
+                console.error('❌ Erro ao carregar atena.png');
+                imgElement.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect width="800" height="600" fill="%230a0a2a"/><text x="400" y="280" text-anchor="middle" fill="%2300ffff" font-family="monospace" font-size="20">ATENA.png</text><text x="400" y="320" text-anchor="middle" fill="%2388aaff" font-family="monospace" font-size="14">imagem não encontrada</text><text x="400" y="350" text-anchor="middle" fill="%2388aaff" font-family="monospace" font-size="12">verifique o arquivo na raiz</text></svg>';
             };
             img.src = src;
         }
         
-        // Carregar a imagem da raiz
-        loadAndFitImage('./atena.png');
-        
+        loadImage('./atena.png');
+
         // ============================================================
         // GRÁFICOS
         // ============================================================
-        // Gráfico de Velocidade
         const speedCtx = document.getElementById('speedChart').getContext('2d');
         let speedChart = new Chart(speedCtx, {
             type: 'line',
@@ -407,7 +391,6 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { x: { ticks: { color: '#88aaff' } }, y: { ticks: { color: '#88aaff' } } } }
         });
         
-        // Gráfico de Sistemas
         const systemsCtx = document.getElementById('systemsChart').getContext('2d');
         let systemsChart = new Chart(systemsCtx, {
             type: 'line',
@@ -415,7 +398,6 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { x: { ticks: { color: '#88aaff' } }, y: { ticks: { color: '#88aaff' }, max: 100 } } }
         });
         
-        // Radar
         const radarCtx = document.getElementById('radarChart').getContext('2d');
         let radarChart = new Chart(radarCtx, {
             type: 'radar',
@@ -423,15 +405,13 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { r: { ticks: { color: '#88aaff' }, pointLabels: { color: '#88aaff' } } } }
         });
         
-        // Barras
         const barCtx = document.getElementById('barChart').getContext('2d');
         let barChart = new Chart(barCtx, {
             type: 'bar',
-            data: { labels: ['CPU', 'GPU', 'Memória', 'Largura Banda', 'Armazenamento'], datasets: [{ label: 'Uso (%)', data: [87, 94, 62, 78, 45], backgroundColor: 'rgba(0, 255, 255, 0.6)', borderColor: '#00ffff', borderRadius: 6 }] },
+            data: { labels: ['CPU', 'GPU', 'Memória', 'Largura', 'Armaz.'], datasets: [{ label: 'Uso (%)', data: [87, 94, 62, 78, 45], backgroundColor: 'rgba(0, 255, 255, 0.6)', borderColor: '#00ffff', borderRadius: 6 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#88aaff' } } }, scales: { y: { max: 100, ticks: { color: '#88aaff' } }, x: { ticks: { color: '#88aaff' } } } }
         });
         
-        // Doughnut
         const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
         let doughnutChart = new Chart(doughnutCtx, {
             type: 'doughnut',
@@ -439,16 +419,13 @@
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#88aaff' } } } }
         });
         
-        // ============================================================
-        // SIMULAÇÃO DE DADOS AO VIVO
-        // ============================================================
+        // Dados ao vivo
         setInterval(() => {
             document.getElementById('scanValue').textContent = Math.floor(2000 + Math.random() * 800).toLocaleString();
             document.getElementById('efficiencyValue').textContent = Math.floor(80 + Math.random() * 18) + '%';
             document.getElementById('processValue').textContent = Math.floor(70 + Math.random() * 25) + '%';
             document.getElementById('resolutionValue').textContent = Math.random() > 0.5 ? '4K' : (Math.random() > 0.5 ? '8K' : 'HD');
             
-            // Atualizar gráficos
             if (speedChart) {
                 const newData = speedChart.data.datasets[0].data.slice(1);
                 newData.push(2000 + Math.random() * 1000);
@@ -471,24 +448,17 @@
             }
         }, 3000);
         
-        // ============================================================
-        // EFEITO DE CLIQUE NOS CARDS
-        // ============================================================
+        // Efeito de clique
         document.querySelectorAll('.glass-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 if(e.target.closest('.chart-container')) return;
                 card.classList.add('card-click-effect');
-                const title = card.querySelector('.card-title')?.innerText || 'Card';
-                console.log(`🔷 Ativado: ${title}`);
                 setTimeout(() => card.classList.remove('card-click-effect'), 400);
             });
         });
         
-        function resetSpeedZoom() { if (speedChart) speedChart.resetZoom(); }
-        
-        // Estilo fade in
         const style = document.createElement('style');
-        style.textContent = `@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }`;
+        style.textContent = `@keyframes fadeIn { from { opacity: 0; transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }`;
         document.head.appendChild(style);
     </script>
 </body>

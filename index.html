@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>IRON MAN HUD - Armadura Holográfica</title>
+    <title>RETRO SCI-FI HUD - Computador de Bordo</title>
     <style>
         * {
             margin: 0;
@@ -15,12 +15,12 @@
         body {
             margin: 0;
             overflow: hidden;
-            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            font-family: 'VT323', 'Courier New', monospace;
             background: #000000;
         }
 
         /* ============================================================ */
-        /* HUD ESTILO IRON MAN - AZUL NEON / HOLOGRÁFICO */
+        /* HUD RETRO SCI-FI - VERDE FLUORESCENTE / ÂMBAR */
         /* ============================================================ */
         
         .hud-container {
@@ -33,7 +33,7 @@
             pointer-events: none;
         }
 
-        /* Scanlines finas */
+        /* Scanlines mais grossas (estilo CRT) */
         .scanlines {
             position: fixed;
             top: 0;
@@ -42,348 +42,337 @@
             height: 100%;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(0, 150, 255, 0.03) 0px,
-                rgba(0, 150, 255, 0.03) 1px,
-                transparent 1px,
-                transparent 3px
+                rgba(0, 255, 100, 0.05) 0px,
+                rgba(0, 255, 100, 0.05) 2px,
+                transparent 2px,
+                transparent 5px
             );
             pointer-events: none;
             z-index: 60;
         }
 
-        /* Vignette suave */
-        .vignette {
+        /* Efeito CRT (cantos escurecidos) */
+        .crt-effect {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.6) 100%);
+            background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.7) 100%);
             pointer-events: none;
             z-index: 55;
         }
 
-        /* ============================================================ */
-        /* BARRA SUPERIOR - ESTILO JARVIS */
-        /* ============================================================ */
-        .hud-top-bar {
+        /* Estática / ruído sutil */
+        .static-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            height: 55px;
-            background: linear-gradient(180deg, rgba(0,20,40,0.95) 0%, rgba(0,10,20,0.8) 100%);
-            border-bottom: 1px solid #00aaff;
+            width: 100%;
+            height: 100%;
+            background: repeating-radial-gradient(circle at 20% 30%, rgba(0,255,100,0.03) 0px, rgba(0,255,100,0.03) 2px, transparent 2px, transparent 4px);
+            pointer-events: none;
+            z-index: 58;
+            animation: staticFlicker 8s infinite;
+        }
+
+        /* ============================================================ */
+        /* PAINEL PRINCIPAL (ESTILO COMPUTADOR ANTIGO) */
+        /* ============================================================ */
+        .main-panel {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            right: 30px;
+            background: rgba(0, 10, 0, 0.85);
+            border: 2px solid #00ff66;
+            border-radius: 8px;
+            padding: 15px 20px;
+            backdrop-filter: blur(4px);
+            z-index: 70;
+            box-shadow: 0 0 15px rgba(0, 255, 100, 0.2), inset 0 0 10px rgba(0, 255, 100, 0.05);
+        }
+
+        .panel-header {
+            border-bottom: 1px solid #00ff66;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
-            backdrop-filter: blur(5px);
-            z-index: 70;
-            box-shadow: 0 0 15px rgba(0,170,255,0.15);
-        }
-
-        .hud-logo {
-            color: #00aaff;
-            font-size: 13px;
-            letter-spacing: 5px;
-            text-shadow: 0 0 8px #00aaff;
-            font-weight: bold;
-        }
-
-        .hud-logo span {
-            color: #88ccff;
-        }
-
-        .jarvis-status {
-            color: #88ccff;
-            font-size: 11px;
+            font-size: 12px;
             letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
-        .jarvis-status .led {
-            width: 8px;
-            height: 8px;
-            background: #00aaff;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #00aaff;
-            animation: pulseLed 1.2s infinite;
+        .panel-title {
+            color: #00ff66;
+            text-shadow: 0 0 3px #00ff66;
         }
 
-        .hud-time {
-            color: #00aaff;
-            font-size: 13px;
+        .panel-time {
+            color: #88ff88;
             font-family: monospace;
-            letter-spacing: 2px;
-            text-shadow: 0 0 5px #00aaff;
+        }
+
+        .panel-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .panel-card {
+            flex: 1;
+            background: rgba(0, 30, 0, 0.5);
+            border: 1px solid #00ff66;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .card-label {
+            color: #88ff88;
+            font-size: 9px;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .card-value {
+            color: #00ff66;
+            font-size: 22px;
+            font-weight: bold;
+            font-family: monospace;
+            text-shadow: 0 0 5px #00ff66;
+        }
+
+        .card-unit {
+            color: #88ff88;
+            font-size: 9px;
         }
 
         /* ============================================================ */
-        /* ANEL DE ANÁLISE (ESTILO REPULSOR) */
+        /* BARRA LATERAL ESQUERDA (MEDIDORES ANALÓGICOS) */
         /* ============================================================ */
-        .analysis-ring {
+        .analog-panel {
             position: fixed;
+            left: 20px;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 280px;
-            height: 280px;
-            border-radius: 50%;
-            border: 1px solid rgba(0, 170, 255, 0.3);
-            z-index: 65;
-        }
-        .analysis-ring::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50%;
-            border: 1px solid #00aaff;
-            opacity: 0.5;
-            animation: ringPulse 2s ease-out infinite;
-        }
-        .analysis-ring::after {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border-radius: 50%;
-            border: 1px dashed rgba(0, 170, 255, 0.4);
-        }
-
-        /* ============================================================ */
-        /* MIRA CENTRAL (ESTILO HUD DO IRON MAN) */
-        /* ============================================================ */
-        .hud-crosshair {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 120px;
-            height: 120px;
+            transform: translateY(-50%);
+            background: rgba(0, 10, 0, 0.85);
+            border: 1px solid #00ff66;
+            border-radius: 8px;
+            padding: 15px 12px;
             z-index: 70;
         }
-        .crosshair-outer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            border: 1.5px solid #00aaff;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #00aaff, inset 0 0 5px #00aaff;
-            opacity: 0.8;
+
+        .analog-meter {
+            margin: 15px 0;
+            text-align: center;
         }
-        .crosshair-inner {
-            position: absolute;
+
+        .meter-label {
+            color: #88ff88;
+            font-size: 8px;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .meter-bar-container {
+            width: 80px;
+            height: 12px;
+            background: #001a00;
+            border: 1px solid #00ff66;
+            margin: 5px 0;
+        }
+
+        .meter-bar {
+            height: 100%;
+            background: #00ff66;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 5px #00ff66;
+        }
+
+        .meter-value {
+            color: #00ff66;
+            font-size: 10px;
+            font-family: monospace;
+        }
+
+        /* ============================================================ */
+        /* BARRA LATERAL DIREITA (LISTA DE SISTEMAS) */
+        /* ============================================================ */
+        .systems-panel {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 10, 0, 0.85);
+            border: 1px solid #00ff66;
+            border-radius: 8px;
+            padding: 15px 12px;
+            z-index: 70;
+            min-width: 140px;
+        }
+
+        .systems-title {
+            color: #00ff66;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #00ff66;
+            margin-bottom: 10px;
+        }
+
+        .system-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 9px;
+        }
+
+        .system-name {
+            color: #88ff88;
+        }
+
+        .system-status {
+            color: #00ff66;
+        }
+
+        .system-status.online {
+            color: #00ff66;
+            text-shadow: 0 0 3px #00ff66;
+            animation: pulseGreen 1s infinite;
+        }
+
+        /* ============================================================ */
+        /* MIRA CENTRAL (ESTILO RETRO) */
+        /* ============================================================ */
+        .retro-crosshair {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            border: 1px solid #88ccff;
-            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            z-index: 70;
+        }
+        .retro-crosshair::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #00ff66;
+            transform: translateY(-50%);
+            box-shadow: 0 0 5px #00ff66;
+        }
+        .retro-crosshair::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #00ff66;
+            transform: translateX(-50%);
+            box-shadow: 0 0 5px #00ff66;
         }
         .crosshair-dot {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 4px;
-            height: 4px;
-            background: #00aaff;
+            width: 6px;
+            height: 6px;
+            background: #00ff66;
             border-radius: 50%;
-            box-shadow: 0 0 10px #00aaff;
+            box-shadow: 0 0 8px #00ff66;
+            animation: pulseDot 1s infinite;
         }
-        .crosshair-lines {
+        .crosshair-ring {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .crosshair-lines .line {
-            position: absolute;
-            background: #00aaff;
-            box-shadow: 0 0 5px #00aaff;
-        }
-        .line-h {
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            transform: translateY(-50%);
-        }
-        .line-v {
-            left: 50%;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            transform: translateX(-50%);
-        }
-        .line-diag {
             top: 50%;
             left: 50%;
-            width: 50px;
-            height: 1px;
-            transform-origin: center;
-        }
-        .diag-1 { transform: translate(-50%, -50%) rotate(45deg); }
-        .diag-2 { transform: translate(-50%, -50%) rotate(-45deg); }
-
-        /* ============================================================ */
-        /* CIRCULO DE RASTREAMENTO (INIMIGOS/ALVOS) */
-        /* ============================================================ */
-        .tracking-circles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 65;
-        }
-        .track {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border: 1px solid rgba(255, 68, 68, 0.6);
-            border-radius: 50%;
-            animation: trackPulse 1.5s infinite;
-        }
-        .track::before {
-            content: 'TARGET';
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 7px;
-            color: #ff4444;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-
-        /* ============================================================ */
-        /* DADOS DA ARMADURA (LADO ESQUERDO) */
-        /* ============================================================ */
-        .armor-stats {
-            position: fixed;
-            left: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 10, 20, 0.7);
-            backdrop-filter: blur(8px);
-            padding: 20px 25px;
-            border-left: 3px solid #00aaff;
-            border-radius: 0 8px 8px 0;
-            z-index: 70;
-            font-family: monospace;
-        }
-        .armor-stats .stat {
-            margin: 12px 0;
-        }
-        .armor-stats .stat-label {
-            color: #88aaff;
-            font-size: 9px;
-            letter-spacing: 2px;
-            margin-bottom: 3px;
-        }
-        .armor-stats .stat-value {
-            color: #00aaff;
-            font-size: 20px;
-            font-weight: bold;
-            text-shadow: 0 0 5px #00aaff;
-        }
-        .armor-stats .stat-unit {
-            color: #88aaff;
-            font-size: 9px;
-        }
-
-        /* ============================================================ */
-        /* SISTEMAS (LADO DIREITO) */
-        /* ============================================================ */
-        .systems-status {
-            position: fixed;
-            right: 30px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 10, 20, 0.7);
-            backdrop-filter: blur(8px);
-            padding: 20px 25px;
-            border-right: 3px solid #00aaff;
-            border-radius: 8px 0 0 8px;
-            text-align: right;
-            z-index: 70;
-        }
-        .systems-status .sys-item {
-            margin: 12px 0;
-        }
-        .systems-status .sys-label {
-            color: #88aaff;
-            font-size: 9px;
-            letter-spacing: 2px;
-        }
-        .systems-status .sys-value {
-            color: #00aaff;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .systems-status .sys-online {
-            color: #44ff88;
-            text-shadow: 0 0 3px #44ff88;
-        }
-
-        /* ============================================================ */
-        /* BARRA INFERIOR (STATUS DO REATOR) */
-        /* ============================================================ */
-        .reactor-status {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            transform: translate(-50%, -50%);
+            width: 40px;
             height: 40px;
-            background: linear-gradient(0deg, rgba(0,20,40,0.95) 0%, rgba(0,10,20,0.8) 100%);
-            border-top: 1px solid #00aaff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 60px;
+            border: 1px solid #00ff66;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: rotateRing 4s linear infinite;
+        }
+
+        /* ============================================================ */
+        /* TOPO - TÍTULO RETRO */
+        /* ============================================================ */
+        .retro-title {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
             z-index: 70;
         }
-        .reactor-item {
-            color: #88aaff;
+        .retro-title h1 {
+            color: #00ff66;
+            font-family: 'VT323', monospace;
+            font-size: 28px;
+            letter-spacing: 8px;
+            text-shadow: 0 0 10px #00ff66;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+        .retro-title p {
+            color: #88ff88;
             font-size: 10px;
+            letter-spacing: 4px;
+        }
+
+        /* ============================================================ */
+        /* CANTO INFERIOR - TEXTO SCROLL (ESTILO STAR WARS) */
+        /* ============================================================ */
+        .scroll-text {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            text-align: center;
+            color: #00ff66;
+            font-size: 8px;
             letter-spacing: 2px;
+            opacity: 0.5;
+            z-index: 70;
+            white-space: nowrap;
+            overflow: hidden;
         }
-        .reactor-item .value {
-            color: #00aaff;
-            font-weight: bold;
-        }
-        .reactor-item .warning {
-            color: #ffaa44;
+        .scroll-text marquee {
+            color: #00ff66;
         }
 
         /* ============================================================ */
         /* ANIMAÇÕES */
         /* ============================================================ */
-        @keyframes pulseLed {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        @keyframes pulseGreen {
+            0%, 100% { opacity: 1; text-shadow: 0 0 3px #00ff66; }
+            50% { opacity: 0.6; text-shadow: 0 0 8px #00ff66; }
         }
-        @keyframes ringPulse {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.15); }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
         }
-        @keyframes trackPulse {
-            0%, 100% { opacity: 0.6; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); box-shadow: 0 0 10px rgba(255,68,68,0.5); }
+        @keyframes rotateRing {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 5px #00ff66; }
+            50% { text-shadow: 0 0 15px #00ff66; }
+        }
+        @keyframes staticFlicker {
+            0%, 100% { opacity: 0.3; }
+            10% { opacity: 0.5; }
+            20% { opacity: 0.2; }
+            50% { opacity: 0.4; }
+            80% { opacity: 0.3; }
         }
 
         /* Loading */
@@ -392,136 +381,155 @@
             bottom: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: #00aaff;
+            color: #00ff66;
             font-family: monospace;
             z-index: 200;
             background: rgba(0, 0, 0, 0.95);
             padding: 15px 30px;
-            border-radius: 30px;
-            border: 1px solid #00aaff;
+            border-radius: 8px;
+            border: 1px solid #00ff66;
             text-align: center;
             backdrop-filter: blur(10px);
             animation: pulse 1.5s ease-in-out infinite;
-            white-space: nowrap;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00aaff; }
-            50% { opacity: 0.6; box-shadow: 0 0 25px #00aaff; }
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #00ff66; }
+            50% { opacity: 0.6; box-shadow: 0 0 25px #00ff66; }
         }
 
         /* Botão tela cheia */
         .fullscreen-btn {
             position: fixed;
-            bottom: 60px;
+            bottom: 30px;
             right: 30px;
-            background: rgba(0, 10, 20, 0.85);
+            background: rgba(0, 10, 0, 0.85);
             backdrop-filter: blur(8px);
-            border: 1px solid #00aaff;
-            color: #00aaff;
-            font-family: monospace;
-            font-size: 10px;
+            border: 1px solid #00ff66;
+            color: #00ff66;
+            font-family: 'VT323', monospace;
+            font-size: 12px;
             padding: 6px 14px;
-            border-radius: 20px;
+            border-radius: 4px;
             cursor: pointer;
             z-index: 80;
             transition: all 0.3s ease;
             pointer-events: auto;
         }
         .fullscreen-btn:hover {
-            background: rgba(0, 170, 255, 0.2);
-            box-shadow: 0 0 12px #00aaff;
+            background: rgba(0, 255, 100, 0.2);
+            box-shadow: 0 0 12px #00ff66;
         }
     </style>
 </head>
 <body>
-    <!-- HUD ESTILO IRON MAN -->
+    <!-- HUD RETRO SCI-FI -->
     <div class="hud-container">
         <div class="scanlines"></div>
-        <div class="vignette"></div>
+        <div class="crt-effect"></div>
+        <div class="static-overlay"></div>
         
-        <!-- Barra superior JARVIS -->
-        <div class="hud-top-bar">
-            <div class="hud-logo">✦ <span>MARK</span> LXXXV ✦</div>
-            <div class="jarvis-status">
-                <div class="led"></div>
-                JARVIS • ONLINE
-                <div class="led"></div>
-                ARMADURA • ATIVA
-            </div>
-            <div class="hud-time" id="hudClock">00:00:00</div>
+        <!-- Título retro -->
+        <div class="retro-title">
+            <h1>✦ S.S. ECHO ✦</h1>
+            <p>COMPUTADOR DE BORDO • SISTEMA CRT-77</p>
         </div>
         
-        <!-- Anel de análise -->
-        <div class="analysis-ring"></div>
-        
-        <!-- Mira central Iron Man -->
-        <div class="hud-crosshair">
-            <div class="crosshair-outer"></div>
-            <div class="crosshair-inner"></div>
+        <!-- Mira central retro -->
+        <div class="retro-crosshair">
             <div class="crosshair-dot"></div>
-            <div class="crosshair-lines">
-                <div class="line line-h"></div>
-                <div class="line line-v"></div>
-                <div class="line line-diag diag-1" style="width: 45px;"></div>
-                <div class="line line-diag diag-2" style="width: 45px;"></div>
+            <div class="crosshair-ring"></div>
+        </div>
+        
+        <!-- Medidores analógicos (esquerda) -->
+        <div class="analog-panel">
+            <div class="analog-meter">
+                <div class="meter-label">POWER CORE</div>
+                <div class="meter-bar-container">
+                    <div class="meter-bar" id="powerBar" style="width: 87%"></div>
+                </div>
+                <div class="meter-value" id="powerVal">87%</div>
+            </div>
+            <div class="analog-meter">
+                <div class="meter-label">SHIELD</div>
+                <div class="meter-bar-container">
+                    <div class="meter-bar" id="shieldBar" style="width: 64%"></div>
+                </div>
+                <div class="meter-value" id="shieldVal">64%</div>
+            </div>
+            <div class="analog-meter">
+                <div class="meter-label">TEMP (°C)</div>
+                <div class="meter-bar-container">
+                    <div class="meter-bar" id="tempBar" style="width: 42%"></div>
+                </div>
+                <div class="meter-value" id="tempVal">3,842°C</div>
             </div>
         </div>
         
-        <!-- Rastreamento de alvos -->
-        <div class="tracking-circles">
-            <div class="track" style="top: 25%; left: 65%;"></div>
-            <div class="track" style="top: 55%; left: 20%; animation-delay: 0.5s;"></div>
-            <div class="track" style="top: 70%; left: 75%; animation-delay: 1s;"></div>
-        </div>
-        
-        <!-- Estatísticas da armadura (esquerda) -->
-        <div class="armor-stats">
-            <div class="stat">
-                <div class="stat-label">POWER LEVEL</div>
-                <div class="stat-value" id="powerLevel">98<span style="font-size: 14px;">%</span></div>
+        <!-- Lista de sistemas (direita) -->
+        <div class="systems-panel">
+            <div class="systems-title">✦ SISTEMAS ✦</div>
+            <div class="system-item">
+                <span class="system-name">NAVEGAÇÃO</span>
+                <span class="system-status online" id="navSys">ONLINE</span>
             </div>
-            <div class="stat">
-                <div class="stat-label">ARMOR INTEGRITY</div>
-                <div class="stat-value" id="armorIntegrity">87<span style="font-size: 14px;">%</span></div>
+            <div class="system-item">
+                <span class="system-name">COMUNICAÇÃO</span>
+                <span class="system-status online" id="comSys">ONLINE</span>
             </div>
-            <div class="stat">
-                <div class="stat-label">REPULSOR CHARGE</div>
-                <div class="stat-value" id="repulsorCharge">100<span style="font-size: 14px;">%</span></div>
+            <div class="system-item">
+                <span class="system-name">HOLOGRAMA</span>
+                <span class="system-status online" id="holoSys">ATIVO</span>
             </div>
-        </div>
-        
-        <!-- Status dos sistemas (direita) -->
-        <div class="systems-status">
-            <div class="sys-item">
-                <div class="sys-label">FLIGHT SYSTEM</div>
-                <div class="sys-value sys-online" id="flightSys">ONLINE</div>
+            <div class="system-item">
+                <span class="system-name">VIDA</span>
+                <span class="system-status" id="lifeSys">ESTÁVEL</span>
             </div>
-            <div class="sys-item">
-                <div class="sys-label">WEAPONS</div>
-                <div class="sys-value sys-online" id="weaponsSys">ARMED</div>
-            </div>
-            <div class="sys-item">
-                <div class="sys-label">HOLOGRAM</div>
-                <div class="sys-value sys-online" id="holoSys">ACTIVE</div>
-            </div>
-            <div class="sys-item">
-                <div class="sys-label">COMMS LINK</div>
-                <div class="sys-value" id="commsSys">STABLE</div>
+            <div class="system-item">
+                <span class="system-name">ARMAS</span>
+                <span class="system-status" id="wepSys">PRONTO</span>
             </div>
         </div>
         
-        <!-- Barra inferior (Reator Arc) -->
-        <div class="reactor-status">
-            <div class="reactor-item">⚡ REATOR ARC: <span class="value" id="arcPower">3.2</span> GW</div>
-            <div class="reactor-item">🌡️ TEMP: <span class="value" id="coreTemp">3,842</span>°C</div>
-            <div class="reactor-item">🔷 STATUS: <span class="value" id="coreStatus">NOMINAL</span></div>
+        <!-- Painel principal inferior -->
+        <div class="main-panel">
+            <div class="panel-header">
+                <span class="panel-title">✦ TELEMETRIA ✦</span>
+                <span class="panel-time" id="hudClock">00:00:00 UTC</span>
+            </div>
+            <div class="panel-grid">
+                <div class="panel-card">
+                    <div class="card-label">VELOCIDADE</div>
+                    <div class="card-value" id="speedVal">2,384</div>
+                    <div class="card-unit">KM/H</div>
+                </div>
+                <div class="panel-card">
+                    <div class="card-label">ALTITUDE</div>
+                    <div class="card-value" id="altVal">42,817</div>
+                    <div class="card-unit">METROS</div>
+                </div>
+                <div class="panel-card">
+                    <div class="card-label">ENERGIA</div>
+                    <div class="card-value" id="energyVal">847</div>
+                    <div class="card-unit">GW</div>
+                </div>
+                <div class="panel-card">
+                    <div class="card-label">CARGA</div>
+                    <div class="card-value" id="cargoVal">98</div>
+                    <div class="card-unit">%</div>
+                </div>
+            </div>
         </div>
         
-        <button class="fullscreen-btn" id="fullscreenBtn">🔲 HOLOGRAM VIEW</button>
+        <!-- Texto rolante (estilo retro) -->
+        <div class="scroll-text">
+            <marquee scrollamount="2">✦ SISTEMA OPERACIONAL ✦ HOLOGRAMA ATIVO ✦ TELEMETRIA ESTÁVEL ✦ NENHUMA ANOMALIA DETECTADA ✦</marquee>
+        </div>
+        
+        <button class="fullscreen-btn" id="fullscreenBtn">🔲 CRT VIEW</button>
     </div>
     
-    <div id="loading">🔷 REATOR INICIALIZANDO... 🔷</div>
+    <div id="loading">🔷 INICIALIZANDO SISTEMA CRT-77... 🔷</div>
 
     <script type="importmap">
         {
@@ -551,38 +559,40 @@
         updateHUDClock();
         setInterval(updateHUDClock, 1000);
         
-        // Simular telemetria da armadura
+        // Simular telemetria retrô
         let hudTime = 0;
         setInterval(() => {
             hudTime += 0.3;
-            const power = 98 + Math.sin(hudTime * 0.5) * 1.5;
-            const armor = 87 + Math.sin(hudTime * 0.3) * 2;
-            const repulsor = 100 + Math.sin(hudTime * 0.8) * 0;
-            const arcPower = 3.2 + Math.sin(hudTime * 0.4) * 0.1;
-            const coreTemp = 3842 + Math.sin(hudTime * 0.6) * 15;
+            const speed = 2384 + Math.sin(hudTime) * 50;
+            const alt = 42817 + Math.sin(hudTime * 0.7) * 120;
+            const energy = 847 + Math.sin(hudTime * 0.5) * 8;
+            const cargo = 98 + Math.sin(hudTime * 0.4) * 2;
+            const power = 87 + Math.sin(hudTime * 0.3) * 3;
+            const shield = 64 + Math.sin(hudTime * 0.5) * 5;
+            const temp = 3842 + Math.sin(hudTime * 0.6) * 15;
             
-            document.getElementById('powerLevel').innerHTML = Math.floor(power) + '<span style="font-size: 14px;">%</span>';
-            document.getElementById('armorIntegrity').innerHTML = Math.floor(armor) + '<span style="font-size: 14px;">%</span>';
-            document.getElementById('repulsorCharge').innerHTML = Math.floor(repulsor) + '<span style="font-size: 14px;">%</span>';
-            document.getElementById('arcPower').textContent = arcPower.toFixed(1);
-            document.getElementById('coreTemp').textContent = Math.floor(coreTemp).toLocaleString();
+            document.getElementById('speedVal').textContent = Math.floor(speed).toLocaleString();
+            document.getElementById('altVal').textContent = Math.floor(alt).toLocaleString();
+            document.getElementById('energyVal').textContent = Math.floor(energy);
+            document.getElementById('cargoVal').textContent = Math.floor(cargo);
             
-            // Status dinâmicos
-            const flightStatus = Math.sin(hudTime * 0.7) > 0 ? 'ONLINE' : 'STANDBY';
-            const commsStatus = Math.sin(hudTime * 0.5) > 0.3 ? 'STABLE' : 'SCANNING';
-            document.getElementById('flightSys').textContent = flightStatus;
-            document.getElementById('flightSys').style.color = flightStatus === 'ONLINE' ? '#44ff88' : '#ffaa44';
-            document.getElementById('commsSys').textContent = commsStatus;
+            document.getElementById('powerBar').style.width = Math.floor(power) + '%';
+            document.getElementById('powerVal').textContent = Math.floor(power) + '%';
+            document.getElementById('shieldBar').style.width = Math.floor(shield) + '%';
+            document.getElementById('shieldVal').textContent = Math.floor(shield) + '%';
             
-            // Status do reator
-            const tempPercent = (coreTemp - 3500) / 500;
-            if (tempPercent > 0.8) {
-                document.getElementById('coreStatus').textContent = 'WARNING';
-                document.getElementById('coreStatus').style.color = '#ff6644';
-            } else {
-                document.getElementById('coreStatus').textContent = 'NOMINAL';
-                document.getElementById('coreStatus').style.color = '#44ff88';
-            }
+            const tempPercent = (temp - 3500) / 800;
+            document.getElementById('tempBar').style.width = Math.min(100, Math.max(0, tempPercent * 100)) + '%';
+            document.getElementById('tempVal').textContent = Math.floor(temp).toLocaleString() + '°C';
+            
+            // Status dinâmicos dos sistemas
+            const navStatus = Math.sin(hudTime * 0.5) > 0 ? 'ONLINE' : 'SCAN';
+            const comStatus = Math.sin(hudTime * 0.4) > 0.3 ? 'ONLINE' : 'BUSY';
+            const lifeStatus = Math.sin(hudTime * 0.3) > 0.2 ? 'ESTÁVEL' : 'VERIF';
+            
+            document.getElementById('navSys').textContent = navStatus;
+            document.getElementById('comSys').textContent = comStatus;
+            document.getElementById('lifeSys').textContent = lifeStatus;
         }, 400);
         
         // ============================================================
@@ -592,35 +602,35 @@
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
-                fullscreenBtn.innerHTML = '🔳 SAIR';
+                fullscreenBtn.innerHTML = '🔳 CRT VIEW';
             } else {
                 document.exitFullscreen();
-                fullscreenBtn.innerHTML = '🔲 HOLOGRAM VIEW';
+                fullscreenBtn.innerHTML = '🔲 CRT VIEW';
             }
         }
         fullscreenBtn.addEventListener('click', toggleFullscreen);
         
         // ============================================================
-        // THREE.JS - REATOR ARC 3D
+        // THREE.JS - HOLOGRAMA RETRO (VERDE)
         // ============================================================
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x000000);
         scene.fog = new THREE.FogExp2(0x000000, 0.008);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0.2, 3.2);
-        camera.lookAt(0, 0.2, 0);
+        camera.position.set(0, 0.5, 3.5);
+        camera.lookAt(0, 0.3, 0);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         document.body.appendChild(renderer.domElement);
 
-        // Efeito Bloom
+        // Efeito Bloom (verde)
         const renderScene = new RenderPass(scene, camera);
         const bloomPass = new UnrealBloomPass(
             new THREE.Vector2(window.innerWidth, window.innerHeight),
-            1.2, 0.5, 0.12
+            1.0, 0.4, 0.1
         );
         const effectComposer = new EffectComposer(renderer);
         effectComposer.addPass(renderScene);
@@ -632,79 +642,69 @@
         }, 800);
 
         // ============================================================
-        // REATOR ARC (ESTILO PEITO DO IRON MAN)
+        // HOLOGRAMA RETRO (ESFERA DE PONTOS VERDES)
         // ============================================================
+        const hologramPoints = [];
+        // Criar uma esfera de pontos verdes (estilo scan 3D)
+        for (let i = 0; i < 2500; i++) {
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            const r = 0.9;
+            const x = Math.sin(phi) * Math.cos(theta) * r;
+            const y = Math.sin(phi) * Math.sin(theta) * r * 0.7 + 0.25;
+            const z = Math.cos(phi) * r * 0.8;
+            hologramPoints.push(x, y, z);
+        }
         
-        // Anel externo
-        const ringOuterGeo = new THREE.TorusGeometry(0.55, 0.03, 64, 128);
-        const ringOuterMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x0066aa, emissiveIntensity: 0.6 });
-        const ringOuter = new THREE.Mesh(ringOuterGeo, ringOuterMat);
-        ringOuter.position.set(0, -0.55, 0.3);
-        scene.add(ringOuter);
+        // Adicionar alguns pontos extras em formato de anel
+        for (let i = 0; i < 800; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = 0.85;
+            hologramPoints.push(Math.cos(angle) * radius, 0.25 + Math.sin(angle) * 0.15, Math.sin(angle) * radius * 0.6);
+        }
+        
+        const holoGeo = new THREE.BufferGeometry();
+        holoGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(hologramPoints), 3));
+        const holoMat = new THREE.PointsMaterial({ color: 0x00ff66, size: 0.012, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+        const hologramField = new THREE.Points(holoGeo, holoMat);
+        scene.add(hologramField);
+        
+        // Anel giratório (estilo scanner retro)
+        const ringGeo = new THREE.TorusGeometry(0.75, 0.02, 64, 200);
+        const ringMat = new THREE.MeshStandardMaterial({ color: 0x00ff66, emissive: 0x006633, emissiveIntensity: 0.4 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.position.set(0, 0.2, 0);
+        ring.rotation.x = Math.PI / 2;
+        scene.add(ring);
         
         // Anel interno
-        const ringInnerGeo = new THREE.TorusGeometry(0.42, 0.02, 64, 128);
-        const ringInnerMat = new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x0088cc, emissiveIntensity: 0.5 });
-        const ringInner = new THREE.Mesh(ringInnerGeo, ringInnerMat);
-        ringInner.position.set(0, -0.55, 0.3);
-        scene.add(ringInner);
+        const ring2Geo = new THREE.TorusGeometry(0.55, 0.015, 64, 200);
+        const ring2Mat = new THREE.MeshStandardMaterial({ color: 0x88ff88, emissive: 0x006633, emissiveIntensity: 0.3 });
+        const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+        ring2.position.set(0, 0.2, 0);
+        ring2.rotation.x = Math.PI / 2;
+        scene.add(ring2);
         
-        // Esfera central (núcleo do reator)
-        const coreGeo = new THREE.SphereGeometry(0.22, 64, 64);
-        const coreMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.8, metalness: 0.9, roughness: 0.2 });
-        const coreSphere = new THREE.Mesh(coreGeo, coreMat);
-        coreSphere.position.set(0, -0.55, 0.3);
-        scene.add(coreSphere);
+        // Linhas de grade (estilo radar)
+        const gridHelper = new THREE.GridHelper(4, 20, 0x00ff66, 0x226622);
+        gridHelper.position.y = -0.3;
+        gridHelper.material.transparent = true;
+        gridHelper.material.opacity = 0.2;
+        scene.add(gridHelper);
         
-        // Partículas ao redor do reator (efeito energia)
+        // Partículas flutuantes
         const particleCount = 800;
         const particleGeo = new THREE.BufferGeometry();
         const particlePositions = new Float32Array(particleCount * 3);
         for (let i = 0; i < particleCount; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const radius = 0.65;
-            particlePositions[i*3] = Math.cos(angle) * radius * (Math.random() - 0.5);
-            particlePositions[i*3+1] = -0.55 + Math.sin(angle) * radius * 0.8;
-            particlePositions[i*3+2] = 0.3 + Math.sin(angle) * radius * 0.5;
+            particlePositions[i*3] = (Math.random() - 0.5) * 4;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 2.5 + 0.3;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 3;
         }
         particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-        const particleMat = new THREE.PointsMaterial({ color: 0x44ccff, size: 0.008, transparent: true, blending: THREE.AdditiveBlending });
+        const particleMat = new THREE.PointsMaterial({ color: 0x44ff88, size: 0.008, transparent: true, opacity: 0.3 });
         const particles = new THREE.Points(particleGeo, particleMat);
         scene.add(particles);
-        
-        // Raios de luz (estilo repulsor)
-        const rayCount = 8;
-        const rays = [];
-        for (let i = 0; i < rayCount; i++) {
-            const angle = (i / rayCount) * Math.PI * 2;
-            const rayGeo = new THREE.CylinderGeometry(0.02, 0.04, 0.35, 6);
-            const rayMat = new THREE.MeshStandardMaterial({ color: 0x00aaff, emissive: 0x00aaff, emissiveIntensity: 0.5 });
-            const ray = new THREE.Mesh(rayGeo, rayMat);
-            ray.position.set(Math.cos(angle) * 0.65, -0.55 + Math.sin(angle) * 0.65 * 0.6, 0.3);
-            ray.lookAt(0, -0.55, 0.3);
-            scene.add(ray);
-            rays.push(ray);
-        }
-        
-        // ============================================================
-        // HOLOGRAMA DE PONTOS (ESTILO JARVIS)
-        // ============================================================
-        const hologramPoints = [];
-        // Criar uma esfera de pontos ao redor
-        for (let i = 0; i < 1200; i++) {
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(2 * Math.random() - 1);
-            const r = 1.2;
-            const x = Math.sin(phi) * Math.cos(theta) * r;
-            const y = Math.sin(phi) * Math.sin(theta) * r * 0.6 + 0.2;
-            const z = Math.cos(phi) * r * 0.8;
-            hologramPoints.push(x, y, z);
-        }
-        const holoGeo = new THREE.BufferGeometry();
-        holoGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(hologramPoints), 3));
-        const holoMat = new THREE.PointsMaterial({ color: 0x00aaff, size: 0.012, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
-        const hologramField = new THREE.Points(holoGeo, holoMat);
-        scene.add(hologramField);
         
         // ============================================================
         // ANIMAÇÃO
@@ -716,26 +716,15 @@
             time += 0.016;
             
             // Rotação dos anéis
-            ringOuter.rotation.z += 0.01;
-            ringInner.rotation.z -= 0.008;
-            
-            // Pulso da esfera central
-            const scale = 1 + Math.sin(time * 8) * 0.04;
-            coreSphere.scale.set(scale, scale, scale);
-            
-            // Raios de luz pulsando
-            rays.forEach((ray, idx) => {
-                const intensity = 0.4 + Math.sin(time * 10 + idx) * 0.2;
-                ray.material.emissiveIntensity = intensity;
-            });
-            
-            // Partículas girando
-            particles.rotation.y += 0.01;
-            particles.rotation.x = Math.sin(time * 0.5) * 0.1;
+            ring.rotation.z += 0.005;
+            ring2.rotation.z -= 0.008;
             
             // Holograma girando suavemente
             hologramField.rotation.y += 0.002;
             hologramField.rotation.x = Math.sin(time * 0.3) * 0.05;
+            
+            // Partículas flutuantes
+            particles.rotation.y += 0.001;
             
             effectComposer.render();
         }
